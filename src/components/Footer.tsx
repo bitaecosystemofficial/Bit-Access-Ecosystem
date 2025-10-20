@@ -116,7 +116,7 @@ const Footer = () => {
         </div>
 
         <div className="mt-12 pt-8 border-t border-border">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+          <div className="flex flex-col items-start space-y-2">
             <p className="text-sm text-muted-foreground">
               © 2024 - 2025 Bit Access. All Rights Reserved
             </p>

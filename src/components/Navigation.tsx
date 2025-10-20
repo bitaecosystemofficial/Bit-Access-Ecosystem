@@ -85,38 +85,62 @@ const Navigation = () => {
             </Button>
           </div>
 
-          {/* Mobile - Green Wallet Icon Dropdown */}
+          {/* Mobile Menu */}
           <div className="md:hidden">
-            <DropdownMenu>
+            <DropdownMenu open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <DropdownMenuTrigger asChild>
                 <Button 
                   size="icon" 
-                  className="bg-green-600 hover:bg-green-700 text-white rounded-full w-10 h-10"
+                  variant="ghost"
+                  className="text-foreground"
                 >
-                  <Wallet className="w-5 h-5" />
+                  {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56 bg-card/95 backdrop-blur-sm">
-                {isConnected && address ? (
-                  <>
-                    <DropdownMenuItem className="font-mono text-sm">
-                      {formatAddress(address)}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem 
-                      onClick={() => disconnect()}
-                      className="text-red-500 cursor-pointer"
+                {/* Navigation Links */}
+                {!isConnected && navLinks.map((link) => (
+                  <DropdownMenuItem key={link.path} asChild>
+                    <Link 
+                      to={link.path} 
+                      className={`cursor-pointer ${location.pathname === link.path ? 'text-primary' : ''}`}
+                      onClick={() => setIsMobileMenuOpen(false)}
                     >
-                      Disconnect
-                    </DropdownMenuItem>
-                  </>
-                ) : (
-                  <DropdownMenuItem 
-                    onClick={() => open()}
-                    className="cursor-pointer"
-                  >
-                    Connect Wallet
+                      {link.label}
+                    </Link>
                   </DropdownMenuItem>
-                )}
+                ))}
+                
+                {/* Wallet Section */}
+                <DropdownMenuItem className="border-t mt-2 pt-2">
+                  {isConnected && address ? (
+                    <div className="flex flex-col gap-2 w-full">
+                      <span className="font-mono text-sm">{formatAddress(address)}</span>
+                      <Button 
+                        onClick={() => {
+                          disconnect();
+                          setIsMobileMenuOpen(false);
+                        }}
+                        variant="destructive"
+                        size="sm"
+                        className="w-full"
+                      >
+                        Disconnect
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button 
+                      onClick={() => {
+                        open();
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="w-full bg-primary text-primary-foreground"
+                    >
+                      <Wallet className="w-4 h-4 mr-2" />
+                      Connect Wallet
+                    </Button>
+                  )}
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

@@ -50,12 +50,13 @@ const Integrators = () => {
     { name: 'Cebu Grand Hotel', type: 'Hotel', location: 'Cebu City', lat: 10.2980, lng: 123.9020, verified: true, description: 'Business hotel' }
   ];
 
-  const filteredMerchants = merchants.filter(
-    (merchant) =>
-      merchant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      merchant.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      merchant.location.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredMerchants = merchants.filter((merchant) => {
+    const search = searchTerm.toLowerCase();
+    return (
+      merchant.name.toLowerCase().includes(search) ||
+      merchant.location.toLowerCase().includes(search)
+    );
+  });
 
   const totalPages = Math.ceil(filteredMerchants.length / merchantsPerPage);
   const startIndex = (currentPage - 1) * merchantsPerPage;
@@ -132,9 +133,9 @@ const Integrators = () => {
         </motion.div>
 
         {/* Two Column Layout */}
-        <div className="grid lg:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-2 gap-6 mb-8">
           {/* Left: Merchant List */}
-          <div className="space-y-4">
+          <div className="col-span-2 lg:col-span-1 space-y-4">
             {currentMerchants.map((merchant, index) => (
               <motion.div
                 key={index}
@@ -175,7 +176,7 @@ const Integrators = () => {
           </div>
 
           {/* Right: OpenStreetMap */}
-          <div className="sticky top-24 h-[600px]">
+          <div className="col-span-2 lg:col-span-1 lg:sticky lg:top-24 h-[600px]">
             <Card className="bg-card border-border h-full">
               <CardHeader>
                 <CardTitle className="text-2xl flex items-center gap-2">
