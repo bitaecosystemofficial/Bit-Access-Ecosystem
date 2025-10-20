@@ -1,57 +1,25 @@
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Search, MapPin, Store, Check } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 
 const Integrators = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<L.Map | null>(null);
 
   const merchants = [
-    {
-      name: 'Crypto Cafe',
-      type: 'Restaurant',
-      location: 'New York, USA',
-      verified: true,
-      description: 'Premium coffee shop accepting BIT tokens',
-    },
-    {
-      name: 'Tech Haven',
-      type: 'Electronics',
-      location: 'San Francisco, USA',
-      verified: true,
-      description: 'Latest gadgets and tech accessories',
-    },
-    {
-      name: 'Fashion Forward',
-      type: 'Retail',
-      location: 'London, UK',
-      verified: true,
-      description: 'Trendy clothing and accessories',
-    },
-    {
-      name: 'Digital Delights',
-      type: 'Services',
-      location: 'Tokyo, Japan',
-      verified: true,
-      description: 'Digital services and subscriptions',
-    },
-    {
-      name: 'Wellness Hub',
-      type: 'Health',
-      location: 'Sydney, Australia',
-      verified: true,
-      description: 'Health and wellness products',
-    },
-    {
-      name: 'Book Nest',
-      type: 'Books',
-      location: 'Berlin, Germany',
-      verified: true,
-      description: 'Books, magazines, and digital content',
-    },
+    { name: 'SM City Cebu', type: 'Mall', location: 'Cebu City, Philippines', lat: 10.3110, lng: 123.9185, verified: true, description: 'Major shopping mall accepting BIT tokens' },
+    { name: 'Ayala Center Cebu', type: 'Mall', location: 'Cebu Business Park, Philippines', lat: 10.3181, lng: 123.9056, verified: true, description: 'Premier shopping destination' },
+    { name: 'IT Park Food Court', type: 'Food & Dining', location: 'Cebu IT Park, Philippines', lat: 10.3267, lng: 123.9068, verified: true, description: 'Tech hub dining area' },
+    { name: 'Robinsons Galleria', type: 'Mall', location: 'Cebu City, Philippines', lat: 10.3156, lng: 123.8854, verified: true, description: 'Shopping and entertainment center' },
+    { name: 'Metro Gaisano Colon', type: 'Retail', location: 'Colon, Cebu City, Philippines', lat: 10.2963, lng: 123.9010, verified: true, description: 'Downtown shopping center' },
+    { name: 'Carbon Market', type: 'Market', location: 'Cebu City, Philippines', lat: 10.2929, lng: 123.9012, verified: true, description: 'Historic public market' }
   ];
 
   const filteredMerchants = merchants.filter(
@@ -60,6 +28,37 @@ const Integrators = () => {
       merchant.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
       merchant.location.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  useEffect(() => {
+    if (!mapRef.current || mapInstanceRef.current) return;
+
+    const map = L.map(mapRef.current).setView([10.3157, 123.8854], 13);
+    mapInstanceRef.current = map;
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    const customIcon = L.icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
+      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
+
+    merchants.forEach(merchant => {
+      L.marker([merchant.lat, merchant.lng], { icon: customIcon })
+        .addTo(map)
+        .bindPopup(`<b>${merchant.name}</b><br/>${merchant.type}<br/>${merchant.description}`);
+    });
+
+    return () => {
+      map.remove();
+      mapInstanceRef.current = null;
+    };
+  }, []);
 
   return (
     <div className="min-h-screen pt-24 pb-16">
@@ -99,16 +98,18 @@ const Integrators = () => {
           </Card>
         </motion.div>
 
-        {/* Merchant Directory */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-          {filteredMerchants.map((merchant, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-            >
-              <Card className="bg-card border-border hover:border-primary transition-all duration-300 h-full">
+        {/* Two Column Layout */}
+        <div className="grid lg:grid-cols-2 gap-6 mb-16">
+          {/* Left: Merchant List */}
+          <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+            {filteredMerchants.map((merchant, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: index * 0.05 }}
+              >
+                <Card className="bg-card border-border hover:border-primary transition-all duration-300">
                 <CardHeader>
                   <div className="flex items-start justify-between mb-2">
                     <Store className="w-10 h-10 text-primary" />
@@ -136,35 +137,25 @@ const Integrators = () => {
                   </div>
                 </CardContent>
               </Card>
-            </motion.div>
-          ))}
-        </div>
+              </motion.div>
+            ))}
+          </div>
 
-        {/* Map Section Placeholder */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="mb-16"
-        >
-          <Card className="bg-card border-border">
-            <CardHeader>
-              <CardTitle className="text-3xl">Merchant Map</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="aspect-video bg-secondary rounded-lg flex items-center justify-center">
-                <div className="text-center">
-                  <MapPin className="w-16 h-16 text-primary mx-auto mb-4" />
-                  <p className="text-muted-foreground text-lg">Interactive Map Coming Soon</p>
-                  <p className="text-muted-foreground text-sm mt-2">
-                    OpenStreetMap integration with merchant locations
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+          {/* Right: OpenStreetMap */}
+          <div className="sticky top-24 h-[600px]">
+            <Card className="bg-card border-border h-full">
+              <CardHeader>
+                <CardTitle className="text-2xl flex items-center gap-2">
+                  <MapPin className="w-6 h-6 text-primary" />
+                  Merchant Locations in Cebu
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0 h-[calc(100%-80px)]">
+                <div ref={mapRef} className="w-full h-full rounded-b-lg" />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
 
         {/* Get Listed CTA */}
         <motion.div

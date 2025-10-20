@@ -164,6 +164,18 @@ const Helpdesk = () => {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-6">
+                  <div className="p-6 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/30 rounded-lg mb-6">
+                    <h3 className="text-2xl font-bold mb-3 text-primary flex items-center gap-2">
+                      <FileText className="w-6 h-6" />
+                      Whitepaper
+                    </h3>
+                    <p className="text-muted-foreground leading-relaxed mb-4">
+                      Read our comprehensive whitepaper detailing BIT Access tokenomics, merchant reward system, staking mechanisms, and our vision for revolutionizing Web3 payment ecosystems.
+                    </p>
+                    <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+                      Download Whitepaper (PDF)
+                    </Button>
+                  </div>
                   {documentation.map((doc, index) => (
                     <div key={index} className="pb-6 border-b border-border last:border-0">
                       <h3 className="text-xl font-bold mb-3 text-primary">{doc.title}</h3>
