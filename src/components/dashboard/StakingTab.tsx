@@ -134,7 +134,7 @@ const StakingTab = () => {
       </div>
 
       {/* Staking Form */}
-      <Card className="bg-card border-border">
+      <Card className="bg-card/50 backdrop-blur-sm border-border/50 shadow-xl">
         <CardHeader>
           <CardTitle className="text-2xl">Stake Your BIT Tokens</CardTitle>
           <CardDescription>

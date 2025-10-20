@@ -8,43 +8,51 @@ const MerchantsTab = () => {
   const subscriptionTiers = [
     {
       name: 'Starter',
-      price: '50 USDT/month',
-      bitReward: '500 BIT',
+      bitStake: '100,000 BIT',
       features: [
         'Accept USDT/USDC payments',
         'Basic analytics dashboard',
-        'Up to 100 transactions/month',
-        'Email support',
-        '1% customer cashback in BIT',
+        'Web3 Education Access',
+        'Technical Training Basics',
+        '1% USDT Rewards',
+        '0.5% BNB Rewards',
+        '0.25% BTCB Rewards',
+        '2% BIT ACCESS Rewards',
       ],
       popular: false,
     },
     {
       name: 'Professional',
-      price: '150 USDT/month',
-      bitReward: '2,000 BIT',
+      bitStake: '400,000 BIT',
       features: [
         'All Starter features',
         'Unlimited transactions',
-        'Advanced analytics & reports',
+        'Advanced Web3 Education',
+        'Premium Technical Training',
+        '2% USDT Rewards',
+        '1% BNB Rewards',
+        '0.5% BTCB Rewards',
+        '5% BIT ACCESS Rewards',
         'Priority support',
-        '2% customer cashback in BIT',
         'Custom branding options',
       ],
       popular: true,
     },
     {
       name: 'Enterprise',
-      price: '500 USDT/month',
-      bitReward: '10,000 BIT',
+      bitStake: '1,000,000 BIT',
       features: [
         'All Professional features',
+        'VIP Web3 Education Programs',
+        'Exclusive Technical Workshops',
+        '3% USDT Rewards',
+        '1.5% BNB Rewards',
+        '1% BTCB Rewards',
+        '10% BIT ACCESS Rewards',
         'Multi-location support',
         'API access',
         'Dedicated account manager',
-        '3% customer cashback in BIT',
         'White-label solutions',
-        'Custom integrations',
       ],
       popular: false,
     },
@@ -57,11 +65,11 @@ const MerchantsTab = () => {
       transition={{ duration: 0.5 }}
       className="space-y-6"
     >
-      <Card className="bg-card border-border">
+      <Card className="bg-card/50 backdrop-blur-sm border-border/50 shadow-xl">
         <CardHeader>
-          <CardTitle className="text-3xl">Merchant Subscription Plans</CardTitle>
-          <CardDescription className="text-lg">
-            Accept USDT/USDC payments and reward customers with BIT tokens
+          <CardTitle className="text-2xl md:text-3xl">Merchant Subscription Plans</CardTitle>
+          <CardDescription className="text-base md:text-lg">
+            Stake BIT tokens to unlock merchant features and earn rewards in multiple cryptocurrencies
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -87,11 +95,11 @@ const MerchantsTab = () => {
                   )}
                   <CardHeader>
                     <Store className="w-10 h-10 text-primary mb-2" />
-                    <CardTitle className="text-2xl">{tier.name}</CardTitle>
+                    <CardTitle className="text-xl md:text-2xl">{tier.name}</CardTitle>
                     <div className="space-y-1">
-                      <p className="text-3xl font-bold text-primary">{tier.price}</p>
+                      <p className="text-2xl md:text-3xl font-bold text-primary">{tier.bitStake}</p>
                       <p className="text-sm text-muted-foreground">
-                        + {tier.bitReward} BIT rewards
+                        Stake Requirement
                       </p>
                     </div>
                   </CardHeader>
