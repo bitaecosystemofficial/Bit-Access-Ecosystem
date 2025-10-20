@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
 import { Facebook, Twitter, Youtube, Send, Github } from 'lucide-react';
+import { useAccount } from 'wagmi';
 
 const Footer = () => {
+  const { isConnected } = useAccount();
   const socialLinks = [
     { icon: Facebook, href: '#', label: 'Facebook' },
     { icon: Twitter, href: '#', label: 'X (Twitter)' },
@@ -24,6 +26,25 @@ const Footer = () => {
     { path: '/helpdesk#terms', label: 'Terms of Use' },
   ];
 
+  // If connected, only show copyright
+  if (isConnected) {
+    return (
+      <footer className="bg-card border-t border-border mt-20">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <p className="text-sm text-muted-foreground">
+              © 2024 - 2025 Bit Access. All Rights Reserved
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Powered by Web3Modal + WalletConnect
+            </p>
+          </div>
+        </div>
+      </footer>
+    );
+  }
+
+  // Full footer when not connected
   return (
     <footer className="bg-card border-t border-border mt-20">
       <div className="container mx-auto px-4 py-12">

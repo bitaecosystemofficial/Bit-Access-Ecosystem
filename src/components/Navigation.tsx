@@ -1,9 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Wallet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
-import { useAccount } from 'wagmi';
+import { useAccount, useDisconnect } from 'wagmi';
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -12,6 +18,7 @@ const Navigation = () => {
   const navigate = useNavigate();
   const { open } = useWeb3Modal();
   const { address, isConnected } = useAccount();
+  const { disconnect } = useDisconnect();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -68,13 +75,51 @@ const Navigation = () => {
             ))}
           </div>
 
-          {/* Connect Wallet Button - Desktop & Mobile */}
-          <Button
-            onClick={() => open()}
-            className="bg-primary text-primary-foreground hover:bg-primary/90 font-mono"
-          >
-            {isConnected && address ? formatAddress(address) : 'Connect Wallet'}
-          </Button>
+          {/* Desktop - Connect Wallet Button */}
+          <div className="hidden md:block">
+            <Button
+              onClick={() => open()}
+              className="bg-primary text-primary-foreground hover:bg-primary/90 font-mono"
+            >
+              {isConnected && address ? formatAddress(address) : 'Connect Wallet'}
+            </Button>
+          </div>
+
+          {/* Mobile - Green Wallet Icon Dropdown */}
+          <div className="md:hidden">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  size="icon" 
+                  className="bg-green-600 hover:bg-green-700 text-white rounded-full w-10 h-10"
+                >
+                  <Wallet className="w-5 h-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 bg-card/95 backdrop-blur-sm">
+                {isConnected && address ? (
+                  <>
+                    <DropdownMenuItem className="font-mono text-sm">
+                      {formatAddress(address)}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={() => disconnect()}
+                      className="text-red-500 cursor-pointer"
+                    >
+                      Disconnect
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <DropdownMenuItem 
+                    onClick={() => open()}
+                    className="cursor-pointer"
+                  >
+                    Connect Wallet
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
 
       </div>
