@@ -1,6 +1,6 @@
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config';
 import { cookieStorage, createStorage } from 'wagmi';
-import { mainnet, polygon, arbitrum, optimism } from 'wagmi/chains';
+import { bsc, bscTestnet, polygon, arbitrum, base } from 'wagmi/chains';
 
 export const projectId = 'e277359f0fca74fc6f379c202652ad12';
 
@@ -11,7 +11,7 @@ const metadata = {
   icons: ['https://bitaccess.io/icon.png']
 };
 
-const chains = [mainnet, polygon, arbitrum, optimism] as const;
+const chains = [bsc, bscTestnet, polygon, base, arbitrum] as const;
 
 export const config = defaultWagmiConfig({
   chains,
