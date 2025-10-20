@@ -137,20 +137,53 @@ const Helpdesk = () => {
           </p>
         </motion.div>
 
-        <Tabs defaultValue="docs" className="max-w-6xl mx-auto">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-9 mb-8 bg-card border border-border">
-            <TabsTrigger value="docs">Documentation</TabsTrigger>
-            <TabsTrigger value="tokenomics">Tokenomics</TabsTrigger>
-            <TabsTrigger value="allocation">Allocation</TabsTrigger>
-            <TabsTrigger value="roadmap">Roadmap</TabsTrigger>
-            <TabsTrigger value="direction">Direction</TabsTrigger>
-            <TabsTrigger value="faq">FAQ</TabsTrigger>
-            <TabsTrigger value="privacy">Privacy</TabsTrigger>
-            <TabsTrigger value="terms">Terms</TabsTrigger>
-            <TabsTrigger value="cookies">Cookies</TabsTrigger>
-          </TabsList>
+        <Tabs defaultValue="docs" className="max-w-7xl mx-auto" orientation="vertical">
+          <div className="flex flex-col lg:flex-row gap-6">
+            {/* Sidebar Navigation */}
+            <div className="lg:w-64 flex-shrink-0">
+              <TabsList className="flex flex-col h-auto w-full bg-card border border-border p-2 gap-1 lg:sticky lg:top-24">
+                <TabsTrigger value="docs" className="w-full justify-start">
+                  <Book className="w-4 h-4 mr-2" />
+                  Documentation
+                </TabsTrigger>
+                <TabsTrigger value="tokenomics" className="w-full justify-start">
+                  <PieChartIcon className="w-4 h-4 mr-2" />
+                  Tokenomics
+                </TabsTrigger>
+                <TabsTrigger value="allocation" className="w-full justify-start">
+                  <TrendingUp className="w-4 h-4 mr-2" />
+                  Allocation
+                </TabsTrigger>
+                <TabsTrigger value="roadmap" className="w-full justify-start">
+                  <Map className="w-4 h-4 mr-2" />
+                  Roadmap
+                </TabsTrigger>
+                <TabsTrigger value="direction" className="w-full justify-start">
+                  <Target className="w-4 h-4 mr-2" />
+                  Direction
+                </TabsTrigger>
+                <TabsTrigger value="faq" className="w-full justify-start">
+                  <HelpCircle className="w-4 h-4 mr-2" />
+                  FAQ
+                </TabsTrigger>
+                <TabsTrigger value="privacy" className="w-full justify-start">
+                  <Shield className="w-4 h-4 mr-2" />
+                  Privacy
+                </TabsTrigger>
+                <TabsTrigger value="terms" className="w-full justify-start">
+                  <FileText className="w-4 h-4 mr-2" />
+                  Terms
+                </TabsTrigger>
+                <TabsTrigger value="cookies" className="w-full justify-start">
+                  <Cookie className="w-4 h-4 mr-2" />
+                  Cookies
+                </TabsTrigger>
+              </TabsList>
+            </div>
 
-          {/* Documentation Tab */}
+            {/* Content Area */}
+            <div className="flex-1 min-w-0">
+              {/* Documentation Tab */}
           <TabsContent value="docs">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -645,6 +678,8 @@ const Helpdesk = () => {
               </Card>
             </motion.div>
           </TabsContent>
+            </div>
+          </div>
         </Tabs>
       </div>
     </div>

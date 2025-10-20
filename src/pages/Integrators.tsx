@@ -13,13 +13,41 @@ const Integrators = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const merchantsPerPage = 10;
+
   const merchants = [
     { name: 'SM City Cebu', type: 'Mall', location: 'Cebu City, Philippines', lat: 10.3110, lng: 123.9185, verified: true, description: 'Major shopping mall accepting BIT tokens' },
     { name: 'Ayala Center Cebu', type: 'Mall', location: 'Cebu Business Park, Philippines', lat: 10.3181, lng: 123.9056, verified: true, description: 'Premier shopping destination' },
     { name: 'IT Park Food Court', type: 'Food & Dining', location: 'Cebu IT Park, Philippines', lat: 10.3267, lng: 123.9068, verified: true, description: 'Tech hub dining area' },
     { name: 'Robinsons Galleria', type: 'Mall', location: 'Cebu City, Philippines', lat: 10.3156, lng: 123.8854, verified: true, description: 'Shopping and entertainment center' },
     { name: 'Metro Gaisano Colon', type: 'Retail', location: 'Colon, Cebu City, Philippines', lat: 10.2963, lng: 123.9010, verified: true, description: 'Downtown shopping center' },
-    { name: 'Carbon Market', type: 'Market', location: 'Cebu City, Philippines', lat: 10.2929, lng: 123.9012, verified: true, description: 'Historic public market' }
+    { name: 'Carbon Market', type: 'Market', location: 'Cebu City, Philippines', lat: 10.2929, lng: 123.9012, verified: true, description: 'Historic public market' },
+    { name: 'Cafe Laguna Ayala', type: 'Food & Dining', location: 'Ayala Center, Cebu City', lat: 10.3175, lng: 123.9050, verified: true, description: 'Popular Filipino restaurant chain' },
+    { name: 'Bo\'s Coffee Club IT Park', type: 'Food & Dining', location: 'IT Park, Cebu City', lat: 10.3270, lng: 123.9070, verified: true, description: 'Local coffee shop chain' },
+    { name: 'Gaisano Country Mall', type: 'Mall', location: 'Banilad, Cebu City', lat: 10.3365, lng: 123.9128, verified: true, description: 'Community shopping center' },
+    { name: 'Parkmall Cebu', type: 'Mall', location: 'Mandaue City, Cebu', lat: 10.3333, lng: 123.9333, verified: true, description: 'Family-friendly shopping mall' },
+    { name: 'Timezone SM Cebu', type: 'Entertainment', location: 'SM City Cebu', lat: 10.3112, lng: 123.9188, verified: true, description: 'Gaming and entertainment center' },
+    { name: 'Jollibee Fuente', type: 'Food & Dining', location: 'Fuente Osmeña, Cebu City', lat: 10.3100, lng: 123.8950, verified: true, description: 'Fast food restaurant' },
+    { name: 'Chowking Colon', type: 'Food & Dining', location: 'Colon Street, Cebu City', lat: 10.2965, lng: 123.9015, verified: true, description: 'Chinese fast food chain' },
+    { name: 'Mango Square', type: 'Entertainment', location: 'General Maxilom Ave, Cebu City', lat: 10.3200, lng: 123.9000, verified: true, description: 'Entertainment and dining complex' },
+    { name: 'The Walk IT Park', type: 'Food & Dining', location: 'IT Park, Cebu City', lat: 10.3268, lng: 123.9065, verified: true, description: 'Food and lifestyle hub' },
+    { name: 'Mercury Drug Ayala', type: 'Pharmacy', location: 'Ayala Center, Cebu City', lat: 10.3178, lng: 123.9055, verified: true, description: 'Leading pharmacy chain' },
+    { name: 'National Bookstore SM', type: 'Retail', location: 'SM City Cebu', lat: 10.3108, lng: 123.9180, verified: true, description: 'Bookstore and school supplies' },
+    { name: 'Penshoppe Ayala', type: 'Retail', location: 'Ayala Center, Cebu City', lat: 10.3180, lng: 123.9058, verified: true, description: 'Fashion retail store' },
+    { name: 'Watsons SM Cebu', type: 'Retail', location: 'SM City Cebu', lat: 10.3109, lng: 123.9182, verified: true, description: 'Health and beauty store' },
+    { name: 'Bench Ayala', type: 'Retail', location: 'Ayala Center, Cebu City', lat: 10.3182, lng: 123.9060, verified: true, description: 'Local clothing brand' },
+    { name: 'Shakey\'s IT Park', type: 'Food & Dining', location: 'IT Park, Cebu City', lat: 10.3265, lng: 123.9067, verified: true, description: 'Pizza restaurant chain' },
+    { name: 'Pizza Hut Ayala', type: 'Food & Dining', location: 'Ayala Center, Cebu City', lat: 10.3177, lng: 123.9053, verified: true, description: 'International pizza chain' },
+    { name: 'KFC SM Cebu', type: 'Food & Dining', location: 'SM City Cebu', lat: 10.3111, lng: 123.9187, verified: true, description: 'Fried chicken restaurant' },
+    { name: 'McDonald\'s Fuente', type: 'Food & Dining', location: 'Fuente Osmeña, Cebu City', lat: 10.3098, lng: 123.8948, verified: true, description: 'Fast food restaurant' },
+    { name: 'Starbucks Ayala', type: 'Food & Dining', location: 'Ayala Center, Cebu City', lat: 10.3179, lng: 123.9057, verified: true, description: 'International coffee chain' },
+    { name: 'Cebu Doctors\' University', type: 'Education', location: 'Mandaue City, Cebu', lat: 10.3280, lng: 123.9400, verified: true, description: 'Private university' },
+    { name: 'University of San Carlos', type: 'Education', location: 'Cebu City', lat: 10.3050, lng: 123.8900, verified: true, description: 'Catholic university' },
+    { name: 'Fitness First Ayala', type: 'Fitness', location: 'Ayala Center, Cebu City', lat: 10.3183, lng: 123.9062, verified: true, description: 'Fitness gym chain' },
+    { name: 'Gold\'s Gym IT Park', type: 'Fitness', location: 'IT Park, Cebu City', lat: 10.3269, lng: 123.9069, verified: true, description: 'International fitness center' },
+    { name: 'Radisson Blu Hotel', type: 'Hotel', location: 'Cebu City', lat: 10.3140, lng: 123.8920, verified: true, description: 'Luxury hotel' },
+    { name: 'Cebu Grand Hotel', type: 'Hotel', location: 'Cebu City', lat: 10.2980, lng: 123.9020, verified: true, description: 'Business hotel' }
   ];
 
   const filteredMerchants = merchants.filter(
@@ -28,6 +56,11 @@ const Integrators = () => {
       merchant.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
       merchant.location.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const totalPages = Math.ceil(filteredMerchants.length / merchantsPerPage);
+  const startIndex = (currentPage - 1) * merchantsPerPage;
+  const endIndex = startIndex + merchantsPerPage;
+  const currentMerchants = filteredMerchants.slice(startIndex, endIndex);
 
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return;
@@ -99,10 +132,10 @@ const Integrators = () => {
         </motion.div>
 
         {/* Two Column Layout */}
-        <div className="grid lg:grid-cols-2 gap-6 mb-16">
+        <div className="grid lg:grid-cols-2 gap-6 mb-8">
           {/* Left: Merchant List */}
-          <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
-            {filteredMerchants.map((merchant, index) => (
+          <div className="space-y-4">
+            {currentMerchants.map((merchant, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
@@ -156,6 +189,42 @@ const Integrators = () => {
             </Card>
           </div>
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex justify-center items-center gap-2 mb-16"
+          >
+            <Button
+              variant="outline"
+              onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </Button>
+            <div className="flex gap-2">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <Button
+                  key={page}
+                  variant={currentPage === page ? "default" : "outline"}
+                  onClick={() => setCurrentPage(page)}
+                  className="min-w-10"
+                >
+                  {page}
+                </Button>
+              ))}
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </Button>
+          </motion.div>
+        )}
 
         {/* Get Listed CTA */}
         <motion.div

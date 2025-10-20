@@ -127,42 +127,52 @@ const CommunityTab = () => {
 
         {/* Daily Check-in Tab */}
         <TabsContent value="checkin">
-          <Card className="bg-card/50 backdrop-blur-sm border-border/50">
-            <CardHeader>
-              <CardTitle className="text-2xl flex items-center">
-                <Calendar className="w-6 h-6 mr-3 text-primary" />
+          <Card className="bg-gradient-to-br from-card/80 to-card/60 backdrop-blur-lg border-primary/20 shadow-2xl">
+            <CardHeader className="bg-gradient-to-r from-primary/10 to-primary/5 border-b border-primary/20">
+              <CardTitle className="text-3xl flex items-center bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">
+                <Calendar className="w-8 h-8 mr-3 text-primary drop-shadow-lg" />
                 45-Day Daily Check-in Challenge
               </CardTitle>
-              <CardDescription>Check in daily to earn cumulative rewards</CardDescription>
+              <CardDescription className="text-base">Check in daily to earn cumulative rewards and unlock exclusive bonuses</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-6">
               <div className="space-y-6">
-                {/* 45 Days Grid - 4 per row */}
-                <div className="grid grid-cols-4 gap-3">
+                {/* 45 Days Grid - Responsive: 2 columns on mobile, 4 on desktop */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
                   {Array.from({ length: totalDays }, (_, i) => i + 1).map((day) => (
                     <motion.div
                       key={day}
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: day * 0.01 }}
+                      whileHover={{ scale: 1.05, y: -2 }}
                     >
                       <Card 
                         className={`${
                           checkedDays.includes(day)
-                            ? 'bg-primary/20 border-primary/50' 
-                            : 'bg-secondary/20 border-border/50'
-                        } hover:border-primary/50 transition-all cursor-pointer`}
+                            ? 'bg-gradient-to-br from-primary/30 to-primary/10 border-primary shadow-lg shadow-primary/20' 
+                            : 'bg-gradient-to-br from-card to-secondary/30 border-border/50 hover:border-primary/40'
+                        } transition-all duration-300 cursor-pointer relative overflow-hidden group`}
                         onClick={() => handleCheckIn(day)}
                       >
-                        <CardContent className="p-3 text-center">
-                          <div className="flex flex-col items-center space-y-1">
+                        <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <CardContent className="p-3 md:p-4 text-center relative z-10">
+                          <div className="flex flex-col items-center space-y-1.5">
                             {checkedDays.includes(day) ? (
-                              <CheckCircle className="w-6 h-6 text-primary" />
+                              <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                transition={{ type: "spring", stiffness: 200 }}
+                              >
+                                <CheckCircle className="w-6 h-6 md:w-8 md:h-8 text-primary drop-shadow-lg" />
+                              </motion.div>
                             ) : (
-                              <Calendar className="w-6 h-6 text-muted-foreground" />
+                              <Calendar className="w-6 h-6 md:w-8 md:h-8 text-muted-foreground group-hover:text-primary transition-colors" />
                             )}
-                            <p className="text-xs font-semibold">Day {day}</p>
-                            <p className="text-xs text-primary font-bold">{dailyReward} BIT</p>
+                            <p className="text-xs md:text-sm font-bold">Day {day}</p>
+                            <Badge variant="outline" className="text-xs border-primary/50 bg-primary/10">
+                              {dailyReward} BIT
+                            </Badge>
                           </div>
                         </CardContent>
                       </Card>
@@ -171,63 +181,81 @@ const CommunityTab = () => {
                 </div>
 
                 {/* Progress Section - Below the grid */}
-                <div className="bg-secondary/20 p-6 rounded-lg border border-border/50 space-y-4">
-                  <div className="flex items-center justify-between">
+                <motion.div 
+                  className="bg-gradient-to-br from-secondary/30 to-secondary/10 p-6 md:p-8 rounded-xl border border-primary/20 backdrop-blur-sm shadow-xl"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
                     <div>
-                      <p className="text-lg font-semibold">Current Streak</p>
-                      <p className="text-3xl font-bold text-primary">{checkedDays.length} Days</p>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        Total earned: {checkedDays.length * dailyReward} BIT
+                      <p className="text-base md:text-lg font-semibold text-muted-foreground mb-1">Current Streak</p>
+                      <p className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">
+                        {checkedDays.length} Days
+                      </p>
+                      <p className="text-sm md:text-base text-muted-foreground mt-2 flex items-center gap-2">
+                        <Gift className="w-4 h-4 text-primary" />
+                        Total earned: <span className="font-bold text-primary">{checkedDays.length * dailyReward} BIT</span>
                       </p>
                     </div>
                     <Button 
                       onClick={() => handleCheckIn(checkedDays.length + 1)}
                       disabled={checkedDays.length >= totalDays}
-                      className="bg-primary hover:bg-primary/90"
+                      size="lg"
+                      className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground shadow-lg hover:shadow-xl transition-all w-full md:w-auto"
                     >
-                      {checkedDays.length >= totalDays ? 'Completed!' : 'Check In Today'}
+                      {checkedDays.length >= totalDays ? '🎉 Completed!' : '✓ Check In Today'}
                     </Button>
                   </div>
                   
-                  <div className="w-full bg-secondary/50 rounded-full h-4">
-                    <div 
-                      className="bg-gradient-to-r from-primary to-primary/70 rounded-full h-4 transition-all flex items-center justify-end pr-2"
-                      style={{ width: `${(checkedDays.length / totalDays) * 100}%` }}
+                  <div className="w-full bg-secondary/50 rounded-full h-6 md:h-8 shadow-inner overflow-hidden">
+                    <motion.div 
+                      className="bg-gradient-to-r from-primary via-primary/80 to-primary/70 rounded-full h-full transition-all flex items-center justify-end pr-3 shadow-lg"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${(checkedDays.length / totalDays) * 100}%` }}
+                      transition={{ duration: 0.5 }}
                     >
-                      <span className="text-xs font-bold text-primary-foreground">
+                      <span className="text-xs md:text-sm font-bold text-primary-foreground drop-shadow-md">
                         {Math.round((checkedDays.length / totalDays) * 100)}%
                       </span>
-                    </div>
+                    </motion.div>
                   </div>
-                  <p className="text-sm text-muted-foreground">
-                    {checkedDays.length}/{totalDays} days completed
+                  <p className="text-sm md:text-base text-muted-foreground mt-3 text-center md:text-left">
+                    <span className="font-semibold">{checkedDays.length}</span> of <span className="font-semibold">{totalDays}</span> days completed
                   </p>
-                </div>
+                </motion.div>
 
                 {/* Completion Bonus Card */}
                 {checkedDays.length === totalDays && (
                   <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{ type: "spring", stiffness: 100 }}
                   >
-                    <Card className="bg-gradient-to-br from-primary/30 to-primary/10 border-primary">
-                      <CardContent className="p-6 text-center">
-                        <Trophy className="w-12 h-12 text-primary mx-auto mb-3" />
-                        <h3 className="text-2xl font-bold text-primary mb-2">Challenge Complete!</h3>
-                        <p className="text-lg mb-2">You've earned a 50% bonus reward!</p>
-                        <p className="text-3xl font-bold text-primary">+{bonusReward} BIT</p>
-                        <p className="text-sm text-muted-foreground mt-2">
-                          Total rewards: {(totalDays * dailyReward) + bonusReward} BIT
+                    <Card className="bg-gradient-to-br from-primary/40 via-primary/20 to-primary/10 border-2 border-primary shadow-2xl shadow-primary/30">
+                      <CardContent className="p-6 md:p-8 text-center">
+                        <motion.div
+                          animate={{ rotate: [0, -10, 10, -10, 0] }}
+                          transition={{ duration: 0.5, repeat: 2 }}
+                        >
+                          <Trophy className="w-16 h-16 md:w-20 md:h-20 text-primary mx-auto mb-4 drop-shadow-2xl" />
+                        </motion.div>
+                        <h3 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70 mb-3">
+                          🎉 Challenge Complete!
+                        </h3>
+                        <p className="text-lg md:text-xl mb-3 text-foreground">You've earned a <span className="font-bold text-primary">50% bonus</span> reward!</p>
+                        <p className="text-4xl md:text-5xl font-bold text-primary mb-2 drop-shadow-lg">+{bonusReward} BIT</p>
+                        <p className="text-sm md:text-base text-muted-foreground">
+                          Total rewards: <span className="font-bold text-primary">{(totalDays * dailyReward) + bonusReward} BIT</span>
                         </p>
                       </CardContent>
                     </Card>
                   </motion.div>
                 )}
 
-                <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
-                  <p className="text-sm">
-                    <strong>How it works:</strong> Check in each day to earn {dailyReward} BIT. 
-                    Complete all {totalDays} days to receive a bonus of {bonusReward} BIT (50% extra reward)!
+                <div className="bg-gradient-to-r from-blue-500/10 to-blue-500/5 border border-blue-500/30 rounded-xl p-4 md:p-5 backdrop-blur-sm">
+                  <p className="text-sm md:text-base">
+                    <strong className="text-primary">💡 How it works:</strong> Check in each day to earn {dailyReward} BIT. 
+                    Complete all {totalDays} days to receive a bonus of <span className="font-bold text-primary">{bonusReward} BIT</span> (50% extra reward)!
                   </p>
                 </div>
               </div>
