@@ -59,9 +59,7 @@ const Footer = () => {
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-sm text-muted-foreground">Copyright © 2024 - 2025. Bit Access Ecosystem. All Rights Reserved</p>
-            <p className="text-sm text-muted-foreground">
-              Powered by Web3Modal + WalletConnect
-            </p>
+            <p className="text-sm text-muted-foreground">Powered by Team BAE Dev</p>
           </div>
         </div>
       </footer>;
