@@ -68,51 +68,15 @@ const Navigation = () => {
             ))}
           </div>
 
-          {/* Connect Wallet Button - Desktop */}
-          <div className="hidden md:block">
-            <Button
-              onClick={() => open()}
-              className="bg-primary text-primary-foreground hover:bg-primary/90 font-mono"
-            >
-              {isConnected && address ? formatAddress(address) : 'Connect Wallet'}
-            </Button>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden text-foreground"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          {/* Connect Wallet Button - Desktop & Mobile */}
+          <Button
+            onClick={() => open()}
+            className="bg-primary text-primary-foreground hover:bg-primary/90 font-mono"
           >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+            {isConnected && address ? formatAddress(address) : 'Connect Wallet'}
+          </Button>
         </div>
 
-        {/* Mobile Navigation */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden pb-4 space-y-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`block py-2 text-sm font-medium transition-colors ${
-                  location.pathname === link.path ? 'text-primary' : 'text-foreground hover:text-primary'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
-            <Button
-              onClick={() => {
-                open();
-                setIsMobileMenuOpen(false);
-              }}
-              className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-mono"
-            >
-              {isConnected && address ? formatAddress(address) : 'Connect Wallet'}
-            </Button>
-          </div>
-        )}
       </div>
     </nav>
   );
