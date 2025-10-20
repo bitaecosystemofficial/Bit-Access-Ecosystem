@@ -1,53 +1,8 @@
 import { motion } from 'framer-motion';
-import { Wallet, ShoppingBag, Gift, TrendingUp, Users, Store, Shield, Zap, Globe, Coins, Lock, Activity } from 'lucide-react';
+import { Wallet, ShoppingBag, Gift, TrendingUp, Users, Store } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
 const Ecosystem = () => {
-  const ecosystems = [
-    {
-      icon: Wallet,
-      title: 'Wallet Integration',
-      description: 'Seamlessly connect Web3 wallets with MetaMask, WalletConnect, and Coinbase Wallet support',
-      color: 'from-blue-500/20 to-blue-500/5',
-      borderColor: 'border-blue-500/30'
-    },
-    {
-      icon: Gift,
-      title: 'Reward System',
-      description: 'Automatic BIT token rewards for every USDT/USDC payment at partner merchants',
-      color: 'from-primary/20 to-primary/5',
-      borderColor: 'border-primary/30'
-    },
-    {
-      icon: Lock,
-      title: 'Staking Pools',
-      description: 'Earn up to 25% APY by locking BIT tokens in flexible staking periods',
-      color: 'from-purple-500/20 to-purple-500/5',
-      borderColor: 'border-purple-500/30'
-    },
-    {
-      icon: Store,
-      title: 'Merchant Network',
-      description: 'Growing network of retail partners across Philippines accepting crypto payments',
-      color: 'from-green-500/20 to-green-500/5',
-      borderColor: 'border-green-500/30'
-    },
-    {
-      icon: Shield,
-      title: 'Security Layer',
-      description: 'Enterprise-grade security with smart contract audits and secure payment processing',
-      color: 'from-red-500/20 to-red-500/5',
-      borderColor: 'border-red-500/30'
-    },
-    {
-      icon: Globe,
-      title: 'Multi-Chain Support',
-      description: 'Cross-chain compatibility on BSC, Polygon, Base, and Arbitrum networks',
-      color: 'from-cyan-500/20 to-cyan-500/5',
-      borderColor: 'border-cyan-500/30'
-    }
-  ];
-
   const userJourney = [
     {
       icon: Wallet,
@@ -107,40 +62,6 @@ const Ecosystem = () => {
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             A complete Web3 payment ecosystem connecting users, merchants, and opportunities
           </p>
-        </motion.div>
-
-        {/* BIT ACCESS Ecosystems */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="mb-20"
-        >
-          <h2 className="text-4xl font-bold text-center mb-4">BIT ACCESS Ecosystems</h2>
-          <p className="text-center text-muted-foreground mb-12">
-            Six core pillars powering the future of Web3 payments
-          </p>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {ecosystems.map((ecosystem, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <Card className={`bg-gradient-to-br ${ecosystem.color} border ${ecosystem.borderColor} hover:scale-105 transition-all duration-300 h-full`}>
-                  <CardContent className="p-6">
-                    <ecosystem.icon className="w-12 h-12 text-primary mb-4" />
-                    <h3 className="text-xl font-bold mb-3">{ecosystem.title}</h3>
-                    <p className="text-muted-foreground text-sm">{ecosystem.description}</p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
         </motion.div>
 
         {/* User Journey */}

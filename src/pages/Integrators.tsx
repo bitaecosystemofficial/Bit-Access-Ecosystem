@@ -19,21 +19,7 @@ const Integrators = () => {
     { name: 'IT Park Food Court', type: 'Food & Dining', location: 'Cebu IT Park, Philippines', lat: 10.3267, lng: 123.9068, verified: true, description: 'Tech hub dining area' },
     { name: 'Robinsons Galleria', type: 'Mall', location: 'Cebu City, Philippines', lat: 10.3156, lng: 123.8854, verified: true, description: 'Shopping and entertainment center' },
     { name: 'Metro Gaisano Colon', type: 'Retail', location: 'Colon, Cebu City, Philippines', lat: 10.2963, lng: 123.9010, verified: true, description: 'Downtown shopping center' },
-    { name: 'Carbon Market', type: 'Market', location: 'Cebu City, Philippines', lat: 10.2929, lng: 123.9012, verified: true, description: 'Historic public market' },
-    { name: 'Gaisano Country Mall', type: 'Mall', location: 'Banilad, Cebu City, Philippines', lat: 10.3380, lng: 123.9156, verified: true, description: 'Neighborhood shopping center' },
-    { name: 'Fooda - Ayala Center', type: 'Food & Dining', location: 'Ayala Center Cebu, Philippines', lat: 10.3185, lng: 123.9060, verified: true, description: 'Premium food court' },
-    { name: 'The Walk IT Park', type: 'Food & Dining', location: 'Cebu IT Park, Philippines', lat: 10.3265, lng: 123.9065, verified: true, description: 'Outdoor dining & entertainment' },
-    { name: 'Parkmall Mandaue', type: 'Mall', location: 'Mandaue City, Philippines', lat: 10.3356, lng: 123.9453, verified: true, description: 'Major shopping complex' },
-    { name: 'Elizabeth Mall', type: 'Mall', location: 'Cebu City, Philippines', lat: 10.2978, lng: 123.9015, verified: true, description: 'Downtown retail destination' },
-    { name: 'Sugbo Mercado', type: 'Food & Dining', location: 'Cebu IT Park, Philippines', lat: 10.3270, lng: 123.9070, verified: true, description: 'Night food market' },
-    { name: 'Larsian BBQ', type: 'Food & Dining', location: 'Fuente Osmeña, Cebu City, Philippines', lat: 10.3110, lng: 123.8970, verified: true, description: 'Famous street food destination' },
-    { name: 'SM Seaside City', type: 'Mall', location: 'SRP, Cebu City, Philippines', lat: 10.2770, lng: 123.8848, verified: true, description: 'Largest shopping mall in the Philippines' },
-    { name: 'J Centre Mall', type: 'Mall', location: 'Mandaue City, Philippines', lat: 10.3262, lng: 123.9392, verified: true, description: 'Mid-range shopping center' },
-    { name: 'Taboan Public Market', type: 'Market', location: 'Cebu City, Philippines', lat: 10.3050, lng: 123.8955, verified: true, description: 'Traditional market for dried goods' },
-    { name: 'Island Central Mall', type: 'Mall', location: 'Mactan, Lapu-Lapu City, Philippines', lat: 10.3102, lng: 123.9618, verified: true, description: 'Island shopping destination' },
-    { name: 'Gaisano Grand Mall', type: 'Mall', location: 'Mactan, Lapu-Lapu City, Philippines', lat: 10.3125, lng: 123.9640, verified: true, description: 'Mactan retail center' },
-    { name: 'Mabolo Market', type: 'Market', location: 'Mabolo, Cebu City, Philippines', lat: 10.3345, lng: 123.9095, verified: true, description: 'Community wet and dry market' },
-    { name: 'Majestic Supermarket', type: 'Retail', location: 'Cebu City, Philippines', lat: 10.2958, lng: 123.9005, verified: true, description: 'Local supermarket chain' }
+    { name: 'Carbon Market', type: 'Market', location: 'Cebu City, Philippines', lat: 10.2929, lng: 123.9012, verified: true, description: 'Historic public market' }
   ];
 
   const filteredMerchants = merchants.filter(
@@ -41,15 +27,6 @@ const Integrators = () => {
       merchant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       merchant.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
       merchant.location.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const merchantsPerPage = 10;
-  const totalPages = Math.ceil(filteredMerchants.length / merchantsPerPage);
-  
-  const paginatedMerchants = filteredMerchants.slice(
-    (currentPage - 1) * merchantsPerPage,
-    currentPage * merchantsPerPage
   );
 
   useEffect(() => {
@@ -124,8 +101,8 @@ const Integrators = () => {
         {/* Two Column Layout */}
         <div className="grid lg:grid-cols-2 gap-6 mb-16">
           {/* Left: Merchant List */}
-          <div className="space-y-4">
-            {paginatedMerchants.map((merchant, index) => (
+          <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+            {filteredMerchants.map((merchant, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
@@ -162,38 +139,6 @@ const Integrators = () => {
               </Card>
               </motion.div>
             ))}
-            
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-2 mt-6">
-                <Button
-                  variant="outline"
-                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                  disabled={currentPage === 1}
-                >
-                  Previous
-                </Button>
-                <div className="flex gap-1">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                    <Button
-                      key={page}
-                      variant={currentPage === page ? "default" : "outline"}
-                      onClick={() => setCurrentPage(page)}
-                      className="w-10"
-                    >
-                      {page}
-                    </Button>
-                  ))}
-                </div>
-                <Button
-                  variant="outline"
-                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                  disabled={currentPage === totalPages}
-                >
-                  Next
-                </Button>
-              </div>
-            )}
           </div>
 
           {/* Right: OpenStreetMap */}

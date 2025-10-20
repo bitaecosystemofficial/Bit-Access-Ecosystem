@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -8,10 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Users, Trophy, Gift, Twitter, Facebook, Instagram, Youtube, Calendar, Video, MessageSquare, CheckCircle, Send, ThumbsUp, Share2, Star, MessageCircle } from 'lucide-react';
 
 const CommunityTab = () => {
-  const navigate = useNavigate();
   const [checkedDays, setCheckedDays] = useState<number[]>([]);
-  const [checkInPage, setCheckInPage] = useState(1);
-  const [isMobile, setIsMobile] = useState(false);
 
   const socialMediaTasks = [
     { platform: 'Facebook', icon: Facebook, task: 'Like our FB page', reward: '50 BIT', color: 'text-blue-600' },
@@ -31,16 +27,6 @@ const CommunityTab = () => {
   const totalDays = 45;
   const dailyReward = 100;
   const bonusReward = 2250; // 50% of total (45 days * 100 BIT = 4500, bonus = 2250)
-  
-  const daysPerPageMobile = 6;
-  const daysPerPageDesktop = 16;
-  const daysPerPage = isMobile ? daysPerPageMobile : daysPerPageDesktop;
-  const totalCheckInPages = Math.ceil(totalDays / daysPerPage);
-  
-  const paginatedDays = Array.from({ length: totalDays }, (_, i) => i + 1).slice(
-    (checkInPage - 1) * daysPerPage,
-    checkInPage * daysPerPage
-  );
 
   const zoomAttendance = [
     { event: 'Weekly Community Call', schedule: 'Every Monday 2PM UTC', reward: '75 BIT', type: 'Weekly' },
@@ -70,14 +56,6 @@ const CommunityTab = () => {
       setCheckedDays([...checkedDays, day]);
     }
   };
-
-  // Detect mobile
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
   return (
     <motion.div
@@ -159,9 +137,9 @@ const CommunityTab = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
-                {/* 45 Days Grid - 2 cols on mobile, 4 on desktop */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {paginatedDays.map((day) => (
+                {/* 45 Days Grid - 4 per row */}
+                <div className="grid grid-cols-4 gap-3">
+                  {Array.from({ length: totalDays }, (_, i) => i + 1).map((day) => (
                     <motion.div
                       key={day}
                       initial={{ opacity: 0, scale: 0.8 }}
@@ -191,31 +169,6 @@ const CommunityTab = () => {
                     </motion.div>
                   ))}
                 </div>
-
-                {/* Pagination */}
-                {totalCheckInPages > 1 && (
-                  <div className="flex justify-center items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setCheckInPage(prev => Math.max(1, prev - 1))}
-                      disabled={checkInPage === 1}
-                    >
-                      Previous
-                    </Button>
-                    <span className="text-sm text-muted-foreground">
-                      Page {checkInPage} of {totalCheckInPages}
-                    </span>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setCheckInPage(prev => Math.min(totalCheckInPages, prev + 1))}
-                      disabled={checkInPage === totalCheckInPages}
-                    >
-                      Next
-                    </Button>
-                  </div>
-                )}
 
                 {/* Progress Section - Below the grid */}
                 <div className="bg-secondary/20 p-6 rounded-lg border border-border/50 space-y-4">
@@ -400,10 +353,7 @@ const CommunityTab = () => {
                     </CardContent>
                   </Card>
 
-                  <Button 
-                    className="w-full mt-6 bg-primary hover:bg-primary/90 h-12 text-lg"
-                    onClick={() => navigate('/forum')}
-                  >
+                  <Button className="w-full mt-6 bg-primary hover:bg-primary/90 h-12 text-lg">
                     <MessageSquare className="w-5 h-5 mr-2" />
                     Visit Community Forum
                   </Button>
