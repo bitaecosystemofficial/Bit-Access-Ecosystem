@@ -8,13 +8,13 @@ const Overview = () => {
       icon: Wallet,
       title: 'What is Bit Access?',
       content:
-        'Bit Access (BIT) is a revolutionary utility and reward token designed to bridge the gap between Web3 technology and everyday transactions. Our platform enables seamless, instant payments for real-world goods and services.',
+        'Bit Access (BIT) is a revolutionary reward token that incentivizes Web3 adoption. Merchants accept USDT/USDC stablecoins for payments, while customers earn BIT tokens as rewards, creating a win-win ecosystem for all participants.',
     },
     {
       icon: Users,
       title: 'Mission & Vision',
       content:
-        'Our mission is to make Web3 accessible to everyone, from crypto natives to newcomers. We envision a future where digital payments are instant, secure, and rewarding for all participants.',
+        'Our mission is to bridge traditional commerce with Web3 through stablecoin payments and reward tokens. We envision a future where merchants benefit from instant settlements and customers earn valuable rewards with every purchase.',
     },
     {
       icon: Lock,

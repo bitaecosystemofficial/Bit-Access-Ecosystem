@@ -12,6 +12,7 @@ import Overview from "./pages/Overview";
 import Ecosystem from "./pages/Ecosystem";
 import Integrators from "./pages/Integrators";
 import Helpdesk from "./pages/Helpdesk";
+import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -41,6 +42,7 @@ const App = () => (
               <Route path="/ecosystem" element={<Ecosystem />} />
               <Route path="/integrators" element={<Integrators />} />
               <Route path="/helpdesk" element={<Helpdesk />} />
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Layout>

@@ -18,18 +18,18 @@ const Home = () => {
   const features = [
     {
       icon: Zap,
-      title: 'Instant Settlements',
-      description: 'Real-time Web3 payments for goods and services',
+      title: 'Pay with Stablecoins',
+      description: 'Merchants accept USDT/USDC payments for instant, secure transactions',
     },
     {
       icon: Shield,
-      title: 'Secure & Compliant',
-      description: 'Enterprise-grade security with full regulatory compliance',
+      title: 'Earn BIT Rewards',
+      description: 'Get BIT tokens as rewards for every purchase at participating merchants',
     },
     {
       icon: TrendingUp,
-      title: 'Earn & Spend BIT',
-      description: 'Participate in the ecosystem and unlock rewards',
+      title: 'Stake & Multiply',
+      description: 'Lock your BIT rewards to earn up to 25% APY with flexible staking pools',
     },
   ];
 
@@ -54,10 +54,10 @@ const Home = () => {
             className="text-center max-w-4xl mx-auto"
           >
             <h1 className="text-5xl md:text-7xl font-bold mb-6 text-shadow-gold">
-              Revolutionizing Daily Life Through Web3
+              Earn BIT Rewards with Every Transaction
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-muted-foreground">
-              Empowering Users and Merchants with BIT Access
+              Merchants Accept USDT/USDC • Customers Earn BIT Rewards
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button

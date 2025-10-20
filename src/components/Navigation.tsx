@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
@@ -9,6 +9,7 @@ const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const { open } = useWeb3Modal();
   const { address, isConnected } = useAccount();
 
@@ -19,6 +20,12 @@ const Navigation = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (isConnected) {
+      navigate('/dashboard');
+    }
+  }, [isConnected, navigate]);
 
   const navLinks = [
     { path: '/', label: 'Home' },

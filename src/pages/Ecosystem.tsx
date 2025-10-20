@@ -13,32 +13,32 @@ const Ecosystem = () => {
     {
       icon: Gift,
       step: '02',
-      title: 'Earn BIT',
-      description: 'Participate in activities, stake tokens, and earn rewards',
+      title: 'Earn BIT Rewards',
+      description: 'Receive BIT tokens when merchants accept your USDT/USDC payments',
     },
     {
       icon: ShoppingBag,
       step: '03',
-      title: 'Spend BIT',
-      description: 'Use your tokens at participating merchants for real goods',
+      title: 'Stake & Grow',
+      description: 'Lock your BIT rewards in staking pools to earn up to 25% APY',
     },
   ];
 
   const merchantBenefits = [
     {
       icon: TrendingUp,
-      title: 'Faster Settlement',
-      description: 'Receive payments instantly without traditional banking delays',
+      title: 'Instant USDT/USDC Settlement',
+      description: 'Receive stablecoin payments instantly without traditional banking delays',
     },
     {
       icon: Users,
-      title: 'Access New Customers',
-      description: 'Tap into the growing Web3 community and crypto holders',
+      title: 'Reward Your Customers',
+      description: 'Customers earn BIT rewards, creating loyalty and repeat purchases',
     },
     {
       icon: Store,
-      title: 'Reduced Fees',
-      description: 'Lower transaction costs compared to traditional payment processors',
+      title: 'Lower Fees',
+      description: 'Reduced transaction costs compared to traditional payment processors',
     },
   ];
 
@@ -190,8 +190,8 @@ const Ecosystem = () => {
                   <div className="w-24 h-24 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                     <Users className="w-12 h-12 text-primary-foreground" />
                   </div>
-                  <h3 className="text-xl font-bold mb-2">Users</h3>
-                  <p className="text-muted-foreground text-sm">Earn & spend BIT tokens</p>
+                  <h3 className="text-xl font-bold mb-2">Customers</h3>
+                  <p className="text-muted-foreground text-sm">Pay USDT/USDC, earn BIT rewards</p>
                 </div>
 
                 <div className="hidden md:flex items-center justify-center">
@@ -203,7 +203,7 @@ const Ecosystem = () => {
                     <Store className="w-12 h-12 text-primary-foreground" />
                   </div>
                   <h3 className="text-xl font-bold mb-2">Merchants</h3>
-                  <p className="text-muted-foreground text-sm">Accept BIT payments</p>
+                  <p className="text-muted-foreground text-sm">Accept USDT/USDC, reward customers</p>
                 </div>
               </div>
             </CardContent>
