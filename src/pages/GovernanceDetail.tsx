@@ -17,8 +17,10 @@ const GovernanceDetail = () => {
   const [comment, setComment] = useState('');
   const [hasVoted, setHasVoted] = useState(false);
   const [voteType, setVoteType] = useState<'for' | 'against' | null>(null);
-  const [votesFor, setVotesFor] = useState(12500000);
-  const [votesAgainst, setVotesAgainst] = useState(3200000);
+  const [votesFor, setVotesFor] = useState(0);
+  const [votesAgainst, setVotesAgainst] = useState(0);
+
+  const VOTING_POWER = 10000; // Fixed voting power
 
   // Mock data - in real app, fetch by ID
   const proposal = {
@@ -49,11 +51,11 @@ const GovernanceDetail = () => {
 - Low risk to treasury sustainability
 - Potential for increased token value due to reduced circulation
 - Enhanced community engagement and loyalty`,
-    status: 'active',
-    votesFor: 12500000,
-    votesAgainst: 3200000,
-    totalVotes: 15700000,
-    endDate: '2025-11-05',
+     status: 'active',
+     votesFor: 0,
+     votesAgainst: 0,
+     totalVotes: 0,
+     endDate: '2025-11-05',
     startDate: '2025-10-22',
     category: 'Economic',
     proposer: '0x742d...a9f4',
@@ -90,12 +92,10 @@ const GovernanceDetail = () => {
   };
 
   const handleVote = (type: 'for' | 'against') => {
-    const votingPower = balance > 0 ? Math.min(balance, 1000) : 100; // Use actual balance or minimum 100
-    
     if (type === 'for') {
-      setVotesFor(prev => prev + votingPower);
+      setVotesFor(prev => prev + VOTING_POWER);
     } else {
-      setVotesAgainst(prev => prev + votingPower);
+      setVotesAgainst(prev => prev + VOTING_POWER);
     }
     
     setVoteType(type);
@@ -103,7 +103,7 @@ const GovernanceDetail = () => {
     
     toast({
       title: `Vote ${type === 'for' ? 'For' : 'Against'} Recorded`,
-      description: `Your ${votingPower} BIT voting power has been cast ${type === 'for' ? 'in favor' : 'against'} this proposal!`,
+      description: `Your ${VOTING_POWER.toLocaleString()} BIT voting power has been cast ${type === 'for' ? 'in favor' : 'against'} this proposal!`,
     });
   };
 

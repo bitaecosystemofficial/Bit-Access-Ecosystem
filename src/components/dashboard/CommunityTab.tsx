@@ -4,10 +4,17 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Users, Trophy, Gift, Twitter, Facebook, Instagram, Youtube, Calendar, Video, MessageSquare, CheckCircle, Send, ThumbsUp, Share2, Star, MessageCircle } from 'lucide-react';
+import { Users, Trophy, Gift, Twitter, Facebook, Instagram, Youtube, Calendar, Video, MessageSquare, CheckCircle, Send, ThumbsUp, Share2, Star, MessageCircle, Wallet } from 'lucide-react';
+import { useBITBalance } from '@/contexts/BITBalanceContext';
+import { useToast } from '@/hooks/use-toast';
 
 const CommunityTab = () => {
   const [checkedDays, setCheckedDays] = useState<number[]>([]);
+  const [completedTasks, setCompletedTasks] = useState<number[]>([]);
+  const [completedZoomEvents, setCompletedZoomEvents] = useState<number[]>([]);
+  const [completedForumTasks, setCompletedForumTasks] = useState<number[]>([]);
+  const { balance, addBalance, formatBalance } = useBITBalance();
+  const { toast } = useToast();
 
   const socialMediaTasks = [
     { platform: 'Facebook', icon: Facebook, task: 'Like our FB page', reward: '50 BIT', color: 'text-blue-600' },
@@ -54,6 +61,54 @@ const CommunityTab = () => {
   const handleCheckIn = (day: number) => {
     if (!checkedDays.includes(day)) {
       setCheckedDays([...checkedDays, day]);
+      addBalance(dailyReward);
+      
+      // Check if this completes the challenge
+      if (checkedDays.length + 1 === totalDays) {
+        addBalance(bonusReward);
+        toast({
+          title: '🎉 Challenge Complete!',
+          description: `You've earned ${dailyReward + bonusReward} BIT! Total: ${formatBalance(balance + dailyReward + bonusReward)} BIT`,
+        });
+      } else {
+        toast({
+          title: 'Check-in Successful!',
+          description: `You've earned ${dailyReward} BIT! New balance: ${formatBalance(balance + dailyReward)} BIT`,
+        });
+      }
+    }
+  };
+
+  const handleSocialTask = (index: number, reward: number) => {
+    if (!completedTasks.includes(index)) {
+      setCompletedTasks([...completedTasks, index]);
+      addBalance(reward);
+      toast({
+        title: 'Task Completed!',
+        description: `You've earned ${reward} BIT! New balance: ${formatBalance(balance + reward)} BIT`,
+      });
+    }
+  };
+
+  const handleZoomEvent = (index: number, reward: number) => {
+    if (!completedZoomEvents.includes(index)) {
+      setCompletedZoomEvents([...completedZoomEvents, index]);
+      addBalance(reward);
+      toast({
+        title: 'Event Attended!',
+        description: `You've earned ${reward} BIT! New balance: ${formatBalance(balance + reward)} BIT`,
+      });
+    }
+  };
+
+  const handleForumTask = (index: number, reward: number) => {
+    if (!completedForumTasks.includes(index)) {
+      setCompletedForumTasks([...completedForumTasks, index]);
+      addBalance(reward);
+      toast({
+        title: 'Forum Task Completed!',
+        description: `You've earned ${reward} BIT! New balance: ${formatBalance(balance + reward)} BIT`,
+      });
     }
   };
 
@@ -64,6 +119,20 @@ const CommunityTab = () => {
       transition={{ duration: 0.5 }}
       className="space-y-6"
     >
+      {/* Balance Display */}
+      <Card className="bg-gradient-to-br from-green-500/20 via-green-500/10 to-background border-green-500/30">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-muted-foreground mb-1">Your BIT Balance</p>
+              <p className="text-4xl font-bold text-green-600 dark:text-green-400">{formatBalance(balance)}</p>
+              <p className="text-sm text-muted-foreground">BIT Tokens</p>
+            </div>
+            <Wallet className="w-16 h-16 text-green-500 opacity-50" />
+          </div>
+        </CardContent>
+      </Card>
+
       <Tabs defaultValue="social" className="w-full">
         <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 mb-6 bg-card/50 backdrop-blur-sm border border-border/50">
           <TabsTrigger value="social" className="font-semibold">
@@ -113,8 +182,14 @@ const CommunityTab = () => {
                           </div>
                           <Badge className="bg-primary text-primary-foreground">{task.reward}</Badge>
                         </div>
-                        <Button className="w-full mt-3" variant="outline" size="sm">
-                          Complete
+                        <Button 
+                          className="w-full mt-3" 
+                          variant={completedTasks.includes(index) ? "secondary" : "outline"}
+                          size="sm"
+                          onClick={() => handleSocialTask(index, parseInt(task.reward.split(' ')[0]))}
+                          disabled={completedTasks.includes(index)}
+                        >
+                          {completedTasks.includes(index) ? '✓ Completed' : 'Complete'}
                         </Button>
                       </CardContent>
                     </Card>
@@ -294,7 +369,14 @@ const CommunityTab = () => {
                           <Badge className="bg-primary text-primary-foreground text-base px-4 py-1">
                             {event.reward}
                           </Badge>
-                          <Button variant="outline" size="sm">Get Link</Button>
+                          <Button 
+                            variant={completedZoomEvents.includes(index) ? "secondary" : "outline"}
+                            size="sm"
+                            onClick={() => handleZoomEvent(index, parseInt(event.reward.split(' ')[0]))}
+                            disabled={completedZoomEvents.includes(index)}
+                          >
+                            {completedZoomEvents.includes(index) ? '✓ Attended' : 'Get Link'}
+                          </Button>
                         </div>
                       </div>
                     </CardContent>
@@ -351,14 +433,24 @@ const CommunityTab = () => {
                     {forumActivities.map((activity, index) => (
                       <Card key={index} className="bg-secondary/20 border-border/50">
                         <CardContent className="p-5">
-                          <div className="flex items-center justify-between">
+                          <div className="flex items-center justify-between gap-4">
                             <div className="flex-1">
                               <h3 className="font-bold text-lg">{activity.activity}</h3>
                               <p className="text-sm text-muted-foreground mt-1">{activity.description}</p>
                             </div>
-                            <Badge className="bg-primary text-primary-foreground text-base px-4 py-1 ml-4">
-                              {activity.reward}
-                            </Badge>
+                            <div className="flex flex-col items-end gap-2">
+                              <Badge className="bg-primary text-primary-foreground text-base px-4 py-1">
+                                {activity.reward}
+                              </Badge>
+                              <Button 
+                                variant={completedForumTasks.includes(index) ? "secondary" : "outline"}
+                                size="sm"
+                                onClick={() => handleForumTask(index, parseInt(activity.reward.split(' ')[0]))}
+                                disabled={completedForumTasks.includes(index)}
+                              >
+                                {completedForumTasks.includes(index) ? '✓ Done' : 'Complete'}
+                              </Button>
+                            </div>
                           </div>
                         </CardContent>
                       </Card>

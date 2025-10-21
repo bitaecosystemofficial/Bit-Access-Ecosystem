@@ -27,9 +27,9 @@ const GovernanceTab = () => {
       title: 'Increase Staking Rewards by 2%',
       description: 'Proposal to increase annual staking rewards from 8% to 10% for BIT token holders.',
       status: 'active',
-      votesFor: 12500000,
-      votesAgainst: 3200000,
-      totalVotes: 15700000,
+      votesFor: 0,
+      votesAgainst: 0,
+      totalVotes: 0,
       endDate: '2025-11-05',
       category: 'Economic',
       requiredBIT: 100
@@ -132,7 +132,7 @@ const GovernanceTab = () => {
             </div>
             <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-lg p-4">
               <div className="text-sm text-muted-foreground mb-1">Your Voting Power</div>
-              <div className="text-3xl font-bold text-primary">500 BIT</div>
+              <div className="text-3xl font-bold text-primary">10,000 BIT</div>
             </div>
           </div>
         </CardContent>
