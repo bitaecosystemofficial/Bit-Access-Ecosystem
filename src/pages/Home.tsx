@@ -68,8 +68,8 @@ const Home = () => {
     },
     {
       icon: Zap,
-      title: "Spin & Win",
-      description: "Try your luck with our daily spin-a-wheel game for a chance to win BIT tokens and other rewards.",
+      title: "Daily Rewards",
+      description: "Try your luck with our daily claim game for a chance to win BIT tokens and other rewards.",
     },
     {
       icon: Network,
