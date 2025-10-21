@@ -1,36 +1,102 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, Zap, Shield, TrendingUp } from 'lucide-react';
+import { ArrowRight, Gift, Rocket, Lock, RefreshCw, Store, Users, Zap, Coins, TrendingUp, Shield, BarChart3, Network, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
+import { useNavigate } from 'react-router-dom';
 import heroBg from '@/assets/hero-bg.jpg';
 
 const Home = () => {
   const { open } = useWeb3Modal();
+  const navigate = useNavigate();
 
   const stats = [
-    { label: 'Total Users', value: '50K+' },
-    { label: 'Active Merchants', value: '1,200+' },
-    { label: 'BIT in Circulation', value: '10M' },
-    { label: 'Avg Transaction Speed', value: '<2s' },
+    { label: 'Community Members', value: '4K+', icon: Users },
+    { label: 'BIT Tokens', value: '100B', icon: Coins },
+    { label: 'Token Holders', value: '4,748', icon: TrendingUp },
+    { label: 'Token Transfers', value: 'Live', icon: Zap, badge: true },
   ];
 
-  const features = [
+  const ecosystemFeatures = [
+    {
+      icon: Gift,
+      title: 'Airdrops & Rewards',
+      description: 'Participate in regular token airdrops and earn rewards through community engagement and referrals.',
+    },
+    {
+      icon: Rocket,
+      title: 'Token Presale',
+      description: 'Early access to BIT tokens with bonus allocations and exclusive benefits for early supporters.',
+    },
+    {
+      icon: Lock,
+      title: 'Staking Rewards',
+      description: 'Stake your BIT tokens to earn passive income while supporting network security and governance.',
+    },
+    {
+      icon: RefreshCw,
+      title: 'Token Swap',
+      description: 'Seamlessly swap BIT tokens with other cryptocurrencies through our integrated decentralized exchange.',
+    },
+    {
+      icon: Store,
+      title: 'Merchant Network',
+      description: 'Join our growing network of merchants accepting BIT tokens with special subscription packages.',
+    },
+    {
+      icon: Users,
+      title: 'Community Hub',
+      description: 'Connect with fellow BIT holders, participate in social activities, and engage in community-driven initiatives.',
+    },
     {
       icon: Zap,
-      title: 'Pay with Stablecoins',
-      description: 'Merchants accept USDT/USDC payments for instant, secure transactions',
+      title: 'Spin & Win',
+      description: 'Try your luck with our daily spin-a-wheel game for a chance to win BIT tokens and other rewards.',
     },
     {
-      icon: Shield,
-      title: 'Earn BIT Rewards',
-      description: 'Get BIT tokens as rewards for every purchase at participating merchants',
+      icon: Network,
+      title: 'BSC Integration',
+      description: 'Built on Binance Smart Chain for fast, low-cost transactions and seamless integration with the BSC ecosystem.',
+    },
+  ];
+
+  const blockchainNetworks = [
+    {
+      name: 'BNB Chain',
+      description: 'Fast, low-cost transactions on BNB Smart Chain',
+      color: 'from-yellow-500 to-yellow-600',
     },
     {
-      icon: TrendingUp,
-      title: 'Stake & Multiply',
-      description: 'Lock your BIT rewards to earn up to 25% APY with flexible staking pools',
+      name: 'Polygon',
+      description: 'Scalable Ethereum Layer 2 solution',
+      color: 'from-purple-500 to-purple-600',
     },
+    {
+      name: 'Base',
+      description: "Coinbase's Ethereum L2 network",
+      color: 'from-blue-500 to-blue-600',
+    },
+    {
+      name: 'Arbitrum',
+      description: 'Optimistic rollup for Ethereum scaling',
+      color: 'from-cyan-500 to-cyan-600',
+    },
+  ];
+
+  const partners = [
+    { name: 'Biit', category: 'Blockchain Technology Only' },
+    { name: 'Binexplorer', category: 'BSC Blockchain Explorer' },
+    { name: 'DappRadar', category: 'DApp Analytics' },
+    { name: 'GoPlus Security', category: 'Security Platform' },
+    { name: 'BscScan', category: 'BSC Explorer' },
+    { name: 'Cyberscope', category: 'Smart Contract Audits' },
+    { name: 'NewGen Web3', category: 'Web3 Community' },
+    { name: 'DexScreener', category: 'DEX Analytics' },
+    { name: 'PancakeSwap', category: 'BSC DEX' },
+    { name: 'Uniswap', category: 'Decentralized Exchange' },
+    { name: 'CoinMarketCap', category: 'Price Tracking' },
+    { name: 'CoinGecko', category: 'Market Data' },
   ];
 
   return (
@@ -38,11 +104,12 @@ const Home = () => {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
         <div
-          className="absolute inset-0 z-0 animate-gradient"
+          className="absolute inset-0 z-0"
           style={{
-            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url(${heroBg})`,
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)), url(${heroBg})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
+            backgroundAttachment: 'fixed',
           }}
         />
 
@@ -51,30 +118,36 @@ const Home = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center max-w-4xl mx-auto"
+            className="text-center max-w-5xl mx-auto"
           >
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 text-shadow-gold">
-              Earn BIT Rewards with Every Transaction
+            <Badge className="mb-6 text-base px-4 py-2 bg-primary/20 text-primary border-primary/50">
+              Bit Access Affiliates
+            </Badge>
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent">
+              Bit Access Ecosystem
             </h1>
-            <p className="text-xl md:text-2xl mb-8 text-muted-foreground">
-              Merchants Accept USDT/USDC • Customers Earn BIT Rewards
+            <p className="text-2xl md:text-3xl mb-4 text-foreground font-semibold">
+              Powering the future of digital transactions
+            </p>
+            <p className="text-lg md:text-xl mb-8 text-muted-foreground max-w-3xl mx-auto">
+              Empowering blockchain communities through our comprehensive ecosystem and BIT utility token.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 size="lg"
-                onClick={() => open()}
-                className="bg-primary text-primary-foreground hover:bg-primary/90 font-mono text-lg px-8"
+                onClick={() => navigate('/ecosystem')}
+                className="bg-primary text-primary-foreground hover:bg-primary/90 text-lg px-8 py-6"
               >
-                Connect Wallet
+                Explore Ecosystem
                 <ArrowRight className="ml-2" size={20} />
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="border-primary text-primary hover:bg-primary/10 font-mono text-lg px-8"
-                onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+                className="border-primary text-primary hover:bg-primary/10 text-lg px-8 py-6"
+                onClick={() => open()}
               >
-                Learn More
+                Connect Wallet
               </Button>
             </div>
           </motion.div>
@@ -84,13 +157,19 @@ const Home = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-20"
+            className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mt-20"
           >
             {stats.map((stat, index) => (
-              <Card key={index} className="bg-card/50 backdrop-blur-md border-border">
+              <Card key={index} className="bg-card/80 backdrop-blur-lg border-border hover:border-primary/50 transition-all">
                 <CardContent className="p-6 text-center">
-                  <div className="text-3xl md:text-4xl font-bold text-primary mb-2">{stat.value}</div>
-                  <div className="text-sm text-muted-foreground">{stat.label}</div>
+                  <stat.icon className="w-8 h-8 text-primary mx-auto mb-3" />
+                  <div className="text-3xl md:text-4xl font-bold text-primary mb-2 flex items-center justify-center gap-2">
+                    {stat.value}
+                    {stat.badge && (
+                      <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                    )}
+                  </div>
+                  <div className="text-sm text-muted-foreground font-medium">{stat.label}</div>
                 </CardContent>
               </Card>
             ))}
@@ -98,8 +177,8 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-20 relative">
+      {/* Ecosystem Features Section */}
+      <section className="py-20 relative bg-background">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -108,14 +187,54 @@ const Home = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">Why Bit Access?</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Experience the future of payments with instant Web3 transactions
+            <h2 className="text-4xl md:text-6xl font-bold mb-4">Ecosystem Features</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Discover the full range of features and services available within the BitAccess ecosystem on Binance Smart Chain
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {ecosystemFeatures.map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.05 }}
+                viewport={{ once: true }}
+              >
+                <Card className="bg-card border-border hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 h-full group">
+                  <CardContent className="p-6">
+                    <div className="mb-4 p-3 bg-primary/10 rounded-lg w-fit group-hover:bg-primary/20 transition-colors">
+                      <feature.icon className="w-8 h-8 text-primary" />
+                    </div>
+                    <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">{feature.description}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Cross-Chain Network Support */}
+      <section className="py-20 relative bg-secondary/20">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-6xl font-bold mb-4">Cross-Chain Network Support</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              BIT Token is available across multiple blockchain networks for maximum accessibility
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {blockchainNetworks.map((network, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 30 }}
@@ -123,16 +242,121 @@ const Home = () => {
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
               >
-                <Card className="bg-card border-border hover:border-primary transition-all duration-300 h-full">
-                  <CardContent className="p-8">
-                    <feature.icon className="w-12 h-12 text-primary mb-4" />
-                    <h3 className="text-2xl font-bold mb-3">{feature.title}</h3>
-                    <p className="text-muted-foreground">{feature.description}</p>
+                <Card className="bg-card border-border hover:border-primary/50 transition-all h-full group overflow-hidden">
+                  <div className={`h-2 bg-gradient-to-r ${network.color}`} />
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-center mb-4">
+                      <div className={`p-4 rounded-full bg-gradient-to-br ${network.color}`}>
+                        <Network className="w-8 h-8 text-white" />
+                      </div>
+                    </div>
+                    <h3 className="text-xl font-bold mb-2 text-center">{network.name}</h3>
+                    <p className="text-muted-foreground text-sm text-center">{network.description}</p>
                   </CardContent>
                 </Card>
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Strategic Partners */}
+      <section className="py-20 relative bg-background">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-6xl font-bold mb-4">Blockchain Strategic Partners</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Strategic partnerships across major blockchain ecosystems, exchanges, and analytics platforms
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {partners.map((partner, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.4, delay: index * 0.03 }}
+                viewport={{ once: true }}
+              >
+                <Card className="bg-card/50 border-border hover:border-primary/50 hover:bg-card transition-all h-full group">
+                  <CardContent className="p-6 text-center">
+                    <div className="mb-3 p-4 bg-primary/10 rounded-lg mx-auto w-fit group-hover:bg-primary/20 transition-colors">
+                      <Shield className="w-8 h-8 text-primary" />
+                    </div>
+                    <h3 className="font-bold mb-1 text-base">{partner.name}</h3>
+                    <p className="text-xs text-muted-foreground">{partner.category}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            viewport={{ once: true }}
+            className="text-center mt-12"
+          >
+            <p className="text-lg text-muted-foreground italic">
+              Building the future through strategic blockchain integrations
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 relative bg-gradient-to-br from-primary/20 via-primary/10 to-background">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <Card className="bg-card/80 backdrop-blur-lg border-primary/30 shadow-2xl shadow-primary/10">
+              <CardHeader className="text-center pb-4">
+                <CardTitle className="text-3xl md:text-5xl font-bold mb-4">
+                  Ready to Join the Bit Access Ecosystem?
+                </CardTitle>
+                <CardDescription className="text-lg md:text-xl max-w-3xl mx-auto">
+                  Don't miss out on exclusive presale opportunities, airdrops, and early access to our complete ecosystem of blockchain tools and services.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="text-center pt-4 pb-8">
+                <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
+                  <Button
+                    size="lg"
+                    onClick={() => open()}
+                    className="bg-primary text-primary-foreground hover:bg-primary/90 text-lg px-8 py-6"
+                  >
+                    <Users className="mr-2" size={20} />
+                    Bit Access Affiliates
+                  </Button>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-primary text-primary hover:bg-primary/10 text-lg px-8 py-6"
+                    onClick={() => navigate('/helpdesk')}
+                  >
+                    <FileText className="mr-2" size={20} />
+                    Explore Documentation
+                  </Button>
+                </div>
+                <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                  <BarChart3 className="w-4 h-4" />
+                  <span>Join 4,000+ community members building the future</span>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
         </div>
       </section>
     </div>
