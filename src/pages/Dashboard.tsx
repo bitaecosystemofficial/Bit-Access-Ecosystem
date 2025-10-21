@@ -9,11 +9,13 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { ShoppingBag, Users, Store, TrendingUp, Menu } from 'lucide-react';
+import { ShoppingBag, Users, Store, TrendingUp, Menu, Image, Shirt } from 'lucide-react';
 import BuyBitTab from '@/components/dashboard/BuyBitTab';
 import CommunityTab from '@/components/dashboard/CommunityTab';
 import MerchantsTab from '@/components/dashboard/MerchantsTab';
 import StakingTab from '@/components/dashboard/StakingTab';
+import NFTMarketplaceTab from '@/components/dashboard/NFTMarketplaceTab';
+import MerchandiseTab from '@/components/dashboard/MerchandiseTab';
 
 const Dashboard = () => {
   const { isConnected } = useAccount();
@@ -35,6 +37,8 @@ const Dashboard = () => {
     { value: 'community', label: 'Community', icon: Users },
     { value: 'merchants', label: 'Merchants', icon: Store },
     { value: 'staking', label: 'Staking', icon: TrendingUp },
+    { value: 'nft', label: 'NFT Marketplace', icon: Image },
+    { value: 'merchandise', label: 'Merchandise', icon: Shirt },
   ];
 
   return (
@@ -46,7 +50,7 @@ const Dashboard = () => {
         
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           {/* Desktop Tabs */}
-          <TabsList className="hidden md:grid w-full grid-cols-4 mb-8 bg-card/50 backdrop-blur-sm border border-border/50 p-1 h-auto">
+          <TabsList className="hidden md:grid w-full grid-cols-6 mb-8 bg-card/50 backdrop-blur-sm border border-border/50 p-1 h-auto">
             {menuItems.map((item) => (
               <TabsTrigger 
                 key={item.value} 
@@ -111,6 +115,14 @@ const Dashboard = () => {
 
           <TabsContent value="staking" className="mt-0">
             <StakingTab />
+          </TabsContent>
+
+          <TabsContent value="nft" className="mt-0">
+            <NFTMarketplaceTab />
+          </TabsContent>
+
+          <TabsContent value="merchandise" className="mt-0">
+            <MerchandiseTab />
           </TabsContent>
         </Tabs>
       </div>
