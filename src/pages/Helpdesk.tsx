@@ -1520,7 +1520,6 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                             </div>
                             <div className="flex justify-between items-start text-sm">
                               <span className="text-muted-foreground"></span>
-                              <span className="text-muted-foreground">Less common,but not problematic</span>
                             </div>
                             <div className="flex justify-between items-start">
                               <span className="font-semibold">Verified Source Code</span>
