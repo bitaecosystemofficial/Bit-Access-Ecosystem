@@ -103,7 +103,7 @@ const Home = () => {
   ];
 
   const partners = [
-    { name: "Biit", category: "Blockchain Technology Only" },
+    { name: "Biit", category: "Blockchain Technology Provider" },
     { name: "Binexplorer", category: "BSC Blockchain Explorer" },
     { name: "DappRadar", category: "DApp Analytics" },
     { name: "GoPlus Security", category: "Security Platform" },
