@@ -1,102 +1,120 @@
-import { motion } from 'framer-motion';
-import { ArrowRight, Gift, Rocket, Lock, RefreshCw, Store, Users, Zap, Coins, TrendingUp, Shield, BarChart3, Network, FileText } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { useWeb3Modal } from '@web3modal/wagmi/react';
-import { useNavigate } from 'react-router-dom';
-import heroBg from '@/assets/hero-bg.jpg';
+import { motion } from "framer-motion";
+import {
+  ArrowRight,
+  Gift,
+  Rocket,
+  Lock,
+  RefreshCw,
+  Store,
+  Users,
+  Zap,
+  Coins,
+  TrendingUp,
+  Shield,
+  BarChart3,
+  Network,
+  FileText,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { useWeb3Modal } from "@web3modal/wagmi/react";
+import { useNavigate } from "react-router-dom";
+import heroBg from "@/assets/hero-bg.jpg";
 
 const Home = () => {
   const { open } = useWeb3Modal();
   const navigate = useNavigate();
 
   const stats = [
-    { label: 'Community Members', value: '4K+', icon: Users },
-    { label: 'BIT Tokens', value: '100B', icon: Coins },
-    { label: 'Token Holders', value: '4,748', icon: TrendingUp },
-    { label: 'Token Transfers', value: 'Live', icon: Zap, badge: true },
+    { label: "Community Members", value: "4K+", icon: Users },
+    { label: "BIT Tokens", value: "100B", icon: Coins },
+    { label: "Token Holders", value: "4,748", icon: TrendingUp },
+    { label: "Token Transfers", value: "Live", icon: Zap, badge: true },
   ];
 
   const ecosystemFeatures = [
     {
       icon: Gift,
-      title: 'Airdrops & Rewards',
-      description: 'Participate in regular token airdrops and earn rewards through community engagement and referrals.',
+      title: "Airdrops & Rewards",
+      description: "Participate in regular token airdrops and earn rewards through community engagement and referrals.",
     },
     {
       icon: Rocket,
-      title: 'Token Presale',
-      description: 'Early access to BIT tokens with bonus allocations and exclusive benefits for early supporters.',
+      title: "Token Presale",
+      description: "Early access to BIT tokens with bonus allocations and exclusive benefits for early supporters.",
     },
     {
       icon: Lock,
-      title: 'Staking Rewards',
-      description: 'Stake your BIT tokens to earn passive income while supporting network security and governance.',
+      title: "Staking Rewards",
+      description: "Stake your BIT tokens to earn passive income while supporting network security and governance.",
     },
     {
       icon: RefreshCw,
-      title: 'Token Swap',
-      description: 'Seamlessly swap BIT tokens with other cryptocurrencies through our integrated decentralized exchange.',
+      title: "Token Swap",
+      description:
+        "Seamlessly swap BIT tokens with other cryptocurrencies through our integrated decentralized exchange.",
     },
     {
       icon: Store,
-      title: 'Merchant Network',
-      description: 'Join our growing network of merchants accepting BIT tokens with special subscription packages.',
+      title: "Merchant Network",
+      description: "Join our growing network of merchants accepting BIT tokens with special subscription packages.",
     },
     {
       icon: Users,
-      title: 'Community Hub',
-      description: 'Connect with fellow BIT holders, participate in social activities, and engage in community-driven initiatives.',
+      title: "Community Hub",
+      description:
+        "Connect with fellow BIT holders, participate in social activities, and engage in community-driven initiatives.",
     },
     {
       icon: Zap,
-      title: 'Spin & Win',
-      description: 'Try your luck with our daily spin-a-wheel game for a chance to win BIT tokens and other rewards.',
+      title: "Spin & Win",
+      description: "Try your luck with our daily spin-a-wheel game for a chance to win BIT tokens and other rewards.",
     },
     {
       icon: Network,
-      title: 'BSC Integration',
-      description: 'Built on Binance Smart Chain for fast, low-cost transactions and seamless integration with the BSC ecosystem.',
+      title: "BSC Integration",
+      description:
+        "Built on Binance Smart Chain for fast, low-cost transactions and seamless integration with the BSC ecosystem.",
     },
   ];
 
   const blockchainNetworks = [
     {
-      name: 'BNB Chain',
-      description: 'Fast, low-cost transactions on BNB Smart Chain',
-      color: 'from-yellow-500 to-yellow-600',
+      name: "BNB Chain",
+      description: "Fast, low-cost transactions on BNB Smart Chain",
+      color: "from-yellow-500 to-yellow-600",
     },
     {
-      name: 'Polygon',
-      description: 'Scalable Ethereum Layer 2 solution',
-      color: 'from-purple-500 to-purple-600',
+      name: "Polygon",
+      description: "Scalable Ethereum Layer 2 solution",
+      color: "from-purple-500 to-purple-600",
     },
     {
-      name: 'Base',
+      name: "Base",
       description: "Coinbase's Ethereum L2 network",
-      color: 'from-blue-500 to-blue-600',
+      color: "from-blue-500 to-blue-600",
     },
     {
-      name: 'Arbitrum',
-      description: 'Optimistic rollup for Ethereum scaling',
-      color: 'from-cyan-500 to-cyan-600',
+      name: "Arbitrum",
+      description: "Optimistic rollup for Ethereum scaling",
+      color: "from-cyan-500 to-cyan-600",
     },
   ];
 
   const partners = [
-    { name: 'Biit', category: 'Blockchain Technology Only' },
-    { name: 'Binexplorer', category: 'BSC Blockchain Explorer' },
-    { name: 'DappRadar', category: 'DApp Analytics' },
-    { name: 'GoPlus Security', category: 'Security Platform' },
-    { name: 'BscScan', category: 'BSC Explorer' },
-    { name: 'Cyberscope', category: 'Smart Contract Audits' },
-    { name: 'NewGen Web3', category: 'Web3 Community' },
-    { name: 'DexScreener', category: 'DEX Analytics' },
-    { name: 'PancakeSwap', category: 'BSC DEX' },
-    { name: 'Uniswap', category: 'Decentralized Exchange' },
-    { name: 'CoinMarketCap', category: 'Price Tracking' },
-    { name: 'CoinGecko', category: 'Market Data' },
+    { name: "Biit", category: "Blockchain Technology Only" },
+    { name: "Binexplorer", category: "BSC Blockchain Explorer" },
+    { name: "DappRadar", category: "DApp Analytics" },
+    { name: "GoPlus Security", category: "Security Platform" },
+    { name: "BscScan", category: "BSC Explorer" },
+    { name: "Cyberscope", category: "Smart Contract Audits" },
+    { name: "NewGen Web3", category: "Web3 Community" },
+    { name: "DexScreener", category: "DEX Analytics" },
+    { name: "PancakeSwap", category: "BSC DEX" },
+    { name: "Uniswap", category: "Decentralized Exchange" },
+    { name: "CoinMarketCap", category: "Price Tracking" },
+    { name: "CoinGecko", category: "Market Data" },
   ];
 
   return (
@@ -107,9 +125,9 @@ const Home = () => {
           className="absolute inset-0 z-0"
           style={{
             backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)), url(${heroBg})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundAttachment: 'fixed',
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundAttachment: "fixed",
           }}
         />
 
@@ -121,9 +139,9 @@ const Home = () => {
             className="text-center max-w-5xl mx-auto"
           >
             <Badge className="mb-6 text-base px-4 py-2 bg-primary/20 text-primary border-primary/50">
-              Bit Access Affiliates
+              Unlocking Values, Empowering Communities
             </Badge>
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent">
+            <h1 className="text-3xl md:text-5xl lg:text-8xl font-bold mb-6 bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent">
               Bit Access Ecosystem
             </h1>
             <p className="text-2xl md:text-3xl mb-4 text-foreground font-semibold">
@@ -135,7 +153,7 @@ const Home = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 size="lg"
-                onClick={() => navigate('/ecosystem')}
+                onClick={() => navigate("/ecosystem")}
                 className="bg-primary text-primary-foreground hover:bg-primary/90 text-lg px-8 py-6"
               >
                 Explore Ecosystem
@@ -160,14 +178,15 @@ const Home = () => {
             className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mt-20"
           >
             {stats.map((stat, index) => (
-              <Card key={index} className="bg-card/80 backdrop-blur-lg border-border hover:border-primary/50 transition-all">
+              <Card
+                key={index}
+                className="bg-card/80 backdrop-blur-lg border-border hover:border-primary/50 transition-all"
+              >
                 <CardContent className="p-6 text-center">
                   <stat.icon className="w-8 h-8 text-primary mx-auto mb-3" />
                   <div className="text-3xl md:text-4xl font-bold text-primary mb-2 flex items-center justify-center gap-2">
                     {stat.value}
-                    {stat.badge && (
-                      <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                    )}
+                    {stat.badge && <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />}
                   </div>
                   <div className="text-sm text-muted-foreground font-medium">{stat.label}</div>
                 </CardContent>
@@ -189,7 +208,8 @@ const Home = () => {
           >
             <h2 className="text-4xl md:text-6xl font-bold mb-4">Ecosystem Features</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Discover the full range of features and services available within the BitAccess ecosystem on Binance Smart Chain
+              Discover the full range of features and services available within the BitAccess ecosystem on Binance Smart
+              Chain
             </p>
           </motion.div>
 
@@ -327,7 +347,8 @@ const Home = () => {
                   Ready to Join the Bit Access Ecosystem?
                 </CardTitle>
                 <CardDescription className="text-lg md:text-xl max-w-3xl mx-auto">
-                  Don't miss out on exclusive presale opportunities, airdrops, and early access to our complete ecosystem of blockchain tools and services.
+                  Don't miss out on exclusive presale opportunities, airdrops, and early access to our complete
+                  ecosystem of blockchain tools and services.
                 </CardDescription>
               </CardHeader>
               <CardContent className="text-center pt-4 pb-8">
@@ -344,7 +365,7 @@ const Home = () => {
                     size="lg"
                     variant="outline"
                     className="border-primary text-primary hover:bg-primary/10 text-lg px-8 py-6"
-                    onClick={() => navigate('/helpdesk')}
+                    onClick={() => navigate("/helpdesk")}
                   >
                     <FileText className="mr-2" size={20} />
                     Explore Documentation
