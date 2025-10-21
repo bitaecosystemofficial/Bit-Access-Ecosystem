@@ -1,3 +1,6 @@
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAccount } from 'wagmi';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -5,11 +8,25 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { ShoppingCart, Trash2, ShoppingBag, Package } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
+import { useBITBalance } from '@/contexts/BITBalanceContext';
 import { useToast } from '@/hooks/use-toast';
 
 const Cart = () => {
+  const { isConnected } = useAccount();
+  const navigate = useNavigate();
   const { items, removeFromCart, clearCart, itemCount } = useCart();
+  const { balance, deductBalance, formatBalance } = useBITBalance();
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (!isConnected) {
+      navigate('/dashboard');
+    }
+  }, [isConnected, navigate]);
+
+  if (!isConnected) {
+    return null;
+  }
 
   const totalBIT = items.reduce((sum, item) => {
     const price = parseFloat(item.price.replace(' BIT', ''));
@@ -22,10 +39,21 @@ const Cart = () => {
   }, 0);
 
   const handleCheckout = () => {
-    toast({
-      title: 'Checkout',
-      description: `Processing order for ${itemCount} items. Checkout feature launching Q2 2026!`,
-    });
+    const canPurchase = deductBalance(totalBIT);
+    
+    if (canPurchase) {
+      toast({
+        title: 'Checkout Successful! 🎉',
+        description: `Order processed! ${totalBIT.toFixed(2)} BIT deducted. New balance: ${formatBalance(balance - totalBIT)} BIT`,
+      });
+      clearCart();
+    } else {
+      toast({
+        title: 'Insufficient Balance',
+        description: `You need ${totalBIT.toFixed(2)} BIT but only have ${formatBalance(balance)} BIT. Please buy more BIT tokens.`,
+        variant: 'destructive',
+      });
+    }
   };
 
   const handleRemove = (id: string, name: string) => {
@@ -48,7 +76,7 @@ const Cart = () => {
           <Card className="bg-gradient-to-br from-primary/20 via-primary/10 to-background border-primary/30 mb-8">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <div>
+                <div className="flex-1">
                   <CardTitle className="text-3xl flex items-center gap-2">
                     <ShoppingCart className="w-8 h-8 text-primary" />
                     Shopping Cart
@@ -57,17 +85,23 @@ const Cart = () => {
                     {itemCount} {itemCount === 1 ? 'item' : 'items'} in your cart
                   </CardDescription>
                 </div>
-                {itemCount > 0 && (
-                  <Button
-                    onClick={clearCart}
-                    variant="outline"
-                    size="sm"
-                    className="text-destructive hover:bg-destructive/10"
-                  >
-                    <Trash2 className="w-4 h-4 mr-2" />
-                    Clear Cart
-                  </Button>
-                )}
+                <div className="flex items-center gap-4">
+                  <div className="text-right">
+                    <p className="text-sm text-muted-foreground">Your Balance</p>
+                    <p className="text-2xl font-bold text-primary">{formatBalance(balance)} BIT</p>
+                  </div>
+                  {itemCount > 0 && (
+                    <Button
+                      onClick={clearCart}
+                      variant="outline"
+                      size="sm"
+                      className="text-destructive hover:bg-destructive/10"
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Clear Cart
+                    </Button>
+                  )}
+                </div>
               </div>
             </CardHeader>
           </Card>
@@ -170,14 +204,21 @@ const Cart = () => {
                       </div>
                     </div>
 
-                    <Button onClick={handleCheckout} className="w-full" size="lg">
+                    <Button 
+                      onClick={handleCheckout} 
+                      className="w-full" 
+                      size="lg"
+                      disabled={balance < totalBIT}
+                    >
                       <ShoppingCart className="w-4 h-4 mr-2" />
-                      Proceed to Checkout
+                      {balance < totalBIT ? 'Insufficient Balance' : 'Proceed to Checkout'}
                     </Button>
 
-                    <div className="text-xs text-muted-foreground text-center">
-                      Checkout feature launching Q2 2026
-                    </div>
+                    {balance < totalBIT && (
+                      <div className="text-xs text-destructive text-center">
+                        Need {(totalBIT - balance).toFixed(2)} more BIT
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </div>
