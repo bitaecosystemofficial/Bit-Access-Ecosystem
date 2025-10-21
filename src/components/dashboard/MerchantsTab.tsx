@@ -2,9 +2,12 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Store, Check, Zap, TrendingUp } from 'lucide-react';
+import { Store, Check, Zap, TrendingUp, Wallet } from 'lucide-react';
+import { useBITBalance } from '@/contexts/BITBalanceContext';
 
 const MerchantsTab = () => {
+  const { balance, formatBalance } = useBITBalance();
+  
   const subscriptionTiers = [
     {
       name: 'Starter',
@@ -65,6 +68,20 @@ const MerchantsTab = () => {
       transition={{ duration: 0.5 }}
       className="space-y-6"
     >
+      {/* Balance Display */}
+      <Card className="bg-gradient-to-br from-green-500/20 via-green-500/10 to-background border-green-500/30">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-muted-foreground mb-1">Your BIT Balance</p>
+              <p className="text-4xl font-bold text-green-600 dark:text-green-400">{formatBalance(balance)}</p>
+              <p className="text-sm text-muted-foreground">BIT Tokens</p>
+            </div>
+            <Wallet className="w-16 h-16 text-green-500 opacity-50" />
+          </div>
+        </CardContent>
+      </Card>
+
       <Card className="bg-card/50 backdrop-blur-sm border-border/50 shadow-xl">
         <CardHeader>
           <CardTitle className="text-2xl md:text-3xl">Merchant Subscription Plans</CardTitle>

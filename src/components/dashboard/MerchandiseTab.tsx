@@ -5,13 +5,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ShoppingBag, Shirt, Package, Truck, Star, Gift, CreditCard, Search } from 'lucide-react';
+import { ShoppingBag, Shirt, Package, Truck, Star, Gift, CreditCard, Search, Wallet } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useCart } from '@/contexts/CartContext';
+import { useBITBalance } from '@/contexts/BITBalanceContext';
 
 const MerchandiseTab = () => {
   const { toast } = useToast();
   const { addToCart } = useCart();
+  const { balance, formatBalance } = useBITBalance();
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('name');
 
@@ -172,6 +174,20 @@ const MerchandiseTab = () => {
             <CreditCard className="w-12 h-12 text-primary" />
           </div>
         </CardHeader>
+      </Card>
+
+      {/* Balance Display */}
+      <Card className="bg-gradient-to-br from-green-500/20 via-green-500/10 to-background border-green-500/30">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-muted-foreground mb-1">Your BIT Balance</p>
+              <p className="text-4xl font-bold text-green-600 dark:text-green-400">{formatBalance(balance)}</p>
+              <p className="text-sm text-muted-foreground">BIT Tokens</p>
+            </div>
+            <Wallet className="w-16 h-16 text-green-500 opacity-50" />
+          </div>
+        </CardContent>
       </Card>
 
       {/* Search and Sort */}

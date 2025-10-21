@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Lock, TrendingUp, Clock, Unlock, AlertTriangle, DollarSign, Wallet } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useBITBalance } from '@/contexts/BITBalanceContext';
 
 interface StakedPosition {
   id: number;
@@ -24,6 +25,7 @@ const StakingTab = () => {
   const [stakedPositions, setStakedPositions] = useState<StakedPosition[]>([]);
   const [unstakeAmount, setUnstakeAmount] = useState('');
   const { toast } = useToast();
+  const { balance, deductBalance, addBalance, formatBalance } = useBITBalance();
 
   const UNSTAKE_FEE = 2; // 2% fee
   const EARLY_UNSTAKE_FEE = 10; // 10% additional fee for early withdrawal
@@ -109,6 +111,15 @@ const StakingTab = () => {
       return;
     }
 
+    if (!deductBalance(amount)) {
+      toast({
+        title: 'Insufficient Balance',
+        description: `You need ${amount} BIT but only have ${formatBalance(balance)} BIT`,
+        variant: 'destructive',
+      });
+      return;
+    }
+
     const startDate = new Date();
     const endDate = new Date();
     endDate.setDate(endDate.getDate() + pool.days);
@@ -136,12 +147,15 @@ const StakingTab = () => {
   const handleUnstake = (position: StakedPosition) => {
     const isEarly = isEarlyUnstake(position);
     const fees = calculateUnstakeFees(position.amount, isEarly);
+    const rewards = parseFloat(calculateCurrentRewards(position));
+    const totalReturn = parseFloat(fees.netAmount) + rewards;
 
+    addBalance(totalReturn);
     setStakedPositions(stakedPositions.filter(p => p.id !== position.id));
 
     toast({
       title: 'Unstaked Successfully',
-      description: `Received ${fees.netAmount} BIT (after ${fees.totalFee} BIT in fees)`,
+      description: `Received ${totalReturn.toFixed(2)} BIT (${fees.netAmount} principal + ${rewards.toFixed(2)} rewards, after ${fees.totalFee} BIT in fees)`,
     });
   };
 
@@ -156,7 +170,20 @@ const StakingTab = () => {
       className="space-y-6"
     >
       {/* Dashboard Overview */}
-      <div className="grid md:grid-cols-3 gap-4">
+      <div className="grid md:grid-cols-4 gap-4">
+        <Card className="bg-gradient-to-br from-green-500/20 to-green-500/5 border-green-500/30">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">Available Balance</p>
+                <p className="text-3xl font-bold text-green-600 dark:text-green-400">{formatBalance(balance)}</p>
+                <p className="text-sm text-muted-foreground">BIT Tokens</p>
+              </div>
+              <Wallet className="w-12 h-12 text-green-500 opacity-50" />
+            </div>
+          </CardContent>
+        </Card>
+
         <Card className="bg-gradient-to-br from-primary/20 to-primary/5 border-primary/30">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -165,7 +192,7 @@ const StakingTab = () => {
                 <p className="text-3xl font-bold">{totalStaked.toLocaleString()}</p>
                 <p className="text-sm text-muted-foreground">BIT Tokens</p>
               </div>
-              <Wallet className="w-12 h-12 text-primary opacity-50" />
+              <Lock className="w-12 h-12 text-primary opacity-50" />
             </div>
           </CardContent>
         </Card>
@@ -191,7 +218,7 @@ const StakingTab = () => {
                 <p className="text-3xl font-bold">{stakedPositions.length}</p>
                 <p className="text-sm text-muted-foreground">Staking Pools</p>
               </div>
-              <Lock className="w-12 h-12 text-blue-500 opacity-50" />
+              <Clock className="w-12 h-12 text-blue-500 opacity-50" />
             </div>
           </CardContent>
         </Card>

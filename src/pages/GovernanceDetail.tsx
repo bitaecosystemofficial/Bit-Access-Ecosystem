@@ -7,11 +7,13 @@ import { Progress } from '@/components/ui/progress';
 import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft, Vote, CheckCircle, XCircle, Clock, Users, MessageSquare, TrendingUp } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useBITBalance } from '@/contexts/BITBalanceContext';
 
 const GovernanceDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { balance, formatBalance } = useBITBalance();
   const [comment, setComment] = useState('');
   const [hasVoted, setHasVoted] = useState(false);
   const [voteType, setVoteType] = useState<'for' | 'against' | null>(null);
@@ -88,7 +90,7 @@ const GovernanceDetail = () => {
   };
 
   const handleVote = (type: 'for' | 'against') => {
-    const votingPower = 500; // User's BIT balance
+    const votingPower = balance > 0 ? Math.min(balance, 1000) : 100; // Use actual balance or minimum 100
     
     if (type === 'for') {
       setVotesFor(prev => prev + votingPower);

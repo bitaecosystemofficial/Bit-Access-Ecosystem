@@ -5,13 +5,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { ShoppingBag, AlertCircle } from 'lucide-react';
+import { ShoppingBag, AlertCircle, Wallet } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useBITBalance } from '@/contexts/BITBalanceContext';
 
 const BuyBitTab = () => {
   const [amount, setAmount] = useState('');
   const [selectedNetwork, setSelectedNetwork] = useState('BSC');
   const { toast } = useToast();
+  const { balance, addBalance, formatBalance } = useBITBalance();
 
   // Countdown timer: 120 days from now
   const [timeLeft, setTimeLeft] = useState({
@@ -84,10 +86,12 @@ const BuyBitTab = () => {
     }
 
     if (selectedNetwork === 'BSC') {
+      addBalance(bitAmount);
       toast({
-        title: 'Purchase Initiated',
-        description: `Purchasing ${calculateBit(amount)} BIT tokens on ${selectedNetwork}`,
+        title: 'Purchase Successful! 🎉',
+        description: `You received ${calculateBit(amount)} BIT tokens. New balance: ${formatBalance(balance + bitAmount)} BIT`,
       });
+      setAmount('');
     } else {
       toast({
         title: 'Network Coming Soon',
@@ -103,6 +107,20 @@ const BuyBitTab = () => {
       transition={{ duration: 0.5 }}
       className="space-y-6"
     >
+      {/* Balance Display */}
+      <Card className="bg-gradient-to-br from-green-500/20 via-green-500/10 to-background border-green-500/30">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-muted-foreground mb-1">Your BIT Balance</p>
+              <p className="text-4xl font-bold text-green-600 dark:text-green-400">{formatBalance(balance)}</p>
+              <p className="text-sm text-muted-foreground">BIT Tokens</p>
+            </div>
+            <Wallet className="w-16 h-16 text-green-500 opacity-50" />
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Countdown Timer */}
       <Card className="bg-gradient-to-br from-primary/10 via-primary/5 to-background border-primary/20 shadow-xl">
         <CardHeader className="text-center pb-4">
