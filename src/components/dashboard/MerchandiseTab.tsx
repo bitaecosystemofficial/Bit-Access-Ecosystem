@@ -1,12 +1,17 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { ShoppingBag, Shirt, Package, Truck, Star, Gift, CreditCard } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ShoppingBag, Shirt, Package, Truck, Star, Gift, CreditCard, Search } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const MerchandiseTab = () => {
   const { toast } = useToast();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState('name');
 
   const merchandiseItems = [
     {
@@ -22,6 +27,7 @@ const MerchandiseTab = () => {
           colors: ['Black', 'Navy', 'Gray'],
           inStock: true,
           popular: true,
+          date: '2025-02-10',
         },
         {
           name: 'BIT Logo T-Shirt',
@@ -32,6 +38,7 @@ const MerchandiseTab = () => {
           colors: ['White', 'Black', 'Blue'],
           inStock: true,
           popular: false,
+          date: '2025-01-15',
         },
         {
           name: 'BIT Snapback Cap',
@@ -42,6 +49,7 @@ const MerchandiseTab = () => {
           colors: ['Black', 'White', 'Navy'],
           inStock: true,
           popular: false,
+          date: '2025-03-05',
         },
       ],
     },
@@ -58,6 +66,7 @@ const MerchandiseTab = () => {
           colors: ['Silver', 'Black'],
           inStock: true,
           popular: true,
+          date: '2025-04-01',
         },
         {
           name: 'BIT Sticker Pack',
@@ -68,6 +77,7 @@ const MerchandiseTab = () => {
           colors: ['Multi'],
           inStock: true,
           popular: false,
+          date: '2025-01-20',
         },
         {
           name: 'BIT Metal Keychain',
@@ -78,6 +88,7 @@ const MerchandiseTab = () => {
           colors: ['Silver', 'Gold'],
           inStock: true,
           popular: false,
+          date: '2025-02-15',
         },
       ],
     },
@@ -89,6 +100,29 @@ const MerchandiseTab = () => {
     { icon: Star, title: 'Quality Guaranteed', description: 'Premium materials only' },
     { icon: Gift, title: 'Gift Wrapping', description: 'Available on request' },
   ];
+
+  const allItems = merchandiseItems.flatMap(cat => 
+    cat.items.map(item => ({ ...item, category: cat.category }))
+  );
+
+  const filteredItems = allItems
+    .filter(item => 
+      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .sort((a, b) => {
+      switch (sortBy) {
+        case 'name':
+          return a.name.localeCompare(b.name);
+        case 'category':
+          return a.category.localeCompare(b.category);
+        case 'date':
+          return new Date(b.date).getTime() - new Date(a.date).getTime();
+        default:
+          return 0;
+      }
+    });
 
   const handleAddToCart = (itemName: string, price: string) => {
     toast({
@@ -129,6 +163,33 @@ const MerchandiseTab = () => {
         </CardHeader>
       </Card>
 
+      {/* Search and Sort */}
+      <Card className="bg-card/50 border-border">
+        <CardContent className="p-4">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Search merchandise by name, category..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="w-full sm:w-[200px]">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="name">Sort by Name</SelectItem>
+                <SelectItem value="category">Sort by Category</SelectItem>
+                <SelectItem value="date">Sort by Date</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Shipping Info */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {shippingInfo.map((info, index) => (
@@ -142,20 +203,30 @@ const MerchandiseTab = () => {
         ))}
       </div>
 
-      {/* Merchandise Categories */}
-      {merchandiseItems.map((category, catIndex) => (
-        <div key={catIndex}>
-          <div className="flex items-center gap-2 mb-4">
-            <category.icon className="w-6 h-6 text-primary" />
-            <h2 className="text-2xl font-bold">{category.category}</h2>
-          </div>
-          
+      {/* Merchandise Items */}
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-2xl font-bold">All Products</h2>
+          <Badge variant="outline">{filteredItems.length} results</Badge>
+        </div>
+        
+        {filteredItems.length === 0 ? (
+          <Card className="bg-card/50 border-border">
+            <CardContent className="p-12 text-center">
+              <Search className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+              <p className="text-muted-foreground">No products found matching your search.</p>
+            </CardContent>
+          </Card>
+        ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {category.items.map((item, itemIndex) => (
+            {filteredItems.map((item, itemIndex) => (
               <Card key={itemIndex} className="bg-card border-border hover:shadow-lg hover:shadow-primary/20 transition-all">
                 <CardHeader>
                   <div className="flex items-start justify-between mb-2">
-                    <CardTitle className="text-lg">{item.name}</CardTitle>
+                    <div className="flex-1">
+                      <CardTitle className="text-lg">{item.name}</CardTitle>
+                      <Badge variant="outline" className="mt-2">{item.category}</Badge>
+                    </div>
                     {item.popular && (
                       <Badge variant="default" className="bg-primary">
                         🔥 Popular
@@ -169,6 +240,11 @@ const MerchandiseTab = () => {
                   <div className="flex items-baseline gap-2">
                     <span className="text-2xl font-bold text-primary">{item.price}</span>
                     <span className="text-sm text-muted-foreground">({item.usdPrice})</span>
+                  </div>
+
+                  {/* Date */}
+                  <div className="text-sm text-muted-foreground">
+                    Added: {new Date(item.date).toLocaleDateString()}
                   </div>
 
                   {/* Sizes */}
@@ -226,8 +302,8 @@ const MerchandiseTab = () => {
               </Card>
             ))}
           </div>
-        </div>
-      ))}
+        )}
+      </div>
 
       {/* Member Benefits */}
       <Card className="bg-gradient-to-r from-primary/20 to-primary/5 border-primary/30">

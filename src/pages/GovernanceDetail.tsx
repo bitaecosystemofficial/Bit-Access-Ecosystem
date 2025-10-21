@@ -14,6 +14,9 @@ const GovernanceDetail = () => {
   const { toast } = useToast();
   const [comment, setComment] = useState('');
   const [hasVoted, setHasVoted] = useState(false);
+  const [voteType, setVoteType] = useState<'for' | 'against' | null>(null);
+  const [votesFor, setVotesFor] = useState(12500000);
+  const [votesAgainst, setVotesAgainst] = useState(3200000);
 
   // Mock data - in real app, fetch by ID
   const proposal = {
@@ -84,12 +87,22 @@ const GovernanceDetail = () => {
     return Math.round((votes / total) * 100);
   };
 
-  const handleVote = (voteType: 'for' | 'against') => {
-    toast({
-      title: `Vote ${voteType === 'for' ? 'For' : 'Against'} Recorded`,
-      description: `Your vote has been successfully recorded. Thank you for participating in BIT governance!`,
-    });
+  const handleVote = (type: 'for' | 'against') => {
+    const votingPower = 500; // User's BIT balance
+    
+    if (type === 'for') {
+      setVotesFor(prev => prev + votingPower);
+    } else {
+      setVotesAgainst(prev => prev + votingPower);
+    }
+    
+    setVoteType(type);
     setHasVoted(true);
+    
+    toast({
+      title: `Vote ${type === 'for' ? 'For' : 'Against'} Recorded`,
+      description: `Your ${votingPower} BIT voting power has been cast ${type === 'for' ? 'in favor' : 'against'} this proposal!`,
+    });
   };
 
   const handleComment = () => {
@@ -102,7 +115,8 @@ const GovernanceDetail = () => {
     setComment('');
   };
 
-  const quorumPercentage = Math.round((proposal.totalVotes / proposal.quorum) * 100);
+  const totalVotes = votesFor + votesAgainst;
+  const quorumPercentage = Math.round((totalVotes / proposal.quorum) * 100);
 
   return (
     <div className="min-h-screen pt-24 pb-16 bg-background">
@@ -203,15 +217,15 @@ const GovernanceDetail = () => {
                       For
                     </span>
                     <span className="text-2xl font-bold">
-                      {calculatePercentage(proposal.votesFor, proposal.totalVotes)}%
+                      {calculatePercentage(votesFor, totalVotes)}%
                     </span>
                   </div>
                   <Progress 
-                    value={calculatePercentage(proposal.votesFor, proposal.totalVotes)} 
+                    value={calculatePercentage(votesFor, totalVotes)} 
                     className="h-3"
                   />
                   <div className="text-sm text-muted-foreground">
-                    {(proposal.votesFor / 1000000).toFixed(2)}M BIT votes
+                    {(votesFor / 1000000).toFixed(2)}M BIT votes
                   </div>
                 </div>
 
@@ -222,22 +236,22 @@ const GovernanceDetail = () => {
                       Against
                     </span>
                     <span className="text-2xl font-bold">
-                      {calculatePercentage(proposal.votesAgainst, proposal.totalVotes)}%
+                      {calculatePercentage(votesAgainst, totalVotes)}%
                     </span>
                   </div>
                   <Progress 
-                    value={calculatePercentage(proposal.votesAgainst, proposal.totalVotes)} 
+                    value={calculatePercentage(votesAgainst, totalVotes)} 
                     className="h-3 [&>div]:bg-destructive"
                   />
                   <div className="text-sm text-muted-foreground">
-                    {(proposal.votesAgainst / 1000000).toFixed(2)}M BIT votes
+                    {(votesAgainst / 1000000).toFixed(2)}M BIT votes
                   </div>
                 </div>
 
                 <div className="border-t pt-4 space-y-3">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Total Votes</span>
-                    <span className="font-semibold">{(proposal.totalVotes / 1000000).toFixed(2)}M BIT</span>
+                    <span className="font-semibold">{(totalVotes / 1000000).toFixed(2)}M BIT</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Quorum</span>
@@ -281,13 +295,29 @@ const GovernanceDetail = () => {
                     </p>
                   </div>
                 ) : (
-                  <div className="bg-green-100 dark:bg-green-900/20 border border-green-500/50 rounded-lg p-4 text-center">
-                    <CheckCircle className="w-8 h-8 mx-auto mb-2 text-green-600 dark:text-green-400" />
-                    <p className="font-semibold text-green-800 dark:text-green-300">
-                      Vote Recorded
+                  <div className={`${
+                    voteType === 'for' 
+                      ? 'bg-green-100 dark:bg-green-900/20 border-green-500/50' 
+                      : 'bg-red-100 dark:bg-red-900/20 border-red-500/50'
+                  } border rounded-lg p-4 text-center`}>
+                    <CheckCircle className={`w-8 h-8 mx-auto mb-2 ${
+                      voteType === 'for' 
+                        ? 'text-green-600 dark:text-green-400' 
+                        : 'text-red-600 dark:text-red-400'
+                    }`} />
+                    <p className={`font-semibold ${
+                      voteType === 'for' 
+                        ? 'text-green-800 dark:text-green-300' 
+                        : 'text-red-800 dark:text-red-300'
+                    }`}>
+                      Voted {voteType === 'for' ? 'For' : 'Against'}
                     </p>
-                    <p className="text-xs text-green-700 dark:text-green-400 mt-1">
-                      Thank you for participating!
+                    <p className={`text-xs mt-1 ${
+                      voteType === 'for' 
+                        ? 'text-green-700 dark:text-green-400' 
+                        : 'text-red-700 dark:text-red-400'
+                    }`}>
+                      Your 500 BIT voting power has been recorded
                     </p>
                   </div>
                 )}

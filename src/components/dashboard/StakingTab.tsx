@@ -5,13 +5,28 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Lock, TrendingUp, Clock } from 'lucide-react';
+import { Lock, TrendingUp, Clock, Unlock, AlertTriangle, DollarSign, Wallet } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+
+interface StakedPosition {
+  id: number;
+  amount: number;
+  poolIndex: number;
+  startDate: Date;
+  endDate: Date;
+  apy: number;
+  days: number;
+}
 
 const StakingTab = () => {
   const [selectedPool, setSelectedPool] = useState<number | null>(null);
   const [stakeAmount, setStakeAmount] = useState('');
+  const [stakedPositions, setStakedPositions] = useState<StakedPosition[]>([]);
+  const [unstakeAmount, setUnstakeAmount] = useState('');
   const { toast } = useToast();
+
+  const UNSTAKE_FEE = 2; // 2% fee
+  const EARLY_UNSTAKE_FEE = 10; // 10% additional fee for early withdrawal
 
   const stakingPools = [
     {
@@ -49,6 +64,29 @@ const StakingTab = () => {
     return totalReward.toFixed(2);
   };
 
+  const calculateCurrentRewards = (position: StakedPosition) => {
+    const now = new Date();
+    const daysElapsed = Math.floor((now.getTime() - position.startDate.getTime()) / (1000 * 60 * 60 * 24));
+    const dailyRate = position.apy / 100 / 365;
+    const currentReward = position.amount * dailyRate * daysElapsed;
+    return currentReward.toFixed(2);
+  };
+
+  const isEarlyUnstake = (position: StakedPosition) => {
+    return new Date() < position.endDate;
+  };
+
+  const calculateUnstakeFees = (amount: number, isEarly: boolean) => {
+    const baseFee = amount * (UNSTAKE_FEE / 100);
+    const earlyFee = isEarly ? amount * (EARLY_UNSTAKE_FEE / 100) : 0;
+    return {
+      baseFee: baseFee.toFixed(2),
+      earlyFee: earlyFee.toFixed(2),
+      totalFee: (baseFee + earlyFee).toFixed(2),
+      netAmount: (amount - baseFee - earlyFee).toFixed(2),
+    };
+  };
+
   const handleStake = () => {
     if (selectedPool === null) {
       toast({
@@ -71,11 +109,44 @@ const StakingTab = () => {
       return;
     }
 
+    const startDate = new Date();
+    const endDate = new Date();
+    endDate.setDate(endDate.getDate() + pool.days);
+
+    const newPosition: StakedPosition = {
+      id: Date.now(),
+      amount,
+      poolIndex: selectedPool,
+      startDate,
+      endDate,
+      apy: pool.apy,
+      days: pool.days,
+    };
+
+    setStakedPositions([...stakedPositions, newPosition]);
+    setStakeAmount('');
+    setSelectedPool(null);
+
     toast({
-      title: 'Staking Initiated',
-      description: `Staking ${amount} BIT for ${pool.days} days`,
+      title: 'Staking Successful! 🎉',
+      description: `Successfully staked ${amount} BIT for ${pool.days} days at ${pool.apy}% APY`,
     });
   };
+
+  const handleUnstake = (position: StakedPosition) => {
+    const isEarly = isEarlyUnstake(position);
+    const fees = calculateUnstakeFees(position.amount, isEarly);
+
+    setStakedPositions(stakedPositions.filter(p => p.id !== position.id));
+
+    toast({
+      title: 'Unstaked Successfully',
+      description: `Received ${fees.netAmount} BIT (after ${fees.totalFee} BIT in fees)`,
+    });
+  };
+
+  const totalStaked = stakedPositions.reduce((sum, pos) => sum + pos.amount, 0);
+  const totalRewards = stakedPositions.reduce((sum, pos) => sum + parseFloat(calculateCurrentRewards(pos)), 0);
 
   return (
     <motion.div
@@ -84,6 +155,160 @@ const StakingTab = () => {
       transition={{ duration: 0.5 }}
       className="space-y-6"
     >
+      {/* Dashboard Overview */}
+      <div className="grid md:grid-cols-3 gap-4">
+        <Card className="bg-gradient-to-br from-primary/20 to-primary/5 border-primary/30">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">Total Staked</p>
+                <p className="text-3xl font-bold">{totalStaked.toLocaleString()}</p>
+                <p className="text-sm text-muted-foreground">BIT Tokens</p>
+              </div>
+              <Wallet className="w-12 h-12 text-primary opacity-50" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gradient-to-br from-green-500/20 to-green-500/5 border-green-500/30">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">Rewards Earned</p>
+                <p className="text-3xl font-bold text-green-600 dark:text-green-400">{totalRewards.toFixed(2)}</p>
+                <p className="text-sm text-muted-foreground">BIT Tokens</p>
+              </div>
+              <TrendingUp className="w-12 h-12 text-green-500 opacity-50" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gradient-to-br from-blue-500/20 to-blue-500/5 border-blue-500/30">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">Active Positions</p>
+                <p className="text-3xl font-bold">{stakedPositions.length}</p>
+                <p className="text-sm text-muted-foreground">Staking Pools</p>
+              </div>
+              <Lock className="w-12 h-12 text-blue-500 opacity-50" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Active Staking Positions */}
+      {stakedPositions.length > 0 && (
+        <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+          <CardHeader>
+            <CardTitle className="text-2xl">Your Staking Positions</CardTitle>
+            <CardDescription>Manage your active stakes and view rewards</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {stakedPositions.map((position) => {
+              const pool = stakingPools[position.poolIndex];
+              const currentRewards = calculateCurrentRewards(position);
+              const isEarly = isEarlyUnstake(position);
+              const fees = calculateUnstakeFees(position.amount, isEarly);
+              const daysRemaining = Math.ceil((position.endDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+
+              return (
+                <Card key={position.id} className={`bg-gradient-to-r ${pool.color} ${pool.borderColor} border`}>
+                  <CardContent className="p-4">
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-muted-foreground">Staked Amount</span>
+                          <span className="font-bold text-lg">{position.amount.toLocaleString()} BIT</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-muted-foreground">APY</span>
+                          <Badge variant="default">{position.apy}%</Badge>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-muted-foreground">Lock Period</span>
+                          <span className="font-semibold">{position.days} days</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-muted-foreground">Current Rewards</span>
+                          <span className="font-bold text-primary">{currentRewards} BIT</span>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-muted-foreground">Start Date</span>
+                          <span className="font-semibold">{position.startDate.toLocaleDateString()}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-muted-foreground">End Date</span>
+                          <span className="font-semibold">{position.endDate.toLocaleDateString()}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-muted-foreground">Days Remaining</span>
+                          <Badge variant={daysRemaining > 0 ? "secondary" : "default"}>
+                            {daysRemaining > 0 ? `${daysRemaining} days` : 'Matured'}
+                          </Badge>
+                        </div>
+
+                        {isEarly && (
+                          <div className="bg-yellow-100 dark:bg-yellow-900/20 border border-yellow-500/50 rounded p-2 mt-2">
+                            <p className="text-xs font-semibold flex items-center gap-1 text-yellow-800 dark:text-yellow-300">
+                              <AlertTriangle className="w-3 h-3" />
+                              Early Unstake Fee: {UNSTAKE_FEE + EARLY_UNSTAKE_FEE}%
+                            </p>
+                            <p className="text-xs text-yellow-700 dark:text-yellow-400 mt-1">
+                              You'll receive: {fees.netAmount} BIT
+                            </p>
+                          </div>
+                        )}
+
+                        <Button
+                          onClick={() => handleUnstake(position)}
+                          variant={isEarly ? "destructive" : "default"}
+                          className="w-full mt-2"
+                          size="sm"
+                        >
+                          <Unlock className="w-4 h-4 mr-2" />
+                          Unstake {isEarly ? '(Early)' : ''}
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Fee Information */}
+      <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <DollarSign className="w-5 h-5 text-primary" />
+            Unstaking Fees
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="bg-secondary/30 p-4 rounded-lg">
+              <p className="font-semibold mb-2">Standard Unstake Fee</p>
+              <p className="text-3xl font-bold text-primary">{UNSTAKE_FEE}%</p>
+              <p className="text-sm text-muted-foreground mt-1">Applied to all unstaking operations</p>
+            </div>
+            <div className="bg-destructive/10 p-4 rounded-lg border border-destructive/30">
+              <p className="font-semibold mb-2 flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4" />
+                Early Unstake Penalty
+              </p>
+              <p className="text-3xl font-bold text-destructive">{EARLY_UNSTAKE_FEE}%</p>
+              <p className="text-sm text-muted-foreground mt-1">Additional fee for unstaking before maturity</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Staking Pools */}
       <div className="grid md:grid-cols-3 gap-6">
         {stakingPools.map((pool, index) => (
@@ -221,7 +446,8 @@ const StakingTab = () => {
               Tokens will be locked for the selected period
             </p>
             <p>• Rewards are calculated daily and distributed at maturity</p>
-            <p>• Early withdrawal is not available - choose your lock period carefully</p>
+            <p>• Standard unstake fee: {UNSTAKE_FEE}%</p>
+            <p>• Early unstake penalty: {EARLY_UNSTAKE_FEE}% (total {UNSTAKE_FEE + EARLY_UNSTAKE_FEE}%)</p>
           </div>
         </CardContent>
       </Card>

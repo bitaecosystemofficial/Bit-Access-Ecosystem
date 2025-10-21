@@ -1,12 +1,17 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Image, TrendingUp, Users, Sparkles, Lock, Trophy, Palette, ShoppingCart } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Image, TrendingUp, Users, Sparkles, Lock, Trophy, Palette, ShoppingCart, Search } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const NFTMarketplaceTab = () => {
   const { toast } = useToast();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState('name');
 
   const nftCollections = [
     {
@@ -17,6 +22,8 @@ const NFTMarketplaceTab = () => {
       holders: '687',
       benefits: ['Governance Rights', 'Staking Bonus +5%', 'VIP Access'],
       status: 'live',
+      category: 'Exclusive',
+      date: '2025-01-15',
     },
     {
       name: 'BIT Rewards Passes',
@@ -26,6 +33,8 @@ const NFTMarketplaceTab = () => {
       holders: '3,421',
       benefits: ['2x Rewards Multiplier', 'Early Access', 'Exclusive Events'],
       status: 'live',
+      category: 'Rewards',
+      date: '2025-03-20',
     },
     {
       name: 'BIT Artist Series',
@@ -35,6 +44,8 @@ const NFTMarketplaceTab = () => {
       holders: '298',
       benefits: ['Art Gallery Access', 'Artist Airdrops', 'Community Recognition'],
       status: 'upcoming',
+      category: 'Art',
+      date: '2025-06-01',
     },
   ];
 
@@ -60,6 +71,25 @@ const NFTMarketplaceTab = () => {
       description: 'Lock your NFTs to earn boosted staking rewards and exclusive perks',
     },
   ];
+
+  const filteredCollections = nftCollections
+    .filter(collection => 
+      collection.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      collection.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      collection.description.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .sort((a, b) => {
+      switch (sortBy) {
+        case 'name':
+          return a.name.localeCompare(b.name);
+        case 'category':
+          return a.category.localeCompare(b.category);
+        case 'date':
+          return new Date(b.date).getTime() - new Date(a.date).getTime();
+        default:
+          return 0;
+      }
+    });
 
   const handleMint = (collectionName: string) => {
     toast({
@@ -100,6 +130,33 @@ const NFTMarketplaceTab = () => {
         </CardHeader>
       </Card>
 
+      {/* Search and Sort */}
+      <Card className="bg-card/50 border-border">
+        <CardContent className="p-4">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Search collections by name, category..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="w-full sm:w-[200px]">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="name">Sort by Name</SelectItem>
+                <SelectItem value="category">Sort by Category</SelectItem>
+                <SelectItem value="date">Sort by Date</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Marketplace Features */}
       <div>
         <h2 className="text-2xl font-bold mb-4">Marketplace Features</h2>
@@ -118,74 +175,94 @@ const NFTMarketplaceTab = () => {
 
       {/* NFT Collections */}
       <div>
-        <h2 className="text-2xl font-bold mb-4">Featured Collections</h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {nftCollections.map((collection, index) => (
-            <Card key={index} className="bg-card border-border hover:shadow-lg hover:shadow-primary/20 transition-all">
-              <CardHeader>
-                <div className="flex items-start justify-between mb-2">
-                  <CardTitle className="text-xl">{collection.name}</CardTitle>
-                  <Badge variant={collection.status === 'live' ? 'default' : 'secondary'}>
-                    {collection.status === 'live' ? '🟢 Live' : '🔜 Coming Soon'}
-                  </Badge>
-                </div>
-                <CardDescription>{collection.description}</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Stats */}
-                <div className="grid grid-cols-3 gap-3 p-3 bg-secondary/30 rounded-lg">
-                  <div>
-                    <p className="text-xs text-muted-foreground">Supply</p>
-                    <p className="font-bold text-sm">{collection.supply}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Floor</p>
-                    <p className="font-bold text-sm text-primary">{collection.floor}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Holders</p>
-                    <p className="font-bold text-sm flex items-center gap-1">
-                      <Users className="w-3 h-3" />
-                      {collection.holders}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Benefits */}
-                <div>
-                  <p className="text-sm font-semibold mb-2">Benefits:</p>
-                  <div className="flex flex-wrap gap-2">
-                    {collection.benefits.map((benefit, idx) => (
-                      <Badge key={idx} variant="outline" className="text-xs">
-                        {benefit}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Actions */}
-                <div className="flex gap-2 pt-2">
-                  <Button
-                    onClick={() => handleViewCollection(collection.name)}
-                    variant="outline"
-                    className="flex-1"
-                    disabled={collection.status !== 'live'}
-                  >
-                    View Collection
-                  </Button>
-                  <Button
-                    onClick={() => handleMint(collection.name)}
-                    className="flex-1"
-                    disabled={collection.status !== 'live'}
-                  >
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    Mint
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-2xl font-bold">Featured Collections</h2>
+          <Badge variant="outline">{filteredCollections.length} results</Badge>
         </div>
+        {filteredCollections.length === 0 ? (
+          <Card className="bg-card/50 border-border">
+            <CardContent className="p-12 text-center">
+              <Search className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+              <p className="text-muted-foreground">No collections found matching your search.</p>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredCollections.map((collection, index) => (
+              <Card key={index} className="bg-card border-border hover:shadow-lg hover:shadow-primary/20 transition-all">
+                <CardHeader>
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex-1">
+                      <CardTitle className="text-xl">{collection.name}</CardTitle>
+                      <Badge variant="outline" className="mt-2">{collection.category}</Badge>
+                    </div>
+                    <Badge variant={collection.status === 'live' ? 'default' : 'secondary'}>
+                      {collection.status === 'live' ? '🟢 Live' : '🔜 Coming Soon'}
+                    </Badge>
+                  </div>
+                  <CardDescription>{collection.description}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {/* Stats */}
+                  <div className="grid grid-cols-3 gap-3 p-3 bg-secondary/30 rounded-lg">
+                    <div>
+                      <p className="text-xs text-muted-foreground">Supply</p>
+                      <p className="font-bold text-sm">{collection.supply}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Floor</p>
+                      <p className="font-bold text-sm text-primary">{collection.floor}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Holders</p>
+                      <p className="font-bold text-sm flex items-center gap-1">
+                        <Users className="w-3 h-3" />
+                        {collection.holders}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Date */}
+                  <div className="text-sm text-muted-foreground">
+                    Launch Date: {new Date(collection.date).toLocaleDateString()}
+                  </div>
+
+                  {/* Benefits */}
+                  <div>
+                    <p className="text-sm font-semibold mb-2">Benefits:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {collection.benefits.map((benefit, idx) => (
+                        <Badge key={idx} variant="outline" className="text-xs">
+                          {benefit}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex gap-2 pt-2">
+                    <Button
+                      onClick={() => handleViewCollection(collection.name)}
+                      variant="outline"
+                      className="flex-1"
+                      disabled={collection.status !== 'live'}
+                    >
+                      View Collection
+                    </Button>
+                    <Button
+                      onClick={() => handleMint(collection.name)}
+                      className="flex-1"
+                      disabled={collection.status !== 'live'}
+                    >
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Mint
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Coming Soon Banner */}
