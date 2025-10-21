@@ -16,7 +16,6 @@ import Integrators from "./pages/Integrators";
 import Helpdesk from "./pages/Helpdesk";
 import Dashboard from "./pages/Dashboard";
 import CommunityForum from "./pages/CommunityForum";
-import GovernanceDetail from "./pages/GovernanceDetail";
 import Cart from "./pages/Cart";
 import NotFound from "./pages/NotFound";
 
@@ -58,7 +57,6 @@ const App = () => (
                   <Route path="/helpdesk" element={<Helpdesk />} />
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/community-forum" element={<CommunityForum />} />
-                  <Route path="/governance/:id" element={<GovernanceDetail />} />
                   <Route path="/cart" element={<Cart />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
