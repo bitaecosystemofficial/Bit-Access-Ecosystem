@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAccount } from 'wagmi';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -12,15 +13,24 @@ import { useBITBalance } from '@/contexts/BITBalanceContext';
 const GovernanceDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { isConnected } = useAccount();
   const { toast } = useToast();
-  const { balance, formatBalance } = useBITBalance();
+  const { balance, deductBalance, formatBalance } = useBITBalance();
   const [comment, setComment] = useState('');
   const [hasVoted, setHasVoted] = useState(false);
   const [voteType, setVoteType] = useState<'for' | 'against' | null>(null);
   const [votesFor, setVotesFor] = useState(0);
   const [votesAgainst, setVotesAgainst] = useState(0);
+  const [participants, setParticipants] = useState(0);
 
   const VOTING_POWER = 10000; // Fixed voting power
+  const VOTING_COST = 10000; // Cost to vote in BIT
+
+  useEffect(() => {
+    if (!isConnected) {
+      navigate('/dashboard');
+    }
+  }, [isConnected, navigate]);
 
   // Mock data - in real app, fetch by ID
   const proposal = {
@@ -92,6 +102,28 @@ const GovernanceDetail = () => {
   };
 
   const handleVote = (type: 'for' | 'against') => {
+    // Check if user has enough balance
+    if (balance < VOTING_COST) {
+      toast({
+        title: 'Insufficient Balance',
+        description: `You need ${VOTING_COST.toLocaleString()} BIT tokens to vote. Your balance: ${formatBalance(balance)} BIT`,
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Deduct voting cost
+    const success = deductBalance(VOTING_COST);
+    if (!success) {
+      toast({
+        title: 'Vote Failed',
+        description: 'Unable to deduct voting cost from balance.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Record vote
     if (type === 'for') {
       setVotesFor(prev => prev + VOTING_POWER);
     } else {
@@ -100,10 +132,11 @@ const GovernanceDetail = () => {
     
     setVoteType(type);
     setHasVoted(true);
+    setParticipants(prev => prev + 1);
     
     toast({
       title: `Vote ${type === 'for' ? 'For' : 'Against'} Recorded`,
-      description: `Your ${VOTING_POWER.toLocaleString()} BIT voting power has been cast ${type === 'for' ? 'in favor' : 'against'} this proposal!`,
+      description: `Your ${VOTING_POWER.toLocaleString()} BIT voting power has been cast ${type === 'for' ? 'in favor' : 'against'} this proposal! ${VOTING_COST.toLocaleString()} BIT deducted.`,
     });
   };
 
@@ -119,6 +152,10 @@ const GovernanceDetail = () => {
 
   const totalVotes = votesFor + votesAgainst;
   const quorumPercentage = Math.round((totalVotes / proposal.quorum) * 100);
+
+  if (!isConnected) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen pt-24 pb-16 bg-background">
@@ -264,7 +301,7 @@ const GovernanceDetail = () => {
                       <Users className="w-3 h-3" />
                       Participants
                     </span>
-                    <span className="font-semibold">3,142</span>
+                    <span className="font-semibold">{participants.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground flex items-center gap-1">
@@ -293,7 +330,10 @@ const GovernanceDetail = () => {
                       Vote Against
                     </Button>
                     <p className="text-xs text-muted-foreground text-center">
-                      Required: {proposal.requiredBIT} BIT tokens to vote
+                      Cost: {VOTING_COST.toLocaleString()} BIT tokens to vote
+                    </p>
+                    <p className="text-xs text-center">
+                      Your Balance: <span className="font-semibold text-primary">{formatBalance(balance)} BIT</span>
                     </p>
                   </div>
                 ) : (
@@ -319,7 +359,10 @@ const GovernanceDetail = () => {
                         ? 'text-green-700 dark:text-green-400' 
                         : 'text-red-700 dark:text-red-400'
                     }`}>
-                      Your 500 BIT voting power has been recorded
+                      Your {VOTING_POWER.toLocaleString()} BIT voting power has been recorded
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {VOTING_COST.toLocaleString()} BIT deducted from your balance
                     </p>
                   </div>
                 )}
@@ -335,9 +378,13 @@ const GovernanceDetail = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center space-y-2">
-                  <div className="text-4xl font-bold text-primary">500</div>
-                  <div className="text-sm text-muted-foreground">BIT Tokens</div>
-                  <Badge variant="outline" className="mt-2">Eligible to Vote</Badge>
+                  <div className="text-4xl font-bold text-primary">{VOTING_POWER.toLocaleString()}</div>
+                  <div className="text-sm text-muted-foreground">BIT Voting Power</div>
+                  <div className="text-sm text-muted-foreground mt-2">Your Balance:</div>
+                  <div className="text-2xl font-semibold text-primary">{formatBalance(balance)}</div>
+                  <Badge variant="outline" className="mt-2">
+                    {balance >= VOTING_COST ? 'Eligible to Vote' : 'Insufficient Balance'}
+                  </Badge>
                 </div>
               </CardContent>
             </Card>
