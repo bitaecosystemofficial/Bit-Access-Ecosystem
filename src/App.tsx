@@ -14,6 +14,7 @@ import Integrators from "./pages/Integrators";
 import Helpdesk from "./pages/Helpdesk";
 import Dashboard from "./pages/Dashboard";
 import CommunityForum from "./pages/CommunityForum";
+import GovernanceDetail from "./pages/GovernanceDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -45,6 +46,7 @@ const App = () => (
               <Route path="/helpdesk" element={<Helpdesk />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/community-forum" element={<CommunityForum />} />
+              <Route path="/governance/:id" element={<GovernanceDetail />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Layout>
