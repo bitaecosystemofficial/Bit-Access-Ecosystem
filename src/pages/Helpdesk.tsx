@@ -6,19 +6,25 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Button } from '@/components/ui/button';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 const Helpdesk = () => {
-  const documentation = [{
-    title: 'Integrate Wallet',
-    content: 'Connect your Web3 wallet using our secure Web3Modal integration. Supports MetaMask, WalletConnect, and more.'
-  }, {
-    title: 'Earning BIT Rewards',
-    content: 'Customers automatically earn BIT tokens when merchants accept USDT/USDC payments. The more you shop, the more BIT you earn!'
-  }, {
-    title: 'Merchant Onboarding',
-    content: 'Step-by-step guide for merchants to accept USDT/USDC payments and automatically reward customers with BIT tokens.'
-  }, {
-    title: 'Staking BIT Tokens',
-    content: 'Lock your BIT rewards in our staking pools (180, 240, or 365 days) to earn up to 25% APY on your holdings.'
-  }];
+  const whitepaperSections = [
+    {
+      title: 'The Evolution of Blockchain and the Rise of BIT Access',
+      content: `As the blockchain ecosystem continued to evolve, so did the vision of BIT Access. The project set out to bridge the gap between traditional industries and blockchain technology, exploring the advantages of using cryptocurrencies and decentralized applications (DApps) in areas such as:
+
+• E-commerce: Revolutionizing online shopping by offering new payment methods, loyalty rewards, and rebate systems based on cryptocurrency.
+• Business: Providing businesses with more efficient, secure, and transparent systems for transactions, supply chain management, and customer engagement.
+• Education: Enabling educators and learners to interact in decentralized environments, tokenize learning content, and offer incentive-driven rewards using BIT tokens.
+• Merchant Services: Empowering merchants to adopt decentralized payment systems, gain access to global markets, and benefit from lower transaction fees.
+
+With the introduction of BIT Access, Dr. Duaso sought to create an ecosystem that provided individuals and businesses with the access and tools needed to thrive in an ever-changing digital landscape.`
+    },
+    {
+      title: 'The Road Ahead: BIT Access as a Leading Digital Asset',
+      content: `The concept of BIT Access goes beyond just cryptocurrency—it represents a shift in how digital assets and blockchain technologies will shape the future. By offering access to information, rewarding participants with tokens, and providing tools to foster innovation, BIT Access is positioned to become a leading force in the cryptocurrency and blockchain space.
+
+BIT Access is not just about the future of decentralized finance (DeFi); it is about a larger vision of the future of digital assets in the next generation. Dr. Duaso and the team at BIT Access believe that BIT tokens will one day be recognized as one of the top digital assets in the cryptocurrency world.`
+    }
+  ];
 
   // Token Usage
   const tokenUsage = [{
@@ -273,9 +279,9 @@ const Helpdesk = () => {
             {/* Sidebar Navigation */}
             <div className="lg:w-64 flex-shrink-0">
               <TabsList className="flex flex-col h-auto w-full bg-card border border-border p-2 gap-1 lg:sticky lg:top-24">
-                <TabsTrigger value="docs" className="w-full justify-start">
-                  <Book className="w-4 h-4 mr-2" />
-                  Documentation
+                <TabsTrigger value="whitepaper" className="w-full justify-start">
+                  <FileText className="w-4 h-4 mr-2" />
+                  Whitepaper
                 </TabsTrigger>
                 <TabsTrigger value="tokenomics" className="w-full justify-start">
                   <PieChartIcon className="w-4 h-4 mr-2" />
@@ -318,8 +324,8 @@ const Helpdesk = () => {
 
             {/* Content Area */}
             <div className="flex-1 min-w-0">
-              {/* Documentation Tab */}
-          <TabsContent value="docs">
+              {/* Whitepaper Tab */}
+          <TabsContent value="whitepaper">
             <motion.div initial={{
                 opacity: 0,
                 y: 20
@@ -331,28 +337,360 @@ const Helpdesk = () => {
               }}>
               <Card className="bg-card border-border">
                 <CardHeader>
-                  <div className="flex items-center space-x-3">
-                    <Book className="w-8 h-8 text-primary" />
-                    <CardTitle className="text-3xl">Documentation</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="p-6 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/30 rounded-lg mb-6">
-                    <h3 className="text-2xl font-bold mb-3 text-primary flex items-center gap-2">
-                      <FileText className="w-6 h-6" />
-                      Whitepaper
-                    </h3>
-                    <p className="text-muted-foreground leading-relaxed mb-4">
-                      Read our comprehensive whitepaper detailing BIT Access tokenomics, merchant reward system, staking mechanisms, and our vision for revolutionizing Web3 payment ecosystems.
-                    </p>
+                  <div className="flex items-center justify-between flex-wrap gap-4">
+                    <div className="flex items-center space-x-3">
+                      <FileText className="w-8 h-8 text-primary" />
+                      <div>
+                        <CardTitle className="text-3xl">BIT Access Whitepaper</CardTitle>
+                        <CardDescription>Comprehensive documentation of our vision, technology, and ecosystem</CardDescription>
+                      </div>
+                    </div>
                     <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
-                      Download Whitepaper (PDF)
+                      <Download className="w-4 h-4 mr-2" />
+                      Download PDF
                     </Button>
                   </div>
-                  {documentation.map((doc, index) => <div key={index} className="pb-6 border-b border-border last:border-0">
-                      <h3 className="text-xl font-bold mb-3 text-primary">{doc.title}</h3>
-                      <p className="text-muted-foreground leading-relaxed">{doc.content}</p>
-                    </div>)}
+                </CardHeader>
+                <CardContent className="space-y-8">
+                  {/* Evolution Section */}
+                  {whitepaperSections.map((section, index) => (
+                    <div key={index} className="pb-6 border-b border-border last:border-0">
+                      <h3 className="text-2xl font-bold mb-4 text-primary">{section.title}</h3>
+                      <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{section.content}</p>
+                    </div>
+                  ))}
+
+                  {/* Introduction Section */}
+                  <div className="space-y-6">
+                    <h2 className="text-3xl font-bold text-primary">1.0 Introduction</h2>
+                    
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-bold">1.1 Overview of BIT Access</h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        The BIT Access Ecosystem is an innovative, decentralized platform designed to bridge the gaps across industries such as e-commerce, education, and merchant services, offering a seamless, tokenized, and efficient way for users to interact with digital content, engage in transactions, and access services. The ecosystem is powered by BIT tokens, the native utility token, and is underpinned by blockchain technology, ensuring that all transactions, interactions, and data exchanges are transparent, secure, and verifiable.
+                      </p>
+                    </div>
+
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-bold">1.2 Industry Challenges and Opportunities</h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        BIT Access addresses key challenges in e-commerce (fragmented payment systems, customer loyalty issues), education (high costs, lack of personalized learning), and merchant services (high operational costs, limited financial inclusion). The ecosystem offers opportunities through tokenized rewards, cross-border low-cost payments, decentralized marketplaces, tokenized learning, and financial inclusion solutions.
+                      </p>
+                    </div>
+
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-bold">1.3 The BIT Access Solution</h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        The BIT Access Ecosystem provides solutions through decentralized finance, tokenized education, and decentralized e-commerce. By eliminating intermediaries and leveraging blockchain technology, BIT Access creates a more efficient, user-centric digital ecosystem that empowers individuals and businesses alike.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Mission, Vision, Values */}
+                  <div className="space-y-6">
+                    <h2 className="text-3xl font-bold text-primary">2.0 Mission, Vision, and Values</h2>
+                    
+                    <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/30">
+                      <CardHeader>
+                        <CardTitle>Mission Statement</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-muted-foreground">
+                          To create a decentralized ecosystem that empowers individuals, businesses, and educators by leveraging blockchain technology to enhance digital transactions and value exchange.
+                        </p>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/30">
+                      <CardHeader>
+                        <CardTitle>Vision Statement</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-muted-foreground">
+                          To become a global leader in digital transformation across industries, creating a transparent, secure, and decentralized digital economy.
+                        </p>
+                      </CardContent>
+                    </Card>
+
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-bold">Core Values</h3>
+                      <div className="grid md:grid-cols-2 gap-4">
+                        {[
+                          { title: 'Innovation', desc: 'Commitment to continuous technological advancements' },
+                          { title: 'Decentralization', desc: 'Empowering users by removing centralized control' },
+                          { title: 'Integrity', desc: 'Maintaining transparency and ethical standards' },
+                          { title: 'Empowerment', desc: 'Supporting users with decentralized financial tools' },
+                          { title: 'Sustainability', desc: 'Building solutions for long-term growth' }
+                        ].map((value, idx) => (
+                          <Card key={idx} className="bg-secondary/30">
+                            <CardContent className="p-4">
+                              <h4 className="font-bold mb-2">{value.title}</h4>
+                              <p className="text-sm text-muted-foreground">{value.desc}</p>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* BIT Access Ecosystem */}
+                  <div className="space-y-6">
+                    <h2 className="text-3xl font-bold text-primary">3.0 The BIT Access Ecosystem</h2>
+                    
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-bold">3.1 Decentralized E-Commerce Integration</h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        BIT Access enables secure, transparent transactions through blockchain, eliminating intermediaries and reducing costs. Merchants benefit from payment systems with lower fees, tokenized loyalty programs that increase customer retention, and the ability to tap into global markets without currency conversion challenges.
+                      </p>
+                    </div>
+
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-bold">3.2 Education and Professional Development</h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        The ecosystem offers decentralized learning platforms where educators can create and sell courses while students access materials without traditional constraints. Blockchain credentialing ensures achievements are verified and secure, while tokenized rewards incentivize both learners and educators to engage and perform at their best.
+                      </p>
+                    </div>
+
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-bold">3.3 Tokenized Incentive and Rewards System</h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        BIT tokens function as the primary incentive within the ecosystem, rewarding consumers for purchases and engagement, educators for quality content, and merchants for driving traffic and transactions. Rebate programs, loyalty rewards, and community incentives promote ecosystem growth and participation.
+                      </p>
+                    </div>
+
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-bold">3.4 Cross-Industry Innovation</h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        The ecosystem facilitates cross-industry collaboration through interoperable blockchain solutions, enabling value exchange across e-commerce, education, healthcare, entertainment, and more. BIT tokens serve as a universal medium for transactions between different sectors, creating new business models and opportunities.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* BIT Token */}
+                  <div className="space-y-6">
+                    <h2 className="text-3xl font-bold text-primary">4.0 The BIT Token</h2>
+                    
+                    <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/30">
+                      <CardHeader>
+                        <CardTitle>4.1 Overview of BIT Token</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div>
+                            <p className="text-sm font-semibold">Standard</p>
+                            <p className="text-muted-foreground">BEP-20 (Binance Smart Chain)</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-semibold">Max Supply</p>
+                            <p className="text-muted-foreground">100,000,000,000 BIT</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-semibold">Contract Address</p>
+                            <p className="text-muted-foreground font-mono text-xs">0xd3bde17ebd27739cf5505cd58ecf31cb628e469c</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-semibold">Transaction Tax</p>
+                            <p className="text-muted-foreground">3% Buy / 3% Sell</p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-bold">4.2 Token Use Cases and Utility</h3>
+                      <div className="grid md:grid-cols-2 gap-4">
+                        {[
+                          'E-commerce purchases with lower fees',
+                          'Access to educational content',
+                          'Staking programs for passive income',
+                          'Liquidity provision rewards',
+                          'Merchant loyalty programs',
+                          'Customer engagement incentives'
+                        ].map((use, idx) => (
+                          <div key={idx} className="flex items-start gap-2">
+                            <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                            <span className="text-muted-foreground">{use}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Technology Infrastructure */}
+                  <div className="space-y-6">
+                    <h2 className="text-3xl font-bold text-primary">6.0 Technology Infrastructure</h2>
+                    
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-bold">6.1 Blockchain Platform and Security</h3>
+                      <p className="text-muted-foreground leading-relaxed mb-4">
+                        BIT Access operates on the Binance Smart Chain (BSC) for its speed, low transaction costs, and EVM compatibility.
+                      </p>
+                      <div className="grid md:grid-cols-2 gap-3">
+                        {[
+                          'End-to-end encryption',
+                          'Multi-signature wallets',
+                          'Cryptographic hashing',
+                          'Decentralized consensus (DPoS)',
+                          'Regular security audits',
+                          'User data protection'
+                        ].map((feature, idx) => (
+                          <Card key={idx} className="bg-secondary/30">
+                            <CardContent className="p-3 flex items-center gap-2">
+                              <Shield className="w-4 h-4 text-primary flex-shrink-0" />
+                              <span className="text-sm">{feature}</span>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-bold">6.2 Smart Contracts and DApps</h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        Smart contracts automate transactions, escrow services, rebate programs, and staking rewards with transparency and security. DApps enable peer-to-peer transactions for e-commerce, tokenized educational content delivery, and decentralized marketplaces.
+                      </p>
+                    </div>
+
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-bold">6.3 Scalability and Performance</h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        Layered architecture for modular expansion, with plans to implement sharding and Layer-2 solutions for improved throughput. Cross-chain compatibility ensures interoperability, while performance optimizations include low latency transactions and dynamic fee structures.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Market Strategy */}
+                  <div className="space-y-6">
+                    <h2 className="text-3xl font-bold text-primary">7.0 Market Strategy and Growth</h2>
+                    
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-bold">7.1 Marketing and User Acquisition</h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        BIT Access employs airdrops, token incentives, referral programs, and influencer partnerships to attract early adopters. Marketing strategies include social media advertising, SEO/PPC campaigns, and content marketing, while conversion is optimized through user education and continuous UX improvements.
+                      </p>
+                    </div>
+
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-bold">7.2 Global Expansion and Strategic Partnerships</h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        The ecosystem will expand internationally through localized marketing campaigns and establishing presence in key blockchain markets. Strategic partnerships with global corporations, educational institutions, and cross-industry collaborations will drive token integration across diverse sectors.
+                      </p>
+                    </div>
+
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-bold">7.3 Community Engagement</h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        Community growth is fostered through tokenized loyalty programs, regular airdrops, bounty campaigns, active social media interaction, community events, and engagement with DeFi communities.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Legal & Compliance */}
+                  <div className="space-y-6">
+                    <h2 className="text-3xl font-bold text-primary">9.0 Legal Considerations and Regulatory Compliance</h2>
+                    
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-bold">9.1 Legal Framework</h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        BIT Access operates within a robust legal framework including proper token classification as a utility token, compliance with blockchain laws, adherence to data protection regulations (GDPR/CCPA), AML/KYC procedures, intellectual property protections, and clear dispute resolution mechanisms.
+                      </p>
+                    </div>
+
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-bold">9.2 Regulatory Compliance</h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        The ecosystem maintains regulatory compliance across key markets including the US (SEC/CFTC/FinCEN), EU (MiCA), UK (FCA), Asia-Pacific, and Latin America. It adheres to international standards like FATF guidelines with regular audits and ongoing engagement with regulators.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Final Statements */}
+                  <div className="space-y-6 pt-6 border-t border-border">
+                    <h2 className="text-3xl font-bold text-primary">11.0 Final Statements</h2>
+                    
+                    <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/30">
+                      <CardHeader>
+                        <CardTitle>Summary of Benefits</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <p className="text-muted-foreground leading-relaxed">
+                          BIT Access stands as a pioneering decentralized platform designed to revolutionize e-commerce, education, and financial services through the power of blockchain technology. Key benefits include:
+                        </p>
+                        <div className="grid md:grid-cols-2 gap-3 mt-4">
+                          {[
+                            'Decentralization & trustless transactions',
+                            'Tokenized incentive programs',
+                            'Scalability across industries',
+                            'Transparency & security',
+                            'Community-driven governance',
+                            'Global reach & partnerships'
+                          ].map((benefit, idx) => (
+                            <div key={idx} className="flex items-start gap-2">
+                              <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                              <span className="text-sm">{benefit}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/30">
+                      <CardHeader>
+                        <CardTitle>Call to Action</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-muted-foreground leading-relaxed mb-4">
+                          BIT Access invites you to be part of this revolutionary ecosystem. Whether you're looking to invest, stake, or become a part of the growing decentralized economy, this is your opportunity to join a transformative platform.
+                        </p>
+                        <p className="text-muted-foreground leading-relaxed font-semibold">
+                          Join BIT Access today, and be a part of the future!
+                        </p>
+                      </CardContent>
+                    </Card>
+
+                    {/* Contact Information */}
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-bold">Contact Us</h3>
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <p className="text-sm font-semibold">Website</p>
+                          <a href="https://bitaecosystem.org" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm">
+                            https://bitaecosystem.org
+                          </a>
+                        </div>
+                        <div className="space-y-2">
+                          <p className="text-sm font-semibold">Email</p>
+                          <a href="mailto:support@bitaecosystem.org" className="text-primary hover:underline text-sm">
+                            support@bitaecosystem.org
+                          </a>
+                        </div>
+                        <div className="space-y-2">
+                          <p className="text-sm font-semibold">Facebook</p>
+                          <a href="https://www.facebook.com/bitaecosystemofficial" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm">
+                            @bitaecosystemofficial
+                          </a>
+                        </div>
+                        <div className="space-y-2">
+                          <p className="text-sm font-semibold">Twitter</p>
+                          <a href="https://x.com/bitaecosystem" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm">
+                            @bitaecosystem
+                          </a>
+                        </div>
+                        <div className="space-y-2">
+                          <p className="text-sm font-semibold">Telegram</p>
+                          <a href="https://t.me/bitaecosystemofficial" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm">
+                            @bitaecosystemofficial
+                          </a>
+                        </div>
+                        <div className="space-y-2">
+                          <p className="text-sm font-semibold">GitHub</p>
+                          <a href="https://www.github.com/bitaecosystemofficial" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm">
+                            @bitaecosystemofficial
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </motion.div>
