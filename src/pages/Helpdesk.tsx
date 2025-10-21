@@ -5,251 +5,263 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
-
 const Helpdesk = () => {
-  const documentation = [
-    {
-      title: 'Integrate Wallet',
-      content:
-        'Connect your Web3 wallet using our secure Web3Modal integration. Supports MetaMask, WalletConnect, and more.',
-    },
-    {
-      title: 'Earning BIT Rewards',
-      content:
-        'Customers automatically earn BIT tokens when merchants accept USDT/USDC payments. The more you shop, the more BIT you earn!',
-    },
-    {
-      title: 'Merchant Onboarding',
-      content: 'Step-by-step guide for merchants to accept USDT/USDC payments and automatically reward customers with BIT tokens.',
-    },
-    {
-      title: 'Staking BIT Tokens',
-      content: 'Lock your BIT rewards in our staking pools (180, 240, or 365 days) to earn up to 25% APY on your holdings.',
-    },
-  ];
+  const documentation = [{
+    title: 'Integrate Wallet',
+    content: 'Connect your Web3 wallet using our secure Web3Modal integration. Supports MetaMask, WalletConnect, and more.'
+  }, {
+    title: 'Earning BIT Rewards',
+    content: 'Customers automatically earn BIT tokens when merchants accept USDT/USDC payments. The more you shop, the more BIT you earn!'
+  }, {
+    title: 'Merchant Onboarding',
+    content: 'Step-by-step guide for merchants to accept USDT/USDC payments and automatically reward customers with BIT tokens.'
+  }, {
+    title: 'Staking BIT Tokens',
+    content: 'Lock your BIT rewards in our staking pools (180, 240, or 365 days) to earn up to 25% APY on your holdings.'
+  }];
 
   // Token Usage
-  const tokenUsage = [
-    { icon: Gift, title: 'Rewards System', description: 'Incentives for community participation and ecosystem engagement' },
-    { icon: Users, title: 'Community Engagement', description: 'Social-to-earn activities and community-driven initiatives' },
-    { icon: Lock, title: 'Staking & Rewards', description: 'Earn passive income through token staking programs' },
-    { icon: Rocket, title: 'Platform Access', description: 'Access to premium features and exclusive opportunities' },
-    { icon: TrendingUp, title: 'Ecosystem Growth', description: 'Support for platform development and expansion' },
-    { icon: Send, title: 'Cross-Border Payments', description: 'Enabling international transactions without traditional banking barriers' },
-  ];
+  const tokenUsage = [{
+    icon: Gift,
+    title: 'Rewards System',
+    description: 'Incentives for community participation and ecosystem engagement'
+  }, {
+    icon: Users,
+    title: 'Community Engagement',
+    description: 'Social-to-earn activities and community-driven initiatives'
+  }, {
+    icon: Lock,
+    title: 'Staking & Rewards',
+    description: 'Earn passive income through token staking programs'
+  }, {
+    icon: Rocket,
+    title: 'Platform Access',
+    description: 'Access to premium features and exclusive opportunities'
+  }, {
+    icon: TrendingUp,
+    title: 'Ecosystem Growth',
+    description: 'Support for platform development and expansion'
+  }, {
+    icon: Send,
+    title: 'Cross-Border Payments',
+    description: 'Enabling international transactions without traditional banking barriers'
+  }];
 
   // Key Features
-  const keyFeatures = [
-    { icon: Gift, title: 'Rewards System', description: 'Earn BIT tokens through community participation, staking, and ecosystem activities.' },
-    { icon: Vote, title: 'Community Governance', description: 'Token holders can vote on important ecosystem decisions and proposals.' },
-    { icon: GraduationCap, title: 'Educational Incentives', description: 'Learn about blockchain and earn rewards through our educational platform.' },
-    { icon: Network, title: 'Cross-Chain Compatibility', description: 'Utilize BIT tokens across multiple blockchain networks seamlessly.' },
-    { icon: Users, title: 'Community Engagement', description: 'Participate in community events, challenges and earn rewards.' },
-    { icon: Globe, title: 'Cross Border Payments', description: 'Send and receive payments globally with low fees and fast settlement times.' },
-  ];
+  const keyFeatures = [{
+    icon: Gift,
+    title: 'Rewards System',
+    description: 'Earn BIT tokens through community participation, staking, and ecosystem activities.'
+  }, {
+    icon: Vote,
+    title: 'Community Governance',
+    description: 'Token holders can vote on important ecosystem decisions and proposals.'
+  }, {
+    icon: GraduationCap,
+    title: 'Educational Incentives',
+    description: 'Learn about blockchain and earn rewards through our educational platform.'
+  }, {
+    icon: Network,
+    title: 'Cross-Chain Compatibility',
+    description: 'Utilize BIT tokens across multiple blockchain networks seamlessly.'
+  }, {
+    icon: Users,
+    title: 'Community Engagement',
+    description: 'Participate in community events, challenges and earn rewards.'
+  }, {
+    icon: Globe,
+    title: 'Cross Border Payments',
+    description: 'Send and receive payments globally with low fees and fast settlement times.'
+  }];
 
   // Tokenomics Data
-  const tokenAllocationData = [
-    { name: 'Project Development', value: 35.0, color: '#FFD700' },
-    { name: 'Company Reserved', value: 5.0, color: '#FFA500' },
-    { name: 'Token Burned', value: 10.0, color: '#FF4500' },
-    { name: 'P2P', value: 10.0, color: '#FF8C00' },
-    { name: 'Marketing', value: 10.0, color: '#FF7F50' },
-    { name: 'Liquidity CEX', value: 10.0, color: '#FF6347' },
-    { name: 'Presale', value: 5.0, color: '#FFB347' },
-    { name: 'Liquidity DEX', value: 5.0, color: '#FFA07A' },
-    { name: 'Management Team', value: 3.0, color: '#FA8072' },
-    { name: 'Foundation', value: 2.0, color: '#E9967A' },
-    { name: 'Emergency Fund', value: 2.0, color: '#F08080' },
-    { name: 'Staking', value: 1.0, color: '#CD5C5C' },
-    { name: 'Airdrops, Rewards & Bounty', value: 1.0, color: '#DC143C' },
-    { name: 'Creator Dev', value: 1.0, color: '#B22222' },
-  ];
-
-  const fundAllocationData = [
-    { name: 'Product Development', value: 17, color: '#FFD700' },
-    { name: 'Marketing', value: 14, color: '#FFA500' },
-    { name: 'Company Funds', value: 10, color: '#FF8C00' },
-    { name: 'Team', value: 9, color: '#FF7F50' },
-    { name: 'Business Operations', value: 9, color: '#FF6347' },
-    { name: 'Community Rewards', value: 8, color: '#FFB347' },
-    { name: 'Legal & Regulation', value: 6, color: '#FFA07A' },
-    { name: 'Taxes', value: 5, color: '#FA8072' },
-    { name: 'Contingency', value: 5, color: '#E9967A' },
-    { name: 'Sponsors & Partnerships', value: 5, color: '#F08080' },
-    { name: 'Advisors', value: 4, color: '#CD5C5C' },
-    { name: 'Charity Works', value: 4, color: '#DC143C' },
-  ];
-
-  const roadmapPhases = [
-    {
-      phase: 'Q4 2024',
-      title: 'Foundation & Launch',
-      status: 'completed',
-      items: [
-        'Smart contract development and deployment',
-        'Website and platform launch',
-        'Initial community building',
-        'Security audit completion',
-        'Whitepaper release',
-      ],
-    },
-    {
-      phase: 'Q1 2025',
-      title: 'Ecosystem Expansion',
-      status: 'completed',
-      items: [
-        'Airdrop campaign launch',
-        'Staking platform activation',
-        'Community governance implementation',
-        'Partnership announcements',
-        'Marketing campaign rollout',
-      ],
-    },
-    {
-      phase: 'Q2 2025',
-      title: 'Platform Enhancement',
-      status: 'completed',
-      items: [
-        'Mobile app development',
-        'Enhanced wallet integration',
-        'Referral program launch',
-        'Community rewards system',
-        'Trading volume milestones',
-      ],
-    },
-    {
-      phase: 'Q3 2025',
-      title: 'Growth & Integration',
-      status: 'completed',
-      items: [
-        'Cross-chain bridge development',
-        'Strategic partnerships expansion',
-        'NFT marketplace integration',
-        'Advanced analytics dashboard',
-        'Community voting mechanisms',
-      ],
-    },
-    {
-      phase: 'Q4 2025',
-      title: 'Pre-Exchange Preparation',
-      status: 'current',
-      progress: 'Currently finalizing DEX listing requirements and expanding market maker network',
-      items: [
-        'DEX listing preparations and documentation',
-        'Enhanced liquidity pool management',
-        'Advanced security audits',
-        'Market maker partnerships',
-        'Global marketing campaign intensification',
-      ],
-    },
-    {
-      phase: 'Q1 2026',
-      title: 'DEX Exchange Launch 🚀',
-      status: 'upcoming',
-      items: [
-        'Official DEX listing on major platforms',
-        'PancakeSwap and Uniswap integration',
-        'Liquidity provision programs',
-        'Trading competitions and incentives',
-        'Mass adoption marketing campaign',
-      ],
-    },
-    {
-      phase: 'Q2 2026',
-      title: 'Post-DEX Growth',
-      status: 'upcoming',
-      items: [
-        'Additional DEX listings',
-        'Enhanced trading features',
-        'Institutional partnerships',
-        'Advanced DeFi integrations',
-        'Community expansion initiatives',
-      ],
-    },
-    {
-      phase: 'Q3 2026',
-      title: 'CEX Exchange Launch 🎯',
-      status: 'upcoming',
-      items: [
-        'Centralized exchange listings (Binance, KuCoin, etc.)',
-        'Fiat on-ramp integrations',
-        'Global payment partnerships',
-        'Enterprise solutions launch',
-        'Mainstream media coverage',
-      ],
-    },
-    {
-      phase: 'Q4 2026',
-      title: 'Ecosystem Maturity',
-      status: 'upcoming',
-      items: [
-        'Multi-chain expansion',
-        'Advanced governance features',
-        'Enterprise API launch',
-        'Global merchant adoption',
-        'Sustainable growth initiatives',
-      ],
-    },
-  ];
-
+  const tokenAllocationData = [{
+    name: 'Project Development',
+    value: 35.0,
+    color: '#FFD700'
+  }, {
+    name: 'Company Reserved',
+    value: 5.0,
+    color: '#FFA500'
+  }, {
+    name: 'Token Burned',
+    value: 10.0,
+    color: '#FF4500'
+  }, {
+    name: 'P2P',
+    value: 10.0,
+    color: '#FF8C00'
+  }, {
+    name: 'Marketing',
+    value: 10.0,
+    color: '#FF7F50'
+  }, {
+    name: 'Liquidity CEX',
+    value: 10.0,
+    color: '#FF6347'
+  }, {
+    name: 'Presale',
+    value: 5.0,
+    color: '#FFB347'
+  }, {
+    name: 'Liquidity DEX',
+    value: 5.0,
+    color: '#FFA07A'
+  }, {
+    name: 'Management Team',
+    value: 3.0,
+    color: '#FA8072'
+  }, {
+    name: 'Foundation',
+    value: 2.0,
+    color: '#E9967A'
+  }, {
+    name: 'Emergency Fund',
+    value: 2.0,
+    color: '#F08080'
+  }, {
+    name: 'Staking',
+    value: 1.0,
+    color: '#CD5C5C'
+  }, {
+    name: 'Airdrops, Rewards & Bounty',
+    value: 1.0,
+    color: '#DC143C'
+  }, {
+    name: 'Creator Dev',
+    value: 1.0,
+    color: '#B22222'
+  }];
+  const fundAllocationData = [{
+    name: 'Product Development',
+    value: 17,
+    color: '#FFD700'
+  }, {
+    name: 'Marketing',
+    value: 14,
+    color: '#FFA500'
+  }, {
+    name: 'Company Funds',
+    value: 10,
+    color: '#FF8C00'
+  }, {
+    name: 'Team',
+    value: 9,
+    color: '#FF7F50'
+  }, {
+    name: 'Business Operations',
+    value: 9,
+    color: '#FF6347'
+  }, {
+    name: 'Community Rewards',
+    value: 8,
+    color: '#FFB347'
+  }, {
+    name: 'Legal & Regulation',
+    value: 6,
+    color: '#FFA07A'
+  }, {
+    name: 'Taxes',
+    value: 5,
+    color: '#FA8072'
+  }, {
+    name: 'Contingency',
+    value: 5,
+    color: '#E9967A'
+  }, {
+    name: 'Sponsors & Partnerships',
+    value: 5,
+    color: '#F08080'
+  }, {
+    name: 'Advisors',
+    value: 4,
+    color: '#CD5C5C'
+  }, {
+    name: 'Charity Works',
+    value: 4,
+    color: '#DC143C'
+  }];
+  const roadmapPhases = [{
+    phase: 'Q4 2024',
+    title: 'Foundation & Launch',
+    status: 'completed',
+    items: ['Smart contract development and deployment', 'Website and platform launch', 'Initial community building', 'Security audit completion', 'Whitepaper release']
+  }, {
+    phase: 'Q1 2025',
+    title: 'Ecosystem Expansion',
+    status: 'completed',
+    items: ['Airdrop campaign launch', 'Staking platform activation', 'Community governance implementation', 'Partnership announcements', 'Marketing campaign rollout']
+  }, {
+    phase: 'Q2 2025',
+    title: 'Platform Enhancement',
+    status: 'completed',
+    items: ['Mobile app development', 'Enhanced wallet integration', 'Referral program launch', 'Community rewards system', 'Trading volume milestones']
+  }, {
+    phase: 'Q3 2025',
+    title: 'Growth & Integration',
+    status: 'completed',
+    items: ['Cross-chain bridge development', 'Strategic partnerships expansion', 'NFT marketplace integration', 'Advanced analytics dashboard', 'Community voting mechanisms']
+  }, {
+    phase: 'Q4 2025',
+    title: 'Pre-Exchange Preparation',
+    status: 'current',
+    progress: 'Currently finalizing DEX listing requirements and expanding market maker network',
+    items: ['DEX listing preparations and documentation', 'Enhanced liquidity pool management', 'Advanced security audits', 'Market maker partnerships', 'Global marketing campaign intensification']
+  }, {
+    phase: 'Q1 2026',
+    title: 'DEX Exchange Launch 🚀',
+    status: 'upcoming',
+    items: ['Official DEX listing on major platforms', 'PancakeSwap and Uniswap integration', 'Liquidity provision programs', 'Trading competitions and incentives', 'Mass adoption marketing campaign']
+  }, {
+    phase: 'Q2 2026',
+    title: 'Post-DEX Growth',
+    status: 'upcoming',
+    items: ['Additional DEX listings', 'Enhanced trading features', 'Institutional partnerships', 'Advanced DeFi integrations', 'Community expansion initiatives']
+  }, {
+    phase: 'Q3 2026',
+    title: 'CEX Exchange Launch 🎯',
+    status: 'upcoming',
+    items: ['Centralized exchange listings (Binance, KuCoin, etc.)', 'Fiat on-ramp integrations', 'Global payment partnerships', 'Enterprise solutions launch', 'Mainstream media coverage']
+  }, {
+    phase: 'Q4 2026',
+    title: 'Ecosystem Maturity',
+    status: 'upcoming',
+    items: ['Multi-chain expansion', 'Advanced governance features', 'Enterprise API launch', 'Global merchant adoption', 'Sustainable growth initiatives']
+  }];
   const longTermVision = {
-    technology: [
-      'Layer 2 scaling solutions',
-      'AI-powered trading tools',
-      'Quantum-resistant security',
-      'Advanced DeFi protocols',
-    ],
-    globalExpansion: [
-      'Worldwide merchant network',
-      'Regional payment systems',
-      'International partnerships',
-      'Multi-language platform support',
-    ],
+    technology: ['Layer 2 scaling solutions', 'AI-powered trading tools', 'Quantum-resistant security', 'Advanced DeFi protocols'],
+    globalExpansion: ['Worldwide merchant network', 'Regional payment systems', 'International partnerships', 'Multi-language platform support']
   };
-
-  const faqs = [
-    {
-      question: 'How do I connect my wallet?',
-      answer:
-        'Click the "Connect Wallet" button in the navigation bar and select your preferred wallet provider. Follow the prompts to authorize the connection. Once connected, you\'ll be redirected to the dashboard.',
-    },
-    {
-      question: 'What wallets are supported?',
-      answer:
-        'We support all major Web3 wallets including MetaMask, Coinbase Wallet, WalletConnect, and more through our Web3Modal integration.',
-    },
-    {
-      question: 'How do I earn BIT tokens?',
-      answer:
-        'You earn BIT tokens automatically when you pay with USDT/USDC at participating merchants. Additionally, you can purchase BIT directly or stake your tokens to earn up to 25% APY.',
-    },
-    {
-      question: 'What payment methods do merchants accept?',
-      answer:
-        'Merchants accept USDT and USDC stablecoins on BSC (with Polygon, Base, and Arbitrum coming soon). Customers receive BIT tokens as rewards for their purchases.',
-    },
-    {
-      question: 'How does staking work?',
-      answer:
-        'You can lock your BIT tokens in one of three staking pools: 180 days (12% APY), 240 days (18% APY), or 365 days (25% APY). Rewards are calculated daily and distributed at maturity.',
-    },
-    {
-      question: 'How do I become a merchant partner?',
-      answer:
-        'Visit the Dashboard and navigate to the Merchants Subscription tab. Choose a subscription plan (Starter, Professional, or Enterprise) and complete the registration process.',
-    },
-  ];
-
-  return (
-    <div className="min-h-screen pt-24 pb-16">
+  const faqs = [{
+    question: 'How do I connect my wallet?',
+    answer: 'Click the "Connect Wallet" button in the navigation bar and select your preferred wallet provider. Follow the prompts to authorize the connection. Once connected, you\'ll be redirected to the dashboard.'
+  }, {
+    question: 'What wallets are supported?',
+    answer: 'We support all major Web3 wallets including MetaMask, Coinbase Wallet, WalletConnect, and more through our Web3Modal integration.'
+  }, {
+    question: 'How do I earn BIT tokens?',
+    answer: 'You earn BIT tokens automatically when you pay with USDT/USDC at participating merchants. Additionally, you can purchase BIT directly or stake your tokens to earn up to 25% APY.'
+  }, {
+    question: 'What payment methods do merchants accept?',
+    answer: 'Merchants accept USDT and USDC stablecoins on BSC (with Polygon, Base, and Arbitrum coming soon). Customers receive BIT tokens as rewards for their purchases.'
+  }, {
+    question: 'How does staking work?',
+    answer: 'You can lock your BIT tokens in one of three staking pools: 180 days (12% APY), 240 days (18% APY), or 365 days (25% APY). Rewards are calculated daily and distributed at maturity.'
+  }, {
+    question: 'How do I become a merchant partner?',
+    answer: 'Visit the Dashboard and navigate to the Merchants Subscription tab. Choose a subscription plan (Starter, Professional, or Enterprise) and complete the registration process.'
+  }];
+  return <div className="min-h-screen pt-24 pb-16">
       <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
+        <motion.div initial={{
+        opacity: 0,
+        y: 30
+      }} animate={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 0.6
+      }} className="text-center mb-16">
           <h1 className="text-5xl md:text-6xl font-bold mb-6 text-shadow-gold">Helpdesk</h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Everything you need to know about Bit Access
@@ -308,11 +320,15 @@ const Helpdesk = () => {
             <div className="flex-1 min-w-0">
               {/* Documentation Tab */}
           <TabsContent value="docs">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
+            <motion.div initial={{
+                opacity: 0,
+                y: 20
+              }} animate={{
+                opacity: 1,
+                y: 0
+              }} transition={{
+                duration: 0.5
+              }}>
               <Card className="bg-card border-border">
                 <CardHeader>
                   <div className="flex items-center space-x-3">
@@ -333,12 +349,10 @@ const Helpdesk = () => {
                       Download Whitepaper (PDF)
                     </Button>
                   </div>
-                  {documentation.map((doc, index) => (
-                    <div key={index} className="pb-6 border-b border-border last:border-0">
+                  {documentation.map((doc, index) => <div key={index} className="pb-6 border-b border-border last:border-0">
                       <h3 className="text-xl font-bold mb-3 text-primary">{doc.title}</h3>
                       <p className="text-muted-foreground leading-relaxed">{doc.content}</p>
-                    </div>
-                  ))}
+                    </div>)}
                 </CardContent>
               </Card>
             </motion.div>
@@ -346,12 +360,15 @@ const Helpdesk = () => {
 
           {/* Tokenomics Tab */}
           <TabsContent value="tokenomics">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="space-y-6"
-            >
+            <motion.div initial={{
+                opacity: 0,
+                y: 20
+              }} animate={{
+                opacity: 1,
+                y: 0
+              }} transition={{
+                duration: 0.5
+              }} className="space-y-6">
               <Card className="bg-card border-border">
                 <CardHeader>
                   <div className="flex items-center space-x-3">
@@ -373,15 +390,13 @@ const Helpdesk = () => {
                   <div>
                     <h3 className="text-2xl font-bold mb-4 text-primary">Token Usage</h3>
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {tokenUsage.map((item, index) => (
-                        <Card key={index} className="bg-secondary/30 border-border hover:border-primary/50 transition-colors">
+                      {tokenUsage.map((item, index) => <Card key={index} className="bg-secondary/30 border-border hover:border-primary/50 transition-colors">
                           <CardContent className="p-4">
                             <item.icon className="w-8 h-8 text-primary mb-2" />
                             <h4 className="font-bold mb-1">{item.title}</h4>
                             <p className="text-sm text-muted-foreground">{item.description}</p>
                           </CardContent>
-                        </Card>
-                      ))}
+                        </Card>)}
                     </div>
                   </div>
 
@@ -389,8 +404,7 @@ const Helpdesk = () => {
                   <div>
                     <h3 className="text-2xl font-bold mb-4 text-primary">Key Features</h3>
                     <div className="grid md:grid-cols-2 gap-4">
-                      {keyFeatures.map((item, index) => (
-                        <Card key={index} className="bg-secondary/30 border-border hover:border-primary/50 transition-colors">
+                      {keyFeatures.map((item, index) => <Card key={index} className="bg-secondary/30 border-border hover:border-primary/50 transition-colors">
                           <CardContent className="p-4 flex gap-3">
                             <item.icon className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                             <div>
@@ -398,8 +412,7 @@ const Helpdesk = () => {
                               <p className="text-sm text-muted-foreground">{item.description}</p>
                             </div>
                           </CardContent>
-                        </Card>
-                      ))}
+                        </Card>)}
                     </div>
                   </div>
 
@@ -463,12 +476,15 @@ const Helpdesk = () => {
 
           {/* Token & Fund Allocation Tab */}
           <TabsContent value="allocation">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="space-y-6"
-            >
+            <motion.div initial={{
+                opacity: 0,
+                y: 20
+              }} animate={{
+                opacity: 1,
+                y: 0
+              }} transition={{
+                duration: 0.5
+              }} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Token Distribution */}
                 <Card className="bg-card border-border">
@@ -479,32 +495,22 @@ const Helpdesk = () => {
                   <CardContent>
                     <ResponsiveContainer width="100%" height={350}>
                       <PieChart>
-                        <Pie
-                          data={tokenAllocationData}
-                          cx="50%"
-                          cy="50%"
-                          labelLine={false}
-                          outerRadius={90}
-                          fill="#8884d8"
-                          dataKey="value"
-                        >
-                          {tokenAllocationData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
-                          ))}
+                        <Pie data={tokenAllocationData} cx="50%" cy="50%" labelLine={false} outerRadius={90} fill="#8884d8" dataKey="value">
+                          {tokenAllocationData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
                         </Pie>
-                        <Tooltip formatter={(value) => `${value}%`} />
+                        <Tooltip formatter={value => `${value}%`} />
                       </PieChart>
                     </ResponsiveContainer>
                     <div className="mt-4 space-y-1.5 max-h-64 overflow-y-auto">
-                      {tokenAllocationData.map((item, index) => (
-                        <div key={index} className="flex items-center justify-between text-sm py-1">
+                      {tokenAllocationData.map((item, index) => <div key={index} className="flex items-center justify-between text-sm py-1">
                           <div className="flex items-center">
-                            <div className="w-3 h-3 rounded mr-2 flex-shrink-0" style={{ backgroundColor: item.color }} />
+                            <div className="w-3 h-3 rounded mr-2 flex-shrink-0" style={{
+                              backgroundColor: item.color
+                            }} />
                             <span className="text-xs">{item.name}</span>
                           </div>
                           <span className="font-bold text-xs">{item.value}%</span>
-                        </div>
-                      ))}
+                        </div>)}
                     </div>
                   </CardContent>
                 </Card>
@@ -518,32 +524,22 @@ const Helpdesk = () => {
                   <CardContent>
                     <ResponsiveContainer width="100%" height={350}>
                       <PieChart>
-                        <Pie
-                          data={fundAllocationData}
-                          cx="50%"
-                          cy="50%"
-                          labelLine={false}
-                          outerRadius={90}
-                          fill="#8884d8"
-                          dataKey="value"
-                        >
-                          {fundAllocationData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
-                          ))}
+                        <Pie data={fundAllocationData} cx="50%" cy="50%" labelLine={false} outerRadius={90} fill="#8884d8" dataKey="value">
+                          {fundAllocationData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
                         </Pie>
-                        <Tooltip formatter={(value) => `${value}%`} />
+                        <Tooltip formatter={value => `${value}%`} />
                       </PieChart>
                     </ResponsiveContainer>
                     <div className="mt-4 space-y-1.5 max-h-64 overflow-y-auto">
-                      {fundAllocationData.map((item, index) => (
-                        <div key={index} className="flex items-center justify-between text-sm py-1">
+                      {fundAllocationData.map((item, index) => <div key={index} className="flex items-center justify-between text-sm py-1">
                           <div className="flex items-center">
-                            <div className="w-3 h-3 rounded mr-2 flex-shrink-0" style={{ backgroundColor: item.color }} />
+                            <div className="w-3 h-3 rounded mr-2 flex-shrink-0" style={{
+                              backgroundColor: item.color
+                            }} />
                             <span className="text-xs">{item.name}</span>
                           </div>
                           <span className="font-bold text-xs">{item.value}%</span>
-                        </div>
-                      ))}
+                        </div>)}
                     </div>
                   </CardContent>
                 </Card>
@@ -553,12 +549,15 @@ const Helpdesk = () => {
 
           {/* Roadmap Tab */}
           <TabsContent value="roadmap">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="space-y-6"
-            >
+            <motion.div initial={{
+                opacity: 0,
+                y: 20
+              }} animate={{
+                opacity: 1,
+                y: 0
+              }} transition={{
+                duration: 0.5
+              }} className="space-y-6">
               <Card className="bg-card border-border">
                 <CardHeader>
                   <div className="flex items-center space-x-3">
@@ -572,24 +571,39 @@ const Helpdesk = () => {
                 <CardContent>
                   <div className="space-y-8">
                     {roadmapPhases.map((phase, index) => {
-                      const statusConfig = {
-                        completed: { icon: CheckCircle, color: 'text-green-500', bg: 'bg-green-500', border: 'border-green-500' },
-                        current: { icon: Clock, color: 'text-primary', bg: 'bg-primary', border: 'border-primary' },
-                        upcoming: { icon: Circle, color: 'text-muted-foreground', bg: 'bg-muted-foreground', border: 'border-muted-foreground' },
-                      };
-                      
-                      const config = statusConfig[phase.status as keyof typeof statusConfig];
-                      const StatusIcon = config.icon;
-
-                      return (
-                        <motion.div
-                          key={index}
-                          initial={{ opacity: 0, x: -20 }}
-                          whileInView={{ opacity: 1, x: 0 }}
-                          transition={{ delay: index * 0.1 }}
-                          viewport={{ once: true }}
-                          className={`relative pl-8 border-l-2 ${phase.status === 'current' ? 'border-primary' : phase.status === 'completed' ? 'border-green-500' : 'border-muted-foreground/30'}`}
-                        >
+                        const statusConfig = {
+                          completed: {
+                            icon: CheckCircle,
+                            color: 'text-green-500',
+                            bg: 'bg-green-500',
+                            border: 'border-green-500'
+                          },
+                          current: {
+                            icon: Clock,
+                            color: 'text-primary',
+                            bg: 'bg-primary',
+                            border: 'border-primary'
+                          },
+                          upcoming: {
+                            icon: Circle,
+                            color: 'text-muted-foreground',
+                            bg: 'bg-muted-foreground',
+                            border: 'border-muted-foreground'
+                          }
+                        };
+                        const config = statusConfig[phase.status as keyof typeof statusConfig];
+                        const StatusIcon = config.icon;
+                        return <motion.div key={index} initial={{
+                          opacity: 0,
+                          x: -20
+                        }} whileInView={{
+                          opacity: 1,
+                          x: 0
+                        }} transition={{
+                          delay: index * 0.1
+                        }} viewport={{
+                          once: true
+                        }} className={`relative pl-8 border-l-2 ${phase.status === 'current' ? 'border-primary' : phase.status === 'completed' ? 'border-green-500' : 'border-muted-foreground/30'}`}>
                           <div className={`absolute -left-3 top-0 w-6 h-6 rounded-full ${config.bg} border-4 border-background flex items-center justify-center`}>
                             <StatusIcon className="w-3 h-3 text-background" />
                           </div>
@@ -599,42 +613,25 @@ const Helpdesk = () => {
                                 {phase.phase}
                               </span>
                               <h3 className="text-2xl font-bold">{phase.title}</h3>
-                              {phase.status === 'completed' && (
-                                <span className="text-xs bg-green-500/20 text-green-500 px-2 py-1 rounded-full font-semibold">✓ Completed</span>
-                              )}
-                              {phase.status === 'current' && (
-                                <span className="text-xs bg-primary/20 text-primary px-2 py-1 rounded-full font-semibold">● Current Phase</span>
-                              )}
-                              {phase.status === 'upcoming' && (
-                                <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded-full font-semibold">Upcoming</span>
-                              )}
+                              {phase.status === 'completed' && <span className="text-xs bg-green-500/20 text-green-500 px-2 py-1 rounded-full font-semibold">✓ Completed</span>}
+                              {phase.status === 'current' && <span className="text-xs bg-primary/20 text-primary px-2 py-1 rounded-full font-semibold">● Current Phase</span>}
+                              {phase.status === 'upcoming' && <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded-full font-semibold">Upcoming</span>}
                             </div>
-                            {phase.progress && (
-                              <div className="mb-3 p-3 bg-primary/10 border border-primary/30 rounded-lg">
+                            {phase.progress && <div className="mb-3 p-3 bg-primary/10 border border-primary/30 rounded-lg">
                                 <p className="text-sm font-semibold text-primary">Current Progress</p>
                                 <p className="text-sm text-muted-foreground mt-1">{phase.progress}</p>
-                              </div>
-                            )}
+                              </div>}
                             <ul className="space-y-2 mt-4">
-                              {phase.items.map((item, idx) => (
-                                <li key={idx} className="flex items-start">
-                                  {phase.status === 'completed' ? (
-                                    <CheckCircle className="w-4 h-4 text-green-500 mr-2 mt-1 flex-shrink-0" />
-                                  ) : phase.status === 'current' ? (
-                                    <div className="w-4 h-4 mr-2 mt-1 flex-shrink-0 rounded-full border-2 border-primary flex items-center justify-center">
+                              {phase.items.map((item, idx) => <li key={idx} className="flex items-start">
+                                  {phase.status === 'completed' ? <CheckCircle className="w-4 h-4 text-green-500 mr-2 mt-1 flex-shrink-0" /> : phase.status === 'current' ? <div className="w-4 h-4 mr-2 mt-1 flex-shrink-0 rounded-full border-2 border-primary flex items-center justify-center">
                                       <div className="w-2 h-2 rounded-full bg-primary" />
-                                    </div>
-                                  ) : (
-                                    <Circle className="w-4 h-4 text-muted-foreground mr-2 mt-1 flex-shrink-0" />
-                                  )}
+                                    </div> : <Circle className="w-4 h-4 text-muted-foreground mr-2 mt-1 flex-shrink-0" />}
                                   <span className={phase.status === 'completed' ? 'text-muted-foreground' : ''}>{item}</span>
-                                </li>
-                              ))}
+                                </li>)}
                             </ul>
                           </div>
-                        </motion.div>
-                      );
-                    })}
+                        </motion.div>;
+                      })}
                   </div>
 
                   {/* Long-term Vision Section */}
@@ -657,12 +654,10 @@ const Helpdesk = () => {
                         </CardHeader>
                         <CardContent>
                           <ul className="space-y-2">
-                            {longTermVision.technology.map((item, idx) => (
-                              <li key={idx} className="flex items-start">
+                            {longTermVision.technology.map((item, idx) => <li key={idx} className="flex items-start">
                                 <TrendingUp className="w-4 h-4 text-primary mr-2 mt-1 flex-shrink-0" />
                                 <span className="text-sm">{item}</span>
-                              </li>
-                            ))}
+                              </li>)}
                           </ul>
                         </CardContent>
                       </Card>
@@ -676,12 +671,10 @@ const Helpdesk = () => {
                         </CardHeader>
                         <CardContent>
                           <ul className="space-y-2">
-                            {longTermVision.globalExpansion.map((item, idx) => (
-                              <li key={idx} className="flex items-start">
+                            {longTermVision.globalExpansion.map((item, idx) => <li key={idx} className="flex items-start">
                                 <TrendingUp className="w-4 h-4 text-primary mr-2 mt-1 flex-shrink-0" />
                                 <span className="text-sm">{item}</span>
-                              </li>
-                            ))}
+                              </li>)}
                           </ul>
                         </CardContent>
                       </Card>
@@ -694,11 +687,15 @@ const Helpdesk = () => {
 
           {/* Security Audit Tab */}
           <TabsContent value="audit">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
+            <motion.div initial={{
+                opacity: 0,
+                y: 20
+              }} animate={{
+                opacity: 1,
+                y: 0
+              }} transition={{
+                duration: 0.5
+              }}>
               <Card className="bg-card border-border">
                 <CardHeader>
                   <div className="flex items-center justify-between flex-wrap gap-4">
@@ -780,22 +777,59 @@ const Helpdesk = () => {
                       Security & Safety Features
                     </h3>
                     <div className="grid md:grid-cols-2 gap-3">
-                      {[
-                        { feature: 'Ownership Control', status: 'Yes', note: 'Secure, with owner functions gated' },
-                        { feature: 'Hidden Owner/Backdoor', status: 'None found', note: 'No hidden ownership mechanisms' },
-                        { feature: 'Blacklist/Whitelist', status: 'Whitelist present', note: 'Some addresses can be excluded from fees' },
-                        { feature: 'Self-Destruct', status: 'Not found', note: 'Cannot be destroyed' },
-                        { feature: 'Burn Functionality', status: 'Yes', note: 'Only callable by owner' },
-                        { feature: 'Gas Efficiency', status: 'No abuse found', note: '' },
-                        { feature: 'Proxy/Upgradeable', status: 'No proxy used', note: '' },
-                        { feature: 'Reentrancy', status: 'Protected', note: 'On airdrop & swap functions' },
-                        { feature: 'Tax Adjustable', status: 'Yes', note: 'Buy/sell tax adjustable by owner' },
-                        { feature: 'Anti-Whale', status: 'None', note: 'Unlimited transfers allowed' },
-                        { feature: 'Trading Lock', status: 'Yes', note: 'Trading cannot begin until enabled' },
-                        { feature: 'Blacklist Risk', status: 'None', note: 'No blacklist function present' },
-                        { feature: 'Cooldown Mechanism', status: 'None', note: '' },
-                      ].map((item, idx) => (
-                        <Card key={idx} className="bg-secondary/30 border-border">
+                      {[{
+                          feature: 'Ownership Control',
+                          status: 'Yes',
+                          note: 'Secure, with owner functions gated'
+                        }, {
+                          feature: 'Hidden Owner/Backdoor',
+                          status: 'None found',
+                          note: 'No hidden ownership mechanisms'
+                        }, {
+                          feature: 'Blacklist/Whitelist',
+                          status: 'Whitelist present',
+                          note: 'Some addresses can be excluded from fees'
+                        }, {
+                          feature: 'Self-Destruct',
+                          status: 'Not found',
+                          note: 'Cannot be destroyed'
+                        }, {
+                          feature: 'Burn Functionality',
+                          status: 'Yes',
+                          note: 'Only callable by owner'
+                        }, {
+                          feature: 'Gas Efficiency',
+                          status: 'No abuse found',
+                          note: ''
+                        }, {
+                          feature: 'Proxy/Upgradeable',
+                          status: 'No proxy used',
+                          note: ''
+                        }, {
+                          feature: 'Reentrancy',
+                          status: 'Protected',
+                          note: 'On airdrop & swap functions'
+                        }, {
+                          feature: 'Tax Adjustable',
+                          status: 'Yes',
+                          note: 'Buy/sell tax adjustable by owner'
+                        }, {
+                          feature: 'Anti-Whale',
+                          status: 'None',
+                          note: 'Unlimited transfers allowed'
+                        }, {
+                          feature: 'Trading Lock',
+                          status: 'Yes',
+                          note: 'Trading cannot begin until enabled'
+                        }, {
+                          feature: 'Blacklist Risk',
+                          status: 'None',
+                          note: 'No blacklist function present'
+                        }, {
+                          feature: 'Cooldown Mechanism',
+                          status: 'None',
+                          note: ''
+                        }].map((item, idx) => <Card key={idx} className="bg-secondary/30 border-border">
                           <CardContent className="p-4">
                             <div className="flex justify-between items-start mb-1">
                               <span className="font-semibold text-sm">{item.feature}</span>
@@ -803,8 +837,7 @@ const Helpdesk = () => {
                             </div>
                             {item.note && <p className="text-xs text-muted-foreground">{item.note}</p>}
                           </CardContent>
-                        </Card>
-                      ))}
+                        </Card>)}
                     </div>
                   </div>
 
@@ -944,7 +977,7 @@ const Helpdesk = () => {
                             </div>
                             <div className="flex justify-between">
                               <span className="font-semibold">Pair Created</span>
-                              <span className="text-green-500">Yes (WBNB/BIT)</span>
+                              <span className="text-green-500">N/A (BIT/WBNB)</span>
                             </div>
                           </div>
                           <div className="space-y-3">
@@ -966,34 +999,39 @@ const Helpdesk = () => {
                       Risks / Considerations
                     </h3>
                     <div className="grid md:grid-cols-2 gap-3">
-                      {[
-                        { risk: 'Owner Controls Fees', level: 'Medium', note: 'Tax can be increased within limits (5% max each)' },
-                        { risk: 'Centralized Holdings', level: 'High', note: 'Top 5 holders = 70%+' },
-                        { risk: 'Whitelist Present', level: 'Medium', note: 'Some addresses may avoid fees' },
-                        { risk: 'Trading Lock Risk', level: 'Low', note: 'Owner must manually enable trading' },
-                        { risk: 'Swap Failure Handling', level: 'Safe', note: 'Swap errors are caught and logged, not reverted' },
-                        { risk: 'Mint Functionality', level: 'Controlled', note: 'Only internal minting, e.g., airdrop' },
-                      ].map((item, idx) => (
-                        <Card key={idx} className={`border-border ${
-                          item.level === 'High' ? 'bg-red-500/10 border-red-500/30' :
-                          item.level === 'Medium' ? 'bg-orange-500/10 border-orange-500/30' :
-                          item.level === 'Low' ? 'bg-yellow-500/10 border-yellow-500/30' :
-                          'bg-green-500/10 border-green-500/30'
-                        }`}>
+                      {[{
+                          risk: 'Owner Controls Fees',
+                          level: 'Medium',
+                          note: 'Tax can be increased within limits (5% max each)'
+                        }, {
+                          risk: 'Centralized Holdings',
+                          level: 'High',
+                          note: 'Top 5 holders = 70%+'
+                        }, {
+                          risk: 'Whitelist Present',
+                          level: 'Medium',
+                          note: 'Some addresses may avoid fees'
+                        }, {
+                          risk: 'Trading Lock Risk',
+                          level: 'Low',
+                          note: 'Owner must manually enable trading'
+                        }, {
+                          risk: 'Swap Failure Handling',
+                          level: 'Safe',
+                          note: 'Swap errors are caught and logged, not reverted'
+                        }, {
+                          risk: 'Mint Functionality',
+                          level: 'Controlled',
+                          note: 'Only internal minting, e.g., airdrop'
+                        }].map((item, idx) => <Card key={idx} className={`border-border ${item.level === 'High' ? 'bg-red-500/10 border-red-500/30' : item.level === 'Medium' ? 'bg-orange-500/10 border-orange-500/30' : item.level === 'Low' ? 'bg-yellow-500/10 border-yellow-500/30' : 'bg-green-500/10 border-green-500/30'}`}>
                           <CardContent className="p-4">
                             <div className="flex justify-between items-start mb-1">
                               <span className="font-semibold text-sm">{item.risk}</span>
-                              <span className={`text-sm font-bold ${
-                                item.level === 'High' ? 'text-red-500' :
-                                item.level === 'Medium' ? 'text-orange-500' :
-                                item.level === 'Low' ? 'text-yellow-500' :
-                                'text-green-500'
-                              }`}>{item.level}</span>
+                              <span className={`text-sm font-bold ${item.level === 'High' ? 'text-red-500' : item.level === 'Medium' ? 'text-orange-500' : item.level === 'Low' ? 'text-yellow-500' : 'text-green-500'}`}>{item.level}</span>
                             </div>
                             <p className="text-xs text-muted-foreground">{item.note}</p>
                           </CardContent>
-                        </Card>
-                      ))}
+                        </Card>)}
                     </div>
                   </div>
 
@@ -1058,11 +1096,15 @@ const Helpdesk = () => {
 
           {/* Project Direction Tab */}
           <TabsContent value="direction">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
+            <motion.div initial={{
+                opacity: 0,
+                y: 20
+              }} animate={{
+                opacity: 1,
+                y: 0
+              }} transition={{
+                duration: 0.5
+              }}>
               <Card className="bg-card border-border">
                 <CardHeader>
                   <div className="flex items-center space-x-3">
@@ -1137,11 +1179,15 @@ const Helpdesk = () => {
 
           {/* FAQ Tab */}
           <TabsContent value="faq">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
+            <motion.div initial={{
+                opacity: 0,
+                y: 20
+              }} animate={{
+                opacity: 1,
+                y: 0
+              }} transition={{
+                duration: 0.5
+              }}>
               <Card className="bg-card border-border">
                 <CardHeader>
                   <div className="flex items-center space-x-3">
@@ -1151,16 +1197,14 @@ const Helpdesk = () => {
                 </CardHeader>
                 <CardContent>
                   <Accordion type="single" collapsible className="w-full">
-                    {faqs.map((faq, index) => (
-                      <AccordionItem key={index} value={`item-${index}`}>
+                    {faqs.map((faq, index) => <AccordionItem key={index} value={`item-${index}`}>
                         <AccordionTrigger className="text-left text-lg font-semibold">
                           {faq.question}
                         </AccordionTrigger>
                         <AccordionContent className="text-muted-foreground leading-relaxed">
                           {faq.answer}
                         </AccordionContent>
-                      </AccordionItem>
-                    ))}
+                      </AccordionItem>)}
                   </Accordion>
                 </CardContent>
               </Card>
@@ -1169,11 +1213,15 @@ const Helpdesk = () => {
 
           {/* Privacy Policy Tab */}
           <TabsContent value="privacy">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
+            <motion.div initial={{
+                opacity: 0,
+                y: 20
+              }} animate={{
+                opacity: 1,
+                y: 0
+              }} transition={{
+                duration: 0.5
+              }}>
               <Card className="bg-card border-border">
                 <CardHeader>
                   <div className="flex items-center space-x-3">
@@ -1212,11 +1260,15 @@ const Helpdesk = () => {
 
           {/* Terms of Use Tab */}
           <TabsContent value="terms">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
+            <motion.div initial={{
+                opacity: 0,
+                y: 20
+              }} animate={{
+                opacity: 1,
+                y: 0
+              }} transition={{
+                duration: 0.5
+              }}>
               <Card className="bg-card border-border">
                 <CardHeader>
                   <div className="flex items-center space-x-3">
@@ -1254,11 +1306,15 @@ const Helpdesk = () => {
 
           {/* Cookie Policy Tab */}
           <TabsContent value="cookies">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
+            <motion.div initial={{
+                opacity: 0,
+                y: 20
+              }} animate={{
+                opacity: 1,
+                y: 0
+              }} transition={{
+                duration: 0.5
+              }}>
               <Card className="bg-card border-border">
                 <CardHeader>
                   <div className="flex items-center space-x-3">
@@ -1298,8 +1354,6 @@ const Helpdesk = () => {
           </div>
         </Tabs>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Helpdesk;
