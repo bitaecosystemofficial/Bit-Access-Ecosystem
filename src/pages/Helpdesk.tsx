@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Book, HelpCircle, Shield, FileText, Cookie, PieChart as PieChartIcon, TrendingUp, Target, Map } from 'lucide-react';
+import { Book, HelpCircle, Shield, FileText, Cookie, PieChart as PieChartIcon, TrendingUp, Target, Map, Gift, Users, Coins, Lock, Rocket, Globe, Vote, GraduationCap, Network, Send } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -28,22 +28,57 @@ const Helpdesk = () => {
     },
   ];
 
+  // Token Usage
+  const tokenUsage = [
+    { icon: Gift, title: 'Rewards System', description: 'Incentives for community participation and ecosystem engagement' },
+    { icon: Users, title: 'Community Engagement', description: 'Social-to-earn activities and community-driven initiatives' },
+    { icon: Lock, title: 'Staking & Rewards', description: 'Earn passive income through token staking programs' },
+    { icon: Rocket, title: 'Platform Access', description: 'Access to premium features and exclusive opportunities' },
+    { icon: TrendingUp, title: 'Ecosystem Growth', description: 'Support for platform development and expansion' },
+    { icon: Send, title: 'Cross-Border Payments', description: 'Enabling international transactions without traditional banking barriers' },
+  ];
+
+  // Key Features
+  const keyFeatures = [
+    { icon: Gift, title: 'Rewards System', description: 'Earn BIT tokens through community participation, staking, and ecosystem activities.' },
+    { icon: Vote, title: 'Community Governance', description: 'Token holders can vote on important ecosystem decisions and proposals.' },
+    { icon: GraduationCap, title: 'Educational Incentives', description: 'Learn about blockchain and earn rewards through our educational platform.' },
+    { icon: Network, title: 'Cross-Chain Compatibility', description: 'Utilize BIT tokens across multiple blockchain networks seamlessly.' },
+    { icon: Users, title: 'Community Engagement', description: 'Participate in community events, challenges and earn rewards.' },
+    { icon: Globe, title: 'Cross Border Payments', description: 'Send and receive payments globally with low fees and fast settlement times.' },
+  ];
+
   // Tokenomics Data
   const tokenAllocationData = [
-    { name: 'Community Rewards', value: 30, color: '#FFD700' },
-    { name: 'Staking Pools', value: 25, color: '#FFA500' },
-    { name: 'Team & Advisors', value: 15, color: '#FF8C00' },
-    { name: 'Development', value: 15, color: '#FF7F50' },
-    { name: 'Marketing', value: 10, color: '#FF6347' },
-    { name: 'Reserve Fund', value: 5, color: '#FF4500' },
+    { name: 'Project Development', value: 35.0, color: '#FFD700' },
+    { name: 'Company Reserved', value: 5.0, color: '#FFA500' },
+    { name: 'Token Burned', value: 10.0, color: '#FF4500' },
+    { name: 'P2P', value: 10.0, color: '#FF8C00' },
+    { name: 'Marketing', value: 10.0, color: '#FF7F50' },
+    { name: 'Liquidity CEX', value: 10.0, color: '#FF6347' },
+    { name: 'Presale', value: 5.0, color: '#FFB347' },
+    { name: 'Liquidity DEX', value: 5.0, color: '#FFA07A' },
+    { name: 'Management Team', value: 3.0, color: '#FA8072' },
+    { name: 'Foundation', value: 2.0, color: '#E9967A' },
+    { name: 'Emergency Fund', value: 2.0, color: '#F08080' },
+    { name: 'Staking', value: 1.0, color: '#CD5C5C' },
+    { name: 'Airdrops, Rewards & Bounty', value: 1.0, color: '#DC143C' },
+    { name: 'Creator Dev', value: 1.0, color: '#B22222' },
   ];
 
   const fundAllocationData = [
-    { name: 'Platform Development', value: 35, color: '#FFD700' },
-    { name: 'Marketing & Growth', value: 25, color: '#FFA500' },
-    { name: 'Operations', value: 20, color: '#FF8C00' },
-    { name: 'Legal & Compliance', value: 10, color: '#FF7F50' },
-    { name: 'Reserve', value: 10, color: '#FF6347' },
+    { name: 'Product Development', value: 17, color: '#FFD700' },
+    { name: 'Marketing', value: 14, color: '#FFA500' },
+    { name: 'Company Funds', value: 10, color: '#FF8C00' },
+    { name: 'Team', value: 9, color: '#FF7F50' },
+    { name: 'Business Operations', value: 9, color: '#FF6347' },
+    { name: 'Community Rewards', value: 8, color: '#FFB347' },
+    { name: 'Legal & Regulation', value: 6, color: '#FFA07A' },
+    { name: 'Taxes', value: 5, color: '#FA8072' },
+    { name: 'Contingency', value: 5, color: '#E9967A' },
+    { name: 'Sponsors & Partnerships', value: 5, color: '#F08080' },
+    { name: 'Advisors', value: 4, color: '#CD5C5C' },
+    { name: 'Charity Works', value: 4, color: '#DC143C' },
   ];
 
   const roadmapPhases = [
@@ -234,12 +269,53 @@ const Helpdesk = () => {
                   <div className="flex items-center space-x-3">
                     <PieChartIcon className="w-8 h-8 text-primary" />
                     <div>
-                      <CardTitle className="text-3xl">Tokenomics</CardTitle>
-                      <CardDescription>BIT Token Economics & Distribution</CardDescription>
+                      <CardTitle className="text-3xl">Token Distribution & Allocation</CardTitle>
+                      <CardDescription>The BIT Token Distribution and Allocation outlines the planned distribution of the BIT tokens to ensure a balanced, fair, and sustainable ecosystem.</CardDescription>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-8">
+                  {/* Main Applications */}
+                  <div className="p-6 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/30 rounded-lg">
+                    <h3 className="text-2xl font-bold mb-2 text-primary">Main Applications</h3>
+                    <p className="text-muted-foreground">Business, E-commerce & Community Services</p>
+                  </div>
+
+                  {/* Token Usage */}
+                  <div>
+                    <h3 className="text-2xl font-bold mb-4 text-primary">Token Usage</h3>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {tokenUsage.map((item, index) => (
+                        <Card key={index} className="bg-secondary/30 border-border hover:border-primary/50 transition-colors">
+                          <CardContent className="p-4">
+                            <item.icon className="w-8 h-8 text-primary mb-2" />
+                            <h4 className="font-bold mb-1">{item.title}</h4>
+                            <p className="text-sm text-muted-foreground">{item.description}</p>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Key Features */}
+                  <div>
+                    <h3 className="text-2xl font-bold mb-4 text-primary">Key Features</h3>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {keyFeatures.map((item, index) => (
+                        <Card key={index} className="bg-secondary/30 border-border hover:border-primary/50 transition-colors">
+                          <CardContent className="p-4 flex gap-3">
+                            <item.icon className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                            <div>
+                              <h4 className="font-bold mb-1">{item.title}</h4>
+                              <p className="text-sm text-muted-foreground">{item.description}</p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Key Metrics */}
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-4">
                       <h3 className="text-2xl font-bold text-primary">Key Metrics</h3>
@@ -306,22 +382,21 @@ const Helpdesk = () => {
               className="space-y-6"
             >
               <div className="grid md:grid-cols-2 gap-6">
-                {/* Token Allocation */}
+                {/* Token Distribution */}
                 <Card className="bg-card border-border">
                   <CardHeader>
-                    <CardTitle className="text-2xl">Token Allocation</CardTitle>
+                    <CardTitle className="text-2xl">Token Distribution</CardTitle>
                     <CardDescription>Distribution of 100M BIT tokens</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <ResponsiveContainer width="100%" height={300}>
+                    <ResponsiveContainer width="100%" height={350}>
                       <PieChart>
                         <Pie
                           data={tokenAllocationData}
                           cx="50%"
                           cy="50%"
                           labelLine={false}
-                          label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                          outerRadius={80}
+                          outerRadius={90}
                           fill="#8884d8"
                           dataKey="value"
                         >
@@ -329,39 +404,38 @@ const Helpdesk = () => {
                             <Cell key={`cell-${index}`} fill={entry.color} />
                           ))}
                         </Pie>
-                        <Tooltip />
+                        <Tooltip formatter={(value) => `${value}%`} />
                       </PieChart>
                     </ResponsiveContainer>
-                    <div className="mt-4 space-y-2">
+                    <div className="mt-4 space-y-1.5 max-h-64 overflow-y-auto">
                       {tokenAllocationData.map((item, index) => (
-                        <div key={index} className="flex items-center justify-between text-sm">
+                        <div key={index} className="flex items-center justify-between text-sm py-1">
                           <div className="flex items-center">
-                            <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: item.color }} />
-                            <span>{item.name}</span>
+                            <div className="w-3 h-3 rounded mr-2 flex-shrink-0" style={{ backgroundColor: item.color }} />
+                            <span className="text-xs">{item.name}</span>
                           </div>
-                          <span className="font-bold">{item.value}%</span>
+                          <span className="font-bold text-xs">{item.value}%</span>
                         </div>
                       ))}
                     </div>
                   </CardContent>
                 </Card>
 
-                {/* Fund Allocation */}
+                {/* Funding Allocation */}
                 <Card className="bg-card border-border">
                   <CardHeader>
-                    <CardTitle className="text-2xl">Fund Allocation</CardTitle>
+                    <CardTitle className="text-2xl">Funding Allocation</CardTitle>
                     <CardDescription>How raised funds will be used</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <ResponsiveContainer width="100%" height={300}>
+                    <ResponsiveContainer width="100%" height={350}>
                       <PieChart>
                         <Pie
                           data={fundAllocationData}
                           cx="50%"
                           cy="50%"
                           labelLine={false}
-                          label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                          outerRadius={80}
+                          outerRadius={90}
                           fill="#8884d8"
                           dataKey="value"
                         >
@@ -369,17 +443,17 @@ const Helpdesk = () => {
                             <Cell key={`cell-${index}`} fill={entry.color} />
                           ))}
                         </Pie>
-                        <Tooltip />
+                        <Tooltip formatter={(value) => `${value}%`} />
                       </PieChart>
                     </ResponsiveContainer>
-                    <div className="mt-4 space-y-2">
+                    <div className="mt-4 space-y-1.5 max-h-64 overflow-y-auto">
                       {fundAllocationData.map((item, index) => (
-                        <div key={index} className="flex items-center justify-between text-sm">
+                        <div key={index} className="flex items-center justify-between text-sm py-1">
                           <div className="flex items-center">
-                            <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: item.color }} />
-                            <span>{item.name}</span>
+                            <div className="w-3 h-3 rounded mr-2 flex-shrink-0" style={{ backgroundColor: item.color }} />
+                            <span className="text-xs">{item.name}</span>
                           </div>
-                          <span className="font-bold">{item.value}%</span>
+                          <span className="font-bold text-xs">{item.value}%</span>
                         </div>
                       ))}
                     </div>
