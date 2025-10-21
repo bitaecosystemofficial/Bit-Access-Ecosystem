@@ -141,9 +141,9 @@ const Home = () => {
             <Badge className="mb-6 text-base px-4 py-2 bg-primary/20 text-primary border-primary/50">
               Unlocking Values, Empowering Communities
             </Badge>
-            <h1 className="text-3xl md:text-5xl lg:text-8xl font-bold mb-6 bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent">
+            <h2 className="text-3xl md:text-4xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent">
               Bit Access Ecosystem
-            </h1>
+            </h2>
             <p className="text-2xl md:text-3xl mb-4 text-foreground font-semibold">
               Powering the future of digital transactions
             </p>
