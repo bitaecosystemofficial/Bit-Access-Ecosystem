@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,6 +12,7 @@ import { useCart } from '@/contexts/CartContext';
 import { useBITBalance } from '@/contexts/BITBalanceContext';
 
 const MerchandiseTab = () => {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const { addToCart } = useCart();
   const { balance, formatBalance } = useBITBalance();
@@ -129,26 +131,11 @@ const MerchandiseTab = () => {
     });
 
   const handleAddToCart = (item: typeof filteredItems[0]) => {
-    addToCart({
-      id: item.name,
-      name: item.name,
-      price: item.price,
-      usdPrice: item.usdPrice,
-      type: 'merchandise',
-      size: item.sizes[0],
-      color: item.colors[0],
-    });
-    toast({
-      title: 'Added to Cart',
-      description: `${item.name} has been added to your cart.`,
-    });
+    navigate(`/merchandise-details?item=${encodeURIComponent(item.name)}`);
   };
 
-  const handleQuickBuy = (itemName: string) => {
-    toast({
-      title: 'Quick Buy',
-      description: `Processing order for ${itemName}. Feature launching Q2 2026!`,
-    });
+  const handleQuickBuy = (item: typeof filteredItems[0]) => {
+    navigate(`/merchandise-details?item=${encodeURIComponent(item.name)}`);
   };
 
   return (
@@ -318,11 +305,11 @@ const MerchandiseTab = () => {
                       Add to Cart
                     </Button>
                     <Button
-                      onClick={() => handleQuickBuy(item.name)}
+                      onClick={() => handleQuickBuy(item)}
                       className="flex-1"
                       disabled={!item.inStock}
                     >
-                      Quick Buy
+                      View Details
                     </Button>
                   </div>
                 </CardContent>

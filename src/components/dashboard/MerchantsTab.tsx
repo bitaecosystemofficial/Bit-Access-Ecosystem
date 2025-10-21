@@ -1,17 +1,24 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Store, Check, Zap, TrendingUp, Wallet } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 import { useBITBalance } from '@/contexts/BITBalanceContext';
 
 const MerchantsTab = () => {
-  const { balance, formatBalance } = useBITBalance();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const { balance, deductBalance, formatBalance } = useBITBalance();
+  const [subscribedTier, setSubscribedTier] = useState<string | null>(null);
   
   const subscriptionTiers = [
     {
       name: 'Starter',
-      bitStake: '100,000 BIT',
+      bitStake: 100000,
+      bitStakeDisplay: '100,000 BIT',
       features: [
         'Accept USDT/USDC payments',
         'Basic analytics dashboard',
@@ -26,7 +33,8 @@ const MerchantsTab = () => {
     },
     {
       name: 'Professional',
-      bitStake: '400,000 BIT',
+      bitStake: 400000,
+      bitStakeDisplay: '400,000 BIT',
       features: [
         'All Starter features',
         'Unlimited transactions',
@@ -43,7 +51,8 @@ const MerchantsTab = () => {
     },
     {
       name: 'Enterprise',
-      bitStake: '1,000,000 BIT',
+      bitStake: 1000000,
+      bitStakeDisplay: '1,000,000 BIT',
       features: [
         'All Professional features',
         'VIP Web3 Education Programs',
@@ -60,6 +69,27 @@ const MerchantsTab = () => {
       popular: false,
     },
   ];
+
+  const handleSubscribe = (tier: typeof subscriptionTiers[0]) => {
+    const canSubscribe = deductBalance(tier.bitStake);
+    
+    if (canSubscribe) {
+      setSubscribedTier(tier.name);
+      toast({
+        title: 'Subscription Successful! 🎉',
+        description: `Subscribed to ${tier.name} plan. ${tier.bitStakeDisplay} BIT staked. Redirecting to dashboard...`,
+      });
+      setTimeout(() => {
+        navigate('/merchant-dashboard');
+      }, 1500);
+    } else {
+      toast({
+        title: 'Insufficient Balance',
+        description: `You need ${tier.bitStakeDisplay} but only have ${formatBalance(balance)} BIT`,
+        variant: 'destructive',
+      });
+    }
+  };
 
   return (
     <motion.div
@@ -114,7 +144,7 @@ const MerchantsTab = () => {
                     <Store className="w-10 h-10 text-primary mb-2" />
                     <CardTitle className="text-xl md:text-2xl">{tier.name}</CardTitle>
                     <div className="space-y-1">
-                      <p className="text-2xl md:text-3xl font-bold text-primary">{tier.bitStake}</p>
+                      <p className="text-2xl md:text-3xl font-bold text-primary">{tier.bitStakeDisplay}</p>
                       <p className="text-sm text-muted-foreground">
                         Stake Requirement
                       </p>
@@ -130,13 +160,15 @@ const MerchantsTab = () => {
                       ))}
                     </div>
                     <Button
+                      onClick={() => handleSubscribe(tier)}
+                      disabled={balance < tier.bitStake || subscribedTier === tier.name}
                       className={`w-full ${
                         tier.popular
                           ? 'bg-primary hover:bg-primary/90'
                           : 'bg-secondary hover:bg-secondary/80'
                       }`}
                     >
-                      Subscribe Now
+                      {subscribedTier === tier.name ? 'Subscribed ✓' : 'Subscribe Now'}
                     </Button>
                   </CardContent>
                 </Card>
