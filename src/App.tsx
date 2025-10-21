@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { createWeb3Modal } from '@web3modal/wagmi/react';
 import { WagmiProvider } from 'wagmi';
 import { config, projectId } from './config/web3';
+import { CartProvider } from './contexts/CartContext';
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import Overview from "./pages/Overview";
@@ -15,6 +16,7 @@ import Helpdesk from "./pages/Helpdesk";
 import Dashboard from "./pages/Dashboard";
 import CommunityForum from "./pages/CommunityForum";
 import GovernanceDetail from "./pages/GovernanceDetail";
+import Cart from "./pages/Cart";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,25 +42,28 @@ createWeb3Modal({
 const App = () => (
   <WagmiProvider config={config}>
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Layout>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/overview" element={<Overview />} />
-              <Route path="/ecosystem" element={<Ecosystem />} />
-              <Route path="/integrators" element={<Integrators />} />
-              <Route path="/helpdesk" element={<Helpdesk />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/community-forum" element={<CommunityForum />} />
-              <Route path="/governance/:id" element={<GovernanceDetail />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Layout>
-        </BrowserRouter>
-      </TooltipProvider>
+      <CartProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Layout>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/overview" element={<Overview />} />
+                <Route path="/ecosystem" element={<Ecosystem />} />
+                <Route path="/integrators" element={<Integrators />} />
+                <Route path="/helpdesk" element={<Helpdesk />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/community-forum" element={<CommunityForum />} />
+                <Route path="/governance/:id" element={<GovernanceDetail />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Layout>
+          </BrowserRouter>
+        </TooltipProvider>
+      </CartProvider>
     </QueryClientProvider>
   </WagmiProvider>
 );

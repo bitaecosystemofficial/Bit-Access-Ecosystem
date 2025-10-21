@@ -7,9 +7,11 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ShoppingBag, Shirt, Package, Truck, Star, Gift, CreditCard, Search } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useCart } from '@/contexts/CartContext';
 
 const MerchandiseTab = () => {
   const { toast } = useToast();
+  const { addToCart } = useCart();
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('name');
 
@@ -124,10 +126,19 @@ const MerchandiseTab = () => {
       }
     });
 
-  const handleAddToCart = (itemName: string, price: string) => {
+  const handleAddToCart = (item: typeof filteredItems[0]) => {
+    addToCart({
+      id: item.name,
+      name: item.name,
+      price: item.price,
+      usdPrice: item.usdPrice,
+      type: 'merchandise',
+      size: item.sizes[0],
+      color: item.colors[0],
+    });
     toast({
       title: 'Added to Cart',
-      description: `${itemName} - ${price}. Merchandise store coming soon!`,
+      description: `${item.name} has been added to your cart.`,
     });
   };
 
@@ -282,7 +293,7 @@ const MerchandiseTab = () => {
                   {/* Actions */}
                   <div className="flex gap-2 pt-2">
                     <Button
-                      onClick={() => handleAddToCart(item.name, item.price)}
+                      onClick={() => handleAddToCart(item)}
                       variant="outline"
                       className="flex-1"
                       disabled={!item.inStock}
