@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Book, HelpCircle, Shield, FileText, Cookie, PieChart as PieChartIcon, TrendingUp, Target, Map, Gift, Users, Coins, Lock, Rocket, Globe, Vote, GraduationCap, Network, Send, CheckCircle, Circle, Clock } from 'lucide-react';
+import { Book, HelpCircle, Shield, FileText, Cookie, PieChart as PieChartIcon, TrendingUp, Target, Map, Gift, Users, Coins, Lock, Rocket, Globe, Vote, GraduationCap, Network, Send, CheckCircle, Circle, Clock, FileCheck2, Download, AlertTriangle, CheckCircle2, XCircle, Repeat } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -276,6 +276,10 @@ const Helpdesk = () => {
                 <TabsTrigger value="roadmap" className="w-full justify-start">
                   <Map className="w-4 h-4 mr-2" />
                   Roadmap
+                </TabsTrigger>
+                <TabsTrigger value="audit" className="w-full justify-start">
+                  <FileCheck2 className="w-4 h-4 mr-2" />
+                  Security Audit
                 </TabsTrigger>
                 <TabsTrigger value="direction" className="w-full justify-start">
                   <Target className="w-4 h-4 mr-2" />
@@ -681,6 +685,370 @@ const Helpdesk = () => {
                           </ul>
                         </CardContent>
                       </Card>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </TabsContent>
+
+          {/* Security Audit Tab */}
+          <TabsContent value="audit">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Card className="bg-card border-border">
+                <CardHeader>
+                  <div className="flex items-center justify-between flex-wrap gap-4">
+                    <div className="flex items-center space-x-3">
+                      <FileCheck2 className="w-8 h-8 text-primary" />
+                      <div>
+                        <CardTitle className="text-3xl">Security Self-Audit</CardTitle>
+                        <CardDescription>Our commitment to security and transparency.</CardDescription>
+                      </div>
+                    </div>
+                    <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+                      <Download className="w-4 h-4 mr-2" />
+                      Download as PDF
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* Audit Summary */}
+                  <div className="p-6 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/30 rounded-lg">
+                    <h3 className="text-2xl font-bold mb-4 text-primary flex items-center gap-2">
+                      <Shield className="w-6 h-6" />
+                      Audit Summary
+                    </h3>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-start">
+                          <span className="font-semibold">Contract Name</span>
+                          <span className="text-primary font-mono">BITACCESSTOKEN</span>
+                        </div>
+                        <div className="flex justify-between items-start">
+                          <span className="font-semibold">Token Symbol</span>
+                          <span className="text-primary font-mono">BIT</span>
+                        </div>
+                        <div className="flex justify-between items-start">
+                          <span className="font-semibold">Blockchain</span>
+                          <span className="text-muted-foreground">BNB Chain</span>
+                        </div>
+                        <div className="flex justify-between items-start">
+                          <span className="font-semibold">Network</span>
+                          <span className="text-muted-foreground">Mainnet / Testnet auto-detection</span>
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-start">
+                          <span className="font-semibold">Total Supply</span>
+                          <span className="text-primary">100,000,000,000 BIT</span>
+                        </div>
+                        <div className="flex justify-between items-start text-sm">
+                          <span className="text-muted-foreground"></span>
+                          <span className="text-muted-foreground font-mono">1e11 * 10⁹</span>
+                        </div>
+                        <div className="flex justify-between items-start">
+                          <span className="font-semibold">Decimals</span>
+                          <span className="text-muted-foreground">9</span>
+                        </div>
+                        <div className="flex justify-between items-start text-sm">
+                          <span className="text-muted-foreground"></span>
+                          <span className="text-muted-foreground">Less common (vs. 18 standard), but not problematic</span>
+                        </div>
+                        <div className="flex justify-between items-start">
+                          <span className="font-semibold">Verified Source Code</span>
+                          <span className="text-green-500 flex items-center gap-1">
+                            <CheckCircle2 className="w-4 h-4" />
+                            Yes - Fully verified
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-start">
+                          <span className="font-semibold">Proxy Used</span>
+                          <span className="text-muted-foreground">No - Static logic, no upgradeability</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Security & Safety Features */}
+                  <div>
+                    <h3 className="text-2xl font-bold mb-4 text-primary flex items-center gap-2">
+                      <CheckCircle className="w-6 h-6" />
+                      Security & Safety Features
+                    </h3>
+                    <div className="grid md:grid-cols-2 gap-3">
+                      {[
+                        { feature: 'Ownership Control', status: 'Yes', note: 'Secure, with owner functions gated' },
+                        { feature: 'Hidden Owner/Backdoor', status: 'None found', note: 'No hidden ownership mechanisms' },
+                        { feature: 'Blacklist/Whitelist', status: 'Whitelist present', note: 'Some addresses can be excluded from fees' },
+                        { feature: 'Self-Destruct', status: 'Not found', note: 'Cannot be destroyed' },
+                        { feature: 'Burn Functionality', status: 'Yes', note: 'Only callable by owner' },
+                        { feature: 'Gas Efficiency', status: 'No abuse found', note: '' },
+                        { feature: 'Proxy/Upgradeable', status: 'No proxy used', note: '' },
+                        { feature: 'Reentrancy', status: 'Protected', note: 'On airdrop & swap functions' },
+                        { feature: 'Tax Adjustable', status: 'Yes', note: 'Buy/sell tax adjustable by owner' },
+                        { feature: 'Anti-Whale', status: 'None', note: 'Unlimited transfers allowed' },
+                        { feature: 'Trading Lock', status: 'Yes', note: 'Trading cannot begin until enabled' },
+                        { feature: 'Blacklist Risk', status: 'None', note: 'No blacklist function present' },
+                        { feature: 'Cooldown Mechanism', status: 'None', note: '' },
+                      ].map((item, idx) => (
+                        <Card key={idx} className="bg-secondary/30 border-border">
+                          <CardContent className="p-4">
+                            <div className="flex justify-between items-start mb-1">
+                              <span className="font-semibold text-sm">{item.feature}</span>
+                              <span className="text-primary text-sm font-mono">{item.status}</span>
+                            </div>
+                            {item.note && <p className="text-xs text-muted-foreground">{item.note}</p>}
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Tokenomics & Fee Mechanics */}
+                  <div>
+                    <h3 className="text-2xl font-bold mb-4 text-primary flex items-center gap-2">
+                      <Coins className="w-6 h-6" />
+                      Tokenomics & Fee Mechanics
+                    </h3>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <Card className="bg-secondary/30 border-border">
+                        <CardContent className="p-4 space-y-3">
+                          <div className="flex justify-between">
+                            <span className="font-semibold">Initial Fees</span>
+                            <span className="text-primary">3% Buy / 3% Sell / 0% Transfer</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="font-semibold">Fee Receiver</span>
+                            <span className="text-muted-foreground text-sm">feeReceiver address</span>
+                          </div>
+                          <p className="text-xs text-muted-foreground">Can be updated by owner</p>
+                          <div className="flex justify-between">
+                            <span className="font-semibold">Max Buy Fee</span>
+                            <span className="text-primary">5%</span>
+                          </div>
+                          <p className="text-xs text-muted-foreground">Hard limit enforced</p>
+                          <div className="flex justify-between">
+                            <span className="font-semibold">Max Sell Fee</span>
+                            <span className="text-primary">5%</span>
+                          </div>
+                          <p className="text-xs text-muted-foreground">Hard limit enforced</p>
+                        </CardContent>
+                      </Card>
+                      <Card className="bg-secondary/30 border-border">
+                        <CardContent className="p-4 space-y-3">
+                          <div className="flex justify-between">
+                            <span className="font-semibold">Total Fee Cap</span>
+                            <span className="text-primary">10%</span>
+                          </div>
+                          <p className="text-xs text-muted-foreground">Buy + Sell must be ≤ 10%</p>
+                          <div className="flex justify-between">
+                            <span className="font-semibold">Excluded From Fees</span>
+                            <span className="text-muted-foreground text-sm">Owner, contract, dead, PinkLock</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="font-semibold">Swap Threshold</span>
+                            <span className="text-muted-foreground text-sm">swapTokensAtAmount</span>
+                          </div>
+                          <p className="text-xs text-muted-foreground">Initially 0.02% of total supply</p>
+                          <div className="flex justify-between">
+                            <span className="font-semibold">Swap for ETH</span>
+                            <span className="text-green-500">Yes</span>
+                          </div>
+                          <p className="text-xs text-muted-foreground">Fee tokens swapped for ETH via DEX</p>
+                          <div className="flex justify-between">
+                            <span className="font-semibold">Manual Swap</span>
+                            <span className="text-muted-foreground">Not exposed</span>
+                          </div>
+                          <p className="text-xs text-muted-foreground">Swap handled automatically</p>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </div>
+
+                  {/* Airdrop System */}
+                  <div>
+                    <h3 className="text-2xl font-bold mb-4 text-primary flex items-center gap-2">
+                      <Gift className="w-6 h-6" />
+                      Airdrop System
+                    </h3>
+                    <Card className="bg-secondary/30 border-border">
+                      <CardContent className="p-4">
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div className="space-y-3">
+                            <div className="flex justify-between">
+                              <span className="font-semibold">Total Airdrop Supply</span>
+                              <span className="text-primary">10,000,000 BIT</span>
+                            </div>
+                            <p className="text-xs text-muted-foreground">0.01% of total</p>
+                            <div className="flex justify-between">
+                              <span className="font-semibold">Claimable Per Wallet</span>
+                              <span className="text-primary">1,000 BIT</span>
+                            </div>
+                            <p className="text-xs text-muted-foreground">One-time claim</p>
+                          </div>
+                          <div className="space-y-3">
+                            <div className="flex justify-between">
+                              <span className="font-semibold">Airdrop Wallet</span>
+                              <span className="text-muted-foreground">Configurable</span>
+                            </div>
+                            <p className="text-xs text-muted-foreground">Initially owner</p>
+                            <div className="flex justify-between">
+                              <span className="font-semibold">Claim Limits</span>
+                              <span className="text-green-500">Enforced</span>
+                            </div>
+                            <p className="text-xs text-muted-foreground">Can't exceed total, non-reentrant</p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Holders & Distribution Risk */}
+                  <div>
+                    <h3 className="text-2xl font-bold mb-4 text-primary flex items-center gap-2">
+                      <Users className="w-6 h-6" />
+                      Holders & Distribution Risk
+                    </h3>
+                    <Card className="bg-secondary/30 border-border">
+                      <CardContent className="p-4 space-y-3">
+                        <div className="flex justify-between items-center">
+                          <span className="font-semibold">Top 10 Holders Control</span>
+                          <span className="text-orange-500 font-bold">92% of supply</span>
+                        </div>
+                        <p className="text-sm text-orange-400">⚠️ This is extremely centralized.</p>
+                        <div className="flex justify-between">
+                          <span className="font-semibold">Burned Tokens</span>
+                          <span className="text-primary">10% sent to 0x...dead address</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* DEX & Liquidity */}
+                  <div>
+                    <h3 className="text-2xl font-bold mb-4 text-primary flex items-center gap-2">
+                      <Repeat className="w-6 h-6" />
+                      DEX & Liquidity
+                    </h3>
+                    <Card className="bg-secondary/30 border-border">
+                      <CardContent className="p-4">
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div className="space-y-3">
+                            <div className="flex justify-between">
+                              <span className="font-semibold">Router Supported</span>
+                              <span className="text-primary">PancakeSwap (BSC)</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="font-semibold">Pair Created</span>
+                              <span className="text-green-500">Yes (WBNB/BIT)</span>
+                            </div>
+                          </div>
+                          <div className="space-y-3">
+                            <div className="flex justify-between">
+                              <span className="font-semibold">Liquidity Lock?</span>
+                              <span className="text-muted-foreground text-sm">Not verified in code</span>
+                            </div>
+                            <p className="text-xs text-muted-foreground">May depend on third-party locker (e.g., PinkLock)</p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Risks / Considerations */}
+                  <div>
+                    <h3 className="text-2xl font-bold mb-4 text-primary flex items-center gap-2">
+                      <AlertTriangle className="w-6 h-6" />
+                      Risks / Considerations
+                    </h3>
+                    <div className="grid md:grid-cols-2 gap-3">
+                      {[
+                        { risk: 'Owner Controls Fees', level: 'Medium', note: 'Tax can be increased within limits (5% max each)' },
+                        { risk: 'Centralized Holdings', level: 'High', note: 'Top 5 holders = 70%+' },
+                        { risk: 'Whitelist Present', level: 'Medium', note: 'Some addresses may avoid fees' },
+                        { risk: 'Trading Lock Risk', level: 'Low', note: 'Owner must manually enable trading' },
+                        { risk: 'Swap Failure Handling', level: 'Safe', note: 'Swap errors are caught and logged, not reverted' },
+                        { risk: 'Mint Functionality', level: 'Controlled', note: 'Only internal minting, e.g., airdrop' },
+                      ].map((item, idx) => (
+                        <Card key={idx} className={`border-border ${
+                          item.level === 'High' ? 'bg-red-500/10 border-red-500/30' :
+                          item.level === 'Medium' ? 'bg-orange-500/10 border-orange-500/30' :
+                          item.level === 'Low' ? 'bg-yellow-500/10 border-yellow-500/30' :
+                          'bg-green-500/10 border-green-500/30'
+                        }`}>
+                          <CardContent className="p-4">
+                            <div className="flex justify-between items-start mb-1">
+                              <span className="font-semibold text-sm">{item.risk}</span>
+                              <span className={`text-sm font-bold ${
+                                item.level === 'High' ? 'text-red-500' :
+                                item.level === 'Medium' ? 'text-orange-500' :
+                                item.level === 'Low' ? 'text-yellow-500' :
+                                'text-green-500'
+                              }`}>{item.level}</span>
+                            </div>
+                            <p className="text-xs text-muted-foreground">{item.note}</p>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Verdict */}
+                  <div className="p-6 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/30 rounded-lg">
+                    <h3 className="text-2xl font-bold mb-4 text-primary flex items-center gap-2">
+                      <CheckCircle className="w-6 h-6" />
+                      Verdict
+                    </h3>
+                    <div className="space-y-4">
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <CheckCircle2 className="w-5 h-5 text-green-500" />
+                          <span className="font-bold">Security:</span>
+                          <span className="text-green-500">✅ Well-structured</span>
+                        </div>
+                        <p className="text-sm text-muted-foreground ml-7">
+                          Secure ERC20 with trading protection and no critical vulnerabilities found.
+                        </p>
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <CheckCircle2 className="w-5 h-5 text-green-500" />
+                          <span className="font-bold">Functionality:</span>
+                          <span className="text-green-500">✅ Full support</span>
+                        </div>
+                        <p className="text-sm text-muted-foreground ml-7">
+                          Complete support for fees, liquidity, and airdrops.
+                        </p>
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <AlertTriangle className="w-5 h-5 text-orange-500" />
+                          <span className="font-bold">⚠️ Caution Points:</span>
+                        </div>
+                        <ul className="text-sm text-muted-foreground ml-7 space-y-1 list-disc list-inside">
+                          <li>High token centralization among top holders.</li>
+                          <li>Owner can adjust transaction taxes (within limits).</li>
+                          <li>Whitelist allows exemptions.</li>
+                        </ul>
+                      </div>
+                      <div className="mt-6 p-4 bg-orange-500/10 border border-orange-500/30 rounded-lg">
+                        <div className="flex items-center gap-3 mb-2">
+                          <span className="text-3xl font-bold text-orange-500">7/10</span>
+                          <div>
+                            <h4 className="font-bold text-orange-500">🟡 Moderate Risk</h4>
+                            <p className="text-sm text-muted-foreground">Final Audit Rating</p>
+                          </div>
+                        </div>
+                        <p className="text-sm text-muted-foreground leading-relaxed mt-3">
+                          <strong>Reason:</strong> While the contract is generally secure and transparent, the extremely high concentration 
+                          of token supply and whitelist flexibility introduce potential manipulation or dumping risks, especially post-launch. 
+                          Investors should monitor wallet activity and ensure liquidity is locked before investing.
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
