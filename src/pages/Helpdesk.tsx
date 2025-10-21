@@ -6,10 +6,9 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Button } from '@/components/ui/button';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 const Helpdesk = () => {
-  const whitepaperSections = [
-    {
-      title: 'The Evolution of Blockchain and the Rise of BIT Access',
-      content: `As the blockchain ecosystem continued to evolve, so did the vision of BIT Access. The project set out to bridge the gap between traditional industries and blockchain technology, exploring the advantages of using cryptocurrencies and decentralized applications (DApps) in areas such as:
+  const whitepaperSections = [{
+    title: 'The Evolution of Blockchain and the Rise of BIT Access',
+    content: `As the blockchain ecosystem continued to evolve, so did the vision of BIT Access. The project set out to bridge the gap between traditional industries and blockchain technology, exploring the advantages of using cryptocurrencies and decentralized applications (DApps) in areas such as:
 
 • E-commerce: Revolutionizing online shopping by offering new payment methods, loyalty rewards, and rebate systems based on cryptocurrency.
 • Business: Providing businesses with more efficient, secure, and transparent systems for transactions, supply chain management, and customer engagement.
@@ -17,14 +16,12 @@ const Helpdesk = () => {
 • Merchant Services: Empowering merchants to adopt decentralized payment systems, gain access to global markets, and benefit from lower transaction fees.
 
 With the introduction of BIT Access, Dr. Duaso sought to create an ecosystem that provided individuals and businesses with the access and tools needed to thrive in an ever-changing digital landscape.`
-    },
-    {
-      title: 'The Road Ahead: BIT Access as a Leading Digital Asset',
-      content: `The concept of BIT Access goes beyond just cryptocurrency—it represents a shift in how digital assets and blockchain technologies will shape the future. By offering access to information, rewarding participants with tokens, and providing tools to foster innovation, BIT Access is positioned to become a leading force in the cryptocurrency and blockchain space.
+  }, {
+    title: 'The Road Ahead: BIT Access as a Leading Digital Asset',
+    content: `The concept of BIT Access goes beyond just cryptocurrency—it represents a shift in how digital assets and blockchain technologies will shape the future. By offering access to information, rewarding participants with tokens, and providing tools to foster innovation, BIT Access is positioned to become a leading force in the cryptocurrency and blockchain space.
 
 BIT Access is not just about the future of decentralized finance (DeFi); it is about a larger vision of the future of digital assets in the next generation. Dr. Duaso and the team at BIT Access believe that BIT tokens will one day be recognized as one of the top digital assets in the cryptocurrency world.`
-    }
-  ];
+  }];
 
   // Token Usage
   const tokenUsage = [{
@@ -353,12 +350,10 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                 </CardHeader>
                 <CardContent className="space-y-8">
                   {/* Evolution Section */}
-                  {whitepaperSections.map((section, index) => (
-                    <div key={index} className="pb-6 border-b border-border last:border-0">
+                  {whitepaperSections.map((section, index) => <div key={index} className="pb-6 border-b border-border last:border-0">
                       <h3 className="text-2xl font-bold mb-4 text-primary">{section.title}</h3>
                       <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{section.content}</p>
-                    </div>
-                  ))}
+                    </div>)}
 
                   {/* Introduction Section */}
                   <div className="space-y-6">
@@ -415,20 +410,27 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                     <div className="space-y-4">
                       <h3 className="text-xl font-bold">Core Values</h3>
                       <div className="grid md:grid-cols-2 gap-4">
-                        {[
-                          { title: 'Innovation', desc: 'Commitment to continuous technological advancements' },
-                          { title: 'Decentralization', desc: 'Empowering users by removing centralized control' },
-                          { title: 'Integrity', desc: 'Maintaining transparency and ethical standards' },
-                          { title: 'Empowerment', desc: 'Supporting users with decentralized financial tools' },
-                          { title: 'Sustainability', desc: 'Building solutions for long-term growth' }
-                        ].map((value, idx) => (
-                          <Card key={idx} className="bg-secondary/30">
+                        {[{
+                            title: 'Innovation',
+                            desc: 'Commitment to continuous technological advancements'
+                          }, {
+                            title: 'Decentralization',
+                            desc: 'Empowering users by removing centralized control'
+                          }, {
+                            title: 'Integrity',
+                            desc: 'Maintaining transparency and ethical standards'
+                          }, {
+                            title: 'Empowerment',
+                            desc: 'Supporting users with decentralized financial tools'
+                          }, {
+                            title: 'Sustainability',
+                            desc: 'Building solutions for long-term growth'
+                          }].map((value, idx) => <Card key={idx} className="bg-secondary/30">
                             <CardContent className="p-4">
                               <h4 className="font-bold mb-2">{value.title}</h4>
                               <p className="text-sm text-muted-foreground">{value.desc}</p>
                             </CardContent>
-                          </Card>
-                        ))}
+                          </Card>)}
                       </div>
                     </div>
                   </div>
@@ -499,19 +501,10 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                     <div className="space-y-4">
                       <h3 className="text-xl font-bold">4.2 Token Use Cases and Utility</h3>
                       <div className="grid md:grid-cols-2 gap-4">
-                        {[
-                          'E-commerce purchases with lower fees',
-                          'Access to educational content',
-                          'Staking programs for passive income',
-                          'Liquidity provision rewards',
-                          'Merchant loyalty programs',
-                          'Customer engagement incentives'
-                        ].map((use, idx) => (
-                          <div key={idx} className="flex items-start gap-2">
+                        {['E-commerce purchases with lower fees', 'Access to educational content', 'Staking programs for passive income', 'Liquidity provision rewards', 'Merchant loyalty programs', 'Customer engagement incentives'].map((use, idx) => <div key={idx} className="flex items-start gap-2">
                             <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                             <span className="text-muted-foreground">{use}</span>
-                          </div>
-                        ))}
+                          </div>)}
                       </div>
                     </div>
                   </div>
@@ -526,21 +519,12 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                         BIT Access operates on the Binance Smart Chain (BSC) for its speed, low transaction costs, and EVM compatibility.
                       </p>
                       <div className="grid md:grid-cols-2 gap-3">
-                        {[
-                          'End-to-end encryption',
-                          'Multi-signature wallets',
-                          'Cryptographic hashing',
-                          'Decentralized consensus (DPoS)',
-                          'Regular security audits',
-                          'User data protection'
-                        ].map((feature, idx) => (
-                          <Card key={idx} className="bg-secondary/30">
+                        {['End-to-end encryption', 'Multi-signature wallets', 'Cryptographic hashing', 'Decentralized consensus (DPoS)', 'Regular security audits', 'User data protection'].map((feature, idx) => <Card key={idx} className="bg-secondary/30">
                             <CardContent className="p-3 flex items-center gap-2">
                               <Shield className="w-4 h-4 text-primary flex-shrink-0" />
                               <span className="text-sm">{feature}</span>
                             </CardContent>
-                          </Card>
-                        ))}
+                          </Card>)}
                       </div>
                     </div>
 
@@ -617,19 +601,10 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                           BIT Access stands as a pioneering decentralized platform designed to revolutionize e-commerce, education, and financial services through the power of blockchain technology. Key benefits include:
                         </p>
                         <div className="grid md:grid-cols-2 gap-3 mt-4">
-                          {[
-                            'Decentralization & trustless transactions',
-                            'Tokenized incentive programs',
-                            'Scalability across industries',
-                            'Transparency & security',
-                            'Community-driven governance',
-                            'Global reach & partnerships'
-                          ].map((benefit, idx) => (
-                            <div key={idx} className="flex items-start gap-2">
+                          {['Decentralization & trustless transactions', 'Tokenized incentive programs', 'Scalability across industries', 'Transparency & security', 'Community-driven governance', 'Global reach & partnerships'].map((benefit, idx) => <div key={idx} className="flex items-start gap-2">
                               <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                               <span className="text-sm">{benefit}</span>
-                            </div>
-                          ))}
+                            </div>)}
                         </div>
                       </CardContent>
                     </Card>
@@ -1153,7 +1128,7 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                         </div>
                         <div className="flex justify-between items-start">
                           <span className="font-semibold">Proxy Used</span>
-                          <span className="text-muted-foreground">No - Static logic, no upgradeability</span>
+                          <span className="text-muted-foreground">Non-Upgradeability</span>
                         </div>
                       </div>
                     </div>
