@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Book, HelpCircle, Shield, FileText, Cookie, PieChart as PieChartIcon, TrendingUp, Target, Map, Gift, Users, Coins, Lock, Rocket, Globe, Vote, GraduationCap, Network, Send } from 'lucide-react';
+import { Book, HelpCircle, Shield, FileText, Cookie, PieChart as PieChartIcon, TrendingUp, Target, Map, Gift, Users, Coins, Lock, Rocket, Globe, Vote, GraduationCap, Network, Send, CheckCircle, Circle, Clock } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -83,46 +83,130 @@ const Helpdesk = () => {
 
   const roadmapPhases = [
     {
-      phase: 'Q1 2025',
-      title: 'Foundation',
+      phase: 'Q4 2024',
+      title: 'Foundation & Launch',
+      status: 'completed',
       items: [
-        'Launch BIT token on BSC',
-        'Deploy staking pools (180, 240, 365 days)',
-        'Open merchant subscription program',
-        'Community building & partnerships',
+        'Smart contract development and deployment',
+        'Website and platform launch',
+        'Initial community building',
+        'Security audit completion',
+        'Whitepaper release',
+      ],
+    },
+    {
+      phase: 'Q1 2025',
+      title: 'Ecosystem Expansion',
+      status: 'completed',
+      items: [
+        'Airdrop campaign launch',
+        'Staking platform activation',
+        'Community governance implementation',
+        'Partnership announcements',
+        'Marketing campaign rollout',
       ],
     },
     {
       phase: 'Q2 2025',
-      title: 'Expansion',
+      title: 'Platform Enhancement',
+      status: 'completed',
       items: [
-        'Launch on Polygon, Base, and Arbitrum',
-        'Onboard 500+ merchant partners',
         'Mobile app development',
-        'Enhanced analytics dashboard',
+        'Enhanced wallet integration',
+        'Referral program launch',
+        'Community rewards system',
+        'Trading volume milestones',
       ],
     },
     {
       phase: 'Q3 2025',
-      title: 'Scale',
+      title: 'Growth & Integration',
+      status: 'completed',
       items: [
-        'International merchant expansion',
-        'Advanced DeFi integrations',
-        'DAO governance implementation',
         'Cross-chain bridge development',
+        'Strategic partnerships expansion',
+        'NFT marketplace integration',
+        'Advanced analytics dashboard',
+        'Community voting mechanisms',
       ],
     },
     {
       phase: 'Q4 2025',
-      title: 'Maturity',
+      title: 'Pre-Exchange Preparation',
+      status: 'current',
+      progress: 'Currently finalizing DEX listing requirements and expanding market maker network',
       items: [
-        'Target 5,000+ active merchants',
-        'Launch BIT debit card',
-        'Major exchange listings',
-        'Global partnerships & integrations',
+        'DEX listing preparations and documentation',
+        'Enhanced liquidity pool management',
+        'Advanced security audits',
+        'Market maker partnerships',
+        'Global marketing campaign intensification',
+      ],
+    },
+    {
+      phase: 'Q1 2026',
+      title: 'DEX Exchange Launch 🚀',
+      status: 'upcoming',
+      items: [
+        'Official DEX listing on major platforms',
+        'PancakeSwap and Uniswap integration',
+        'Liquidity provision programs',
+        'Trading competitions and incentives',
+        'Mass adoption marketing campaign',
+      ],
+    },
+    {
+      phase: 'Q2 2026',
+      title: 'Post-DEX Growth',
+      status: 'upcoming',
+      items: [
+        'Additional DEX listings',
+        'Enhanced trading features',
+        'Institutional partnerships',
+        'Advanced DeFi integrations',
+        'Community expansion initiatives',
+      ],
+    },
+    {
+      phase: 'Q3 2026',
+      title: 'CEX Exchange Launch 🎯',
+      status: 'upcoming',
+      items: [
+        'Centralized exchange listings (Binance, KuCoin, etc.)',
+        'Fiat on-ramp integrations',
+        'Global payment partnerships',
+        'Enterprise solutions launch',
+        'Mainstream media coverage',
+      ],
+    },
+    {
+      phase: 'Q4 2026',
+      title: 'Ecosystem Maturity',
+      status: 'upcoming',
+      items: [
+        'Multi-chain expansion',
+        'Advanced governance features',
+        'Enterprise API launch',
+        'Global merchant adoption',
+        'Sustainable growth initiatives',
       ],
     },
   ];
+
+  const longTermVision = {
+    technology: [
+      'Layer 2 scaling solutions',
+      'AI-powered trading tools',
+      'Quantum-resistant security',
+      'Advanced DeFi protocols',
+    ],
+    globalExpansion: [
+      'Worldwide merchant network',
+      'Regional payment systems',
+      'International partnerships',
+      'Multi-language platform support',
+    ],
+  };
 
   const faqs = [
     {
@@ -469,6 +553,7 @@ const Helpdesk = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
+              className="space-y-6"
             >
               <Card className="bg-card border-border">
                 <CardHeader>
@@ -476,38 +561,127 @@ const Helpdesk = () => {
                     <Map className="w-8 h-8 text-primary" />
                     <div>
                       <CardTitle className="text-3xl">Roadmap</CardTitle>
-                      <CardDescription>BIT Access development timeline for 2025</CardDescription>
+                      <CardDescription>BIT Access development timeline to 2026 and beyond</CardDescription>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-6">
-                    {roadmapPhases.map((phase, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, x: -20 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        viewport={{ once: true }}
-                        className="relative pl-8 border-l-2 border-primary/30"
-                      >
-                        <div className="absolute -left-3 top-0 w-6 h-6 rounded-full bg-primary border-4 border-background" />
-                        <div className="pb-8">
-                          <div className="flex items-center mb-2">
-                            <span className="text-sm font-mono text-primary mr-3">{phase.phase}</span>
-                            <h3 className="text-2xl font-bold">{phase.title}</h3>
+                  <div className="space-y-8">
+                    {roadmapPhases.map((phase, index) => {
+                      const statusConfig = {
+                        completed: { icon: CheckCircle, color: 'text-green-500', bg: 'bg-green-500', border: 'border-green-500' },
+                        current: { icon: Clock, color: 'text-primary', bg: 'bg-primary', border: 'border-primary' },
+                        upcoming: { icon: Circle, color: 'text-muted-foreground', bg: 'bg-muted-foreground', border: 'border-muted-foreground' },
+                      };
+                      
+                      const config = statusConfig[phase.status as keyof typeof statusConfig];
+                      const StatusIcon = config.icon;
+
+                      return (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, x: -20 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                          viewport={{ once: true }}
+                          className={`relative pl-8 border-l-2 ${phase.status === 'current' ? 'border-primary' : phase.status === 'completed' ? 'border-green-500' : 'border-muted-foreground/30'}`}
+                        >
+                          <div className={`absolute -left-3 top-0 w-6 h-6 rounded-full ${config.bg} border-4 border-background flex items-center justify-center`}>
+                            <StatusIcon className="w-3 h-3 text-background" />
                           </div>
-                          <ul className="space-y-2 mt-4">
-                            {phase.items.map((item, idx) => (
+                          <div className={`pb-8 ${phase.status === 'current' ? 'bg-primary/5 -ml-4 pl-8 pr-4 py-4 rounded-lg border border-primary/20' : ''}`}>
+                            <div className="flex items-center gap-2 mb-2 flex-wrap">
+                              <span className={`text-sm font-mono ${config.color} font-bold px-2 py-1 rounded ${phase.status === 'completed' ? 'bg-green-500/10' : phase.status === 'current' ? 'bg-primary/10' : 'bg-muted/30'}`}>
+                                {phase.phase}
+                              </span>
+                              <h3 className="text-2xl font-bold">{phase.title}</h3>
+                              {phase.status === 'completed' && (
+                                <span className="text-xs bg-green-500/20 text-green-500 px-2 py-1 rounded-full font-semibold">✓ Completed</span>
+                              )}
+                              {phase.status === 'current' && (
+                                <span className="text-xs bg-primary/20 text-primary px-2 py-1 rounded-full font-semibold">● Current Phase</span>
+                              )}
+                              {phase.status === 'upcoming' && (
+                                <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded-full font-semibold">Upcoming</span>
+                              )}
+                            </div>
+                            {phase.progress && (
+                              <div className="mb-3 p-3 bg-primary/10 border border-primary/30 rounded-lg">
+                                <p className="text-sm font-semibold text-primary">Current Progress</p>
+                                <p className="text-sm text-muted-foreground mt-1">{phase.progress}</p>
+                              </div>
+                            )}
+                            <ul className="space-y-2 mt-4">
+                              {phase.items.map((item, idx) => (
+                                <li key={idx} className="flex items-start">
+                                  {phase.status === 'completed' ? (
+                                    <CheckCircle className="w-4 h-4 text-green-500 mr-2 mt-1 flex-shrink-0" />
+                                  ) : phase.status === 'current' ? (
+                                    <div className="w-4 h-4 mr-2 mt-1 flex-shrink-0 rounded-full border-2 border-primary flex items-center justify-center">
+                                      <div className="w-2 h-2 rounded-full bg-primary" />
+                                    </div>
+                                  ) : (
+                                    <Circle className="w-4 h-4 text-muted-foreground mr-2 mt-1 flex-shrink-0" />
+                                  )}
+                                  <span className={phase.status === 'completed' ? 'text-muted-foreground' : ''}>{item}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Long-term Vision Section */}
+                  <div className="mt-12 pt-8 border-t border-border">
+                    <h3 className="text-3xl font-bold mb-4 flex items-center gap-2">
+                      <Rocket className="w-8 h-8 text-primary" />
+                      Beyond 2026
+                    </h3>
+                    <p className="text-muted-foreground mb-6">
+                      Our long-term vision extends beyond 2026 as we continue to innovate and expand the BIT Access ecosystem:
+                    </p>
+                    
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/30">
+                        <CardHeader>
+                          <CardTitle className="flex items-center gap-2">
+                            <Rocket className="w-6 h-6 text-primary" />
+                            Technology Innovation
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <ul className="space-y-2">
+                            {longTermVision.technology.map((item, idx) => (
                               <li key={idx} className="flex items-start">
                                 <TrendingUp className="w-4 h-4 text-primary mr-2 mt-1 flex-shrink-0" />
-                                <span className="text-muted-foreground">{item}</span>
+                                <span className="text-sm">{item}</span>
                               </li>
                             ))}
                           </ul>
-                        </div>
-                      </motion.div>
-                    ))}
+                        </CardContent>
+                      </Card>
+
+                      <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/30">
+                        <CardHeader>
+                          <CardTitle className="flex items-center gap-2">
+                            <Globe className="w-6 h-6 text-primary" />
+                            Global Expansion
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <ul className="space-y-2">
+                            {longTermVision.globalExpansion.map((item, idx) => (
+                              <li key={idx} className="flex items-start">
+                                <TrendingUp className="w-4 h-4 text-primary mr-2 mt-1 flex-shrink-0" />
+                                <span className="text-sm">{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </CardContent>
+                      </Card>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
