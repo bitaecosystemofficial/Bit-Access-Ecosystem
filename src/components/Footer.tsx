@@ -117,9 +117,7 @@ const Footer = () => {
 
         <div className="mt-12 pt-8 border-t border-border">
           <div className="flex flex-col items-start space-y-2">
-            <p className="text-sm text-muted-foreground">
-              © 2024 - 2025 Bit Access. All Rights Reserved
-            </p>
+            <p className="text-sm text-muted-foreground">Copyright © 2024 - 2025. Bit Access Ecosystem. All Rights Reserved</p>
             <p className="text-sm text-muted-foreground">
               Powered by Web3Modal + WalletConnect
             </p>
