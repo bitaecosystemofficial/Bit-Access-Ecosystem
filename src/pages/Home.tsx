@@ -156,7 +156,7 @@ const Home = () => {
                 onClick={() => navigate("/ecosystem")}
                 className="bg-primary text-primary-foreground hover:bg-primary/90 text-lg px-8 py-6"
               >
-                Explore Ecosystem
+                Explore
                 <ArrowRight className="ml-2" size={20} />
               </Button>
               <Button
