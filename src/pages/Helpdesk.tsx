@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Book, HelpCircle, Shield, FileText, Cookie, PieChart as PieChartIcon, TrendingUp, Target, Map, Gift, Users, Coins, Lock, Rocket, Globe, Vote, GraduationCap, Network, Send, CheckCircle, Circle, Clock, FileCheck2, Download, AlertTriangle, CheckCircle2, XCircle, Repeat } from 'lucide-react';
+import { Book, HelpCircle, Shield, FileText, Cookie, PieChart as PieChartIcon, TrendingUp, Target, Map, Gift, Users, Coins, Lock, Rocket, Globe, Vote, GraduationCap, Network, Send, CheckCircle, Circle, Clock, FileCheck2, Download, AlertTriangle, CheckCircle2, XCircle, Repeat, Mail, Facebook, Twitter, MessageCircle, Github } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -652,42 +652,89 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                     <div className="space-y-4">
                       <h3 className="text-xl font-bold">Contact Us</h3>
                       <div className="grid md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <p className="text-sm font-semibold">Website</p>
-                          <a href="https://bitaecosystem.org" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm">
-                            https://bitaecosystem.org
-                          </a>
-                        </div>
-                        <div className="space-y-2">
-                          <p className="text-sm font-semibold">Email</p>
-                          <a href="mailto:support@bitaecosystem.org" className="text-primary hover:underline text-sm">
-                            support@bitaecosystem.org
-                          </a>
-                        </div>
-                        <div className="space-y-2">
-                          <p className="text-sm font-semibold">Facebook</p>
-                          <a href="https://www.facebook.com/bitaecosystemofficial" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm">
-                            @bitaecosystemofficial
-                          </a>
-                        </div>
-                        <div className="space-y-2">
-                          <p className="text-sm font-semibold">Twitter</p>
-                          <a href="https://x.com/bitaecosystem" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm">
-                            @bitaecosystem
-                          </a>
-                        </div>
-                        <div className="space-y-2">
-                          <p className="text-sm font-semibold">Telegram</p>
-                          <a href="https://t.me/bitaecosystemofficial" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm">
-                            @bitaecosystemofficial
-                          </a>
-                        </div>
-                        <div className="space-y-2">
-                          <p className="text-sm font-semibold">GitHub</p>
-                          <a href="https://www.github.com/bitaecosystemofficial" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm">
-                            @bitaecosystemofficial
-                          </a>
-                        </div>
+                        <Card className="bg-secondary/30 border-border hover:border-primary/50 transition-colors">
+                          <CardContent className="p-4">
+                            <div className="flex items-center gap-3">
+                              <Globe className="w-5 h-5 text-primary flex-shrink-0" />
+                              <div className="space-y-1">
+                                <p className="text-sm font-semibold">Website</p>
+                                <a href="https://bitaecosystem.org" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm break-all">
+                                  https://bitaecosystem.org
+                                </a>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                        
+                        <Card className="bg-secondary/30 border-border hover:border-primary/50 transition-colors">
+                          <CardContent className="p-4">
+                            <div className="flex items-center gap-3">
+                              <Mail className="w-5 h-5 text-primary flex-shrink-0" />
+                              <div className="space-y-1">
+                                <p className="text-sm font-semibold">Email</p>
+                                <a href="mailto:support@bitaecosystem.org" className="text-primary hover:underline text-sm break-all">
+                                  support@bitaecosystem.org
+                                </a>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                        
+                        <Card className="bg-secondary/30 border-border hover:border-primary/50 transition-colors">
+                          <CardContent className="p-4">
+                            <div className="flex items-center gap-3">
+                              <Facebook className="w-5 h-5 text-primary flex-shrink-0" />
+                              <div className="space-y-1">
+                                <p className="text-sm font-semibold">Facebook</p>
+                                <a href="https://www.facebook.com/bitaecosystemofficial" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm">
+                                  @bitaecosystemofficial
+                                </a>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                        
+                        <Card className="bg-secondary/30 border-border hover:border-primary/50 transition-colors">
+                          <CardContent className="p-4">
+                            <div className="flex items-center gap-3">
+                              <Twitter className="w-5 h-5 text-primary flex-shrink-0" />
+                              <div className="space-y-1">
+                                <p className="text-sm font-semibold">Twitter</p>
+                                <a href="https://x.com/bitaecosystem" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm">
+                                  @bitaecosystem
+                                </a>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                        
+                        <Card className="bg-secondary/30 border-border hover:border-primary/50 transition-colors">
+                          <CardContent className="p-4">
+                            <div className="flex items-center gap-3">
+                              <MessageCircle className="w-5 h-5 text-primary flex-shrink-0" />
+                              <div className="space-y-1">
+                                <p className="text-sm font-semibold">Telegram</p>
+                                <a href="https://t.me/bitaecosystemofficial" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm">
+                                  @bitaecosystemofficial
+                                </a>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                        
+                        <Card className="bg-secondary/30 border-border hover:border-primary/50 transition-colors">
+                          <CardContent className="p-4">
+                            <div className="flex items-center gap-3">
+                              <Github className="w-5 h-5 text-primary flex-shrink-0" />
+                              <div className="space-y-1">
+                                <p className="text-sm font-semibold">GitHub</p>
+                                <a href="https://www.github.com/bitaecosystemofficial" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm">
+                                  @bitaecosystemofficial
+                                </a>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
                       </div>
                     </div>
                   </div>
@@ -765,7 +812,11 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                         </div>
                         <div className="flex justify-between p-3 bg-secondary/30 rounded">
                           <span className="text-muted-foreground">Total Supply:</span>
-                          <span className="font-bold text-primary">100,000,000 BIT</span>
+                          <span className="font-bold text-primary">100,000,000,000 BIT</span>
+                        </div>
+                        <div className="flex justify-between p-3 bg-secondary/30 rounded">
+                          <span className="text-muted-foreground">Decimals:</span>
+                          <span className="font-bold text-primary">9</span>
                         </div>
                         <div className="flex justify-between p-3 bg-secondary/30 rounded">
                           <span className="text-muted-foreground">Initial Price:</span>
