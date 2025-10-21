@@ -390,35 +390,125 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
   };
   const faqs = [
     {
+      question: "What is BIT Access?",
+      answer: "BIT Access is a Web3 rewards platform that bridges traditional commerce with blockchain technology. Merchants accept USDT/USDC stablecoins for payments, and customers automatically earn BIT tokens as rewards for their purchases."
+    },
+    {
       question: "How do I connect my wallet?",
-      answer:
-        'Click the "Connect Wallet" button in the navigation bar and select your preferred wallet provider. Follow the prompts to authorize the connection. Once connected, you\'ll be redirected to the dashboard.',
+      answer: 'Click the "Connect Wallet" button in the navigation bar and select your preferred wallet provider (MetaMask, Coinbase Wallet, WalletConnect, etc.). Follow the prompts to authorize the connection. Once connected, you\'ll be redirected to the dashboard.'
     },
     {
       question: "What wallets are supported?",
-      answer:
-        "We support all major Web3 wallets including MetaMask, Coinbase Wallet, WalletConnect, and more through our Web3Modal integration.",
+      answer: "We support all major Web3 wallets including MetaMask, Coinbase Wallet, Trust Wallet, WalletConnect, and more through our Web3Modal integration. Any wallet compatible with BNB Chain can be used."
     },
     {
       question: "How do I earn BIT tokens?",
-      answer:
-        "You earn BIT tokens automatically when you pay with USDT/USDC at participating merchants. Additionally, you can purchase BIT directly or stake your tokens to earn up to 25% APY.",
+      answer: "You earn BIT tokens automatically when you pay with USDT/USDC at participating merchants. Additionally, you can purchase BIT directly through DEX/CEX exchanges, participate in airdrops, join staking programs, or engage in community activities and bounty campaigns."
     },
     {
       question: "What payment methods do merchants accept?",
-      answer:
-        "Merchants accept USDT and USDC stablecoins on BSC (with Polygon, Base, and Arbitrum coming soon). Customers receive BIT tokens as rewards for their purchases.",
+      answer: "Merchants accept USDT and USDC stablecoins on BSC (BNB Chain). Support for Polygon, Base, and Arbitrum networks is planned for Q2 2026. Customers receive BIT tokens as rewards for their purchases."
     },
     {
       question: "How does staking work?",
-      answer:
-        "You can lock your BIT tokens in one of three staking pools: 180 days (12% APY), 240 days (18% APY), or 365 days (25% APY). Rewards are calculated daily and distributed at maturity.",
+      answer: "You can lock your BIT tokens in one of three staking pools: 180 days (12% APY), 240 days (18% APY), or 365 days (25% APY). Rewards are calculated daily and distributed at maturity. The minimum staking amount is 1,000 BIT tokens."
     },
     {
       question: "How do I become a merchant partner?",
-      answer:
-        "Visit the Dashboard and navigate to the Merchants Subscription tab. Choose a subscription plan (Starter, Professional, or Enterprise) and complete the registration process.",
+      answer: "Visit the Dashboard and navigate to the Merchants Subscription tab. Choose a subscription plan (Starter at $99/month, Professional at $299/month, or Enterprise at $999/month) and complete the registration process. You'll receive integration support and marketing materials."
     },
+    {
+      question: "What is the total supply of BIT tokens?",
+      answer: "The total supply is 100,000,000,000 (100 billion) BIT tokens with 9 decimals. 10% of tokens have been burned, reducing the circulating supply. The token is deployed on BNB Chain (BSC) with contract address: 0xd3bde17ebd27739cf5505cd58ecf31cb628e469c."
+    },
+    {
+      question: "What are the transaction fees?",
+      answer: "BIT token has a 3% buy tax and 3% sell tax. Transfer fees are 0%. The maximum total fee cap is 10% (buy + sell combined). Fees are used to support ecosystem development, marketing, and liquidity provision."
+    },
+    {
+      question: "Can I trade BIT tokens now?",
+      answer: "BIT tokens will be listed on major DEX platforms (PancakeSwap, Uniswap) in Q1 2026, followed by CEX listings (Binance, KuCoin, etc.) in Q3 2026. Currently, tokens can be acquired through presale, airdrops, and P2P transactions."
+    },
+    {
+      question: "How do I claim airdrop tokens?",
+      answer: "Visit the Dashboard and navigate to the Airdrop section. Connect your wallet and click 'Claim Airdrop' if you're eligible. Each wallet can claim 1,000 BIT tokens one time. Total airdrop supply is 10,000,000 BIT (0.01% of total supply)."
+    },
+    {
+      question: "What is the reward percentage for purchases?",
+      answer: "Customers typically earn 1-5% of their purchase value in BIT tokens, depending on the merchant and promotion. Reward rates vary by merchant subscription tier and special campaigns. Check individual merchant pages for specific reward rates."
+    },
+    {
+      question: "How do I withdraw my staking rewards?",
+      answer: "Staking rewards are automatically distributed to your wallet at the end of the staking period. You cannot withdraw rewards early. Once the lock period ends, both principal and rewards are released to your connected wallet address."
+    },
+    {
+      question: "Is BIT Access available in my country?",
+      answer: "BIT Access is available globally with some restrictions. We comply with local regulations and may not be available in certain jurisdictions. Check our Terms of Service for restricted countries. The platform supports multiple languages for global accessibility."
+    },
+    {
+      question: "What are the merchant subscription benefits?",
+      answer: "Merchants receive payment processing integration, customer rewards management, analytics dashboard, marketing materials, technical support, and access to our global customer network. Higher tiers include custom integrations and dedicated account managers."
+    },
+    {
+      question: "How secure is the BIT token smart contract?",
+      answer: "The BIT token smart contract has undergone a comprehensive self-audit. It features non-upgradeable architecture, verified source code, reentrancy protection, no hidden backdoors, and transparent fee mechanics with hard-coded limits (max 5% buy/sell fee)."
+    },
+    {
+      question: "Can I lose my staked tokens?",
+      answer: "No, staked tokens are securely locked in the smart contract and automatically returned to you at the end of the staking period along with rewards. However, you cannot withdraw early. Always ensure you're interacting with the official BIT Access staking contract."
+    },
+    {
+      question: "What happens if I lose access to my wallet?",
+      answer: "BIT Access cannot recover lost wallets or private keys as we operate on a non-custodial model. Always backup your seed phrase securely. We recommend using hardware wallets for large amounts and never sharing your private keys with anyone."
+    },
+    {
+      question: "How does governance work?",
+      answer: "BIT token holders can participate in community governance by voting on proposals related to platform development, fee adjustments, partnership decisions, and ecosystem initiatives. Voting power is proportional to token holdings. A DAO structure will be fully implemented in Q4 2026."
+    },
+    {
+      question: "What are the future roadmap milestones?",
+      answer: "Key milestones include: DEX listing (Q1 2026), multi-chain expansion (Q2 2026), CEX listings (Q3 2026), enterprise API launch (Q4 2026), and long-term goals of Layer 2 scaling, AI-powered tools, and global merchant network expansion."
+    },
+    {
+      question: "How do I report bugs or security issues?",
+      answer: "For security vulnerabilities, email security@bitaecosystem.org. For general bugs, contact support@bitaecosystem.org or join our Telegram community. We have a bug bounty program rewarding responsible disclosure of security issues."
+    },
+    {
+      question: "What is the token burning mechanism?",
+      answer: "10% of total token supply has already been burned. The smart contract includes a burn function callable only by the owner. Additional token burns may occur based on community governance decisions to reduce circulating supply and increase scarcity."
+    },
+    {
+      question: "Can merchants set custom reward rates?",
+      answer: "Yes, merchants can customize reward rates within guidelines based on their subscription tier. Professional and Enterprise merchants have more flexibility. Custom promotional campaigns can offer higher reward rates for limited periods to drive customer engagement."
+    },
+    {
+      question: "How do cross-border payments work?",
+      answer: "BIT Access enables instant cross-border payments using stablecoins (USDT/USDC) without traditional banking intermediaries. Transactions settle in real-time on the blockchain with minimal fees, making international commerce accessible and affordable for all participants."
+    },
+    {
+      question: "What educational resources are available?",
+      answer: "We offer comprehensive educational content including video tutorials on our YouTube channel, written guides in our documentation, community workshops, webinars for merchants, and incentive-based learning programs where you can earn BIT tokens while learning about blockchain."
+    },
+    {
+      question: "How do I contact customer support?",
+      answer: "Contact us via email at support@bitaecosystem.org, join our Telegram community at t.me/bitaecosystemofficial, or follow us on Twitter @bitaecosystem. We also have a dedicated helpdesk portal with ticketing system for merchant partners."
+    },
+    {
+      question: "What makes BIT Access different from other reward platforms?",
+      answer: "BIT Access uniquely combines real-world merchant adoption with blockchain rewards, using stablecoins for payments (reducing crypto volatility risk), offering generous staking APY up to 25%, and building a sustainable ecosystem with transparent tokenomics and community governance."
+    },
+    {
+      question: "Can I transfer BIT tokens between wallets?",
+      answer: "Yes, BIT tokens are freely transferable between wallets with 0% transfer fee. Only buy and sell transactions (on DEX/CEX) incur the 3% tax. Ensure you're sending to a BNB Chain (BSC) compatible wallet address."
+    },
+    {
+      question: "How is liquidity managed?",
+      answer: "10% of token allocation is dedicated to DEX liquidity and 10% to CEX liquidity. Liquidity is locked through reputable services like PinkLock to ensure stability. Market maker partnerships are being established for Q4 2025 to enhance trading depth and price stability."
+    },
+    {
+      question: "What is the roadmap for NFT marketplace integration?",
+      answer: "NFT marketplace integration is planned for Q3 2025, enabling users to trade digital collectibles, merchant loyalty NFTs, and exclusive rewards using BIT tokens. This will create additional utility and engagement opportunities within the ecosystem."
+    }
   ];
   return (
     <div className="min-h-screen pt-24 pb-16">
@@ -2051,28 +2141,158 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                       </div>
                     </CardHeader>
                     <CardContent className="prose prose-invert max-w-none">
-                      <h3 className="text-xl font-bold text-primary mb-3">Data Collection</h3>
-                      <p className="text-muted-foreground mb-6">
-                        We collect minimal data necessary to provide our services. Wallet addresses and transaction data
-                        are stored on the blockchain and are publicly accessible.
+                      <p className="text-sm text-muted-foreground mb-6">
+                        <strong>Last Updated:</strong> January 2025
                       </p>
 
-                      <h3 className="text-xl font-bold text-primary mb-3">Data Usage</h3>
+                      <h3 className="text-xl font-bold text-primary mb-3">1. Introduction</h3>
                       <p className="text-muted-foreground mb-6">
-                        Your data is used solely to facilitate transactions and improve our services. We never sell your
-                        personal information to third parties.
+                        BIT Access ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our decentralized Web3 rewards platform. Please read this privacy policy carefully.
                       </p>
 
-                      <h3 className="text-xl font-bold text-primary mb-3">Security</h3>
+                      <h3 className="text-xl font-bold text-primary mb-3">2. Information We Collect</h3>
+                      <p className="text-muted-foreground mb-4">
+                        We collect minimal data necessary to provide our services:
+                      </p>
+                      <ul className="list-disc list-inside text-muted-foreground mb-6 space-y-2">
+                        <li><strong>Blockchain Data:</strong> Wallet addresses, transaction hashes, token balances, and smart contract interactions are stored on the blockchain and are publicly accessible</li>
+                        <li><strong>Technical Data:</strong> IP addresses, browser type, device information, and usage analytics to improve our platform</li>
+                        <li><strong>Merchant Information:</strong> Business name, contact details, and payment preferences for merchant partners</li>
+                        <li><strong>Communication Data:</strong> Email addresses and messages when you contact our support team</li>
+                        <li><strong>Cookies and Tracking:</strong> Session data, preferences, and analytics through cookies (see our Cookie Policy)</li>
+                      </ul>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">3. How We Use Your Information</h3>
+                      <p className="text-muted-foreground mb-4">
+                        Your data is used solely to facilitate transactions and improve our services:
+                      </p>
+                      <ul className="list-disc list-inside text-muted-foreground mb-6 space-y-2">
+                        <li>Processing BIT token transactions and rewards distribution</li>
+                        <li>Managing staking programs and calculating APY rewards</li>
+                        <li>Facilitating merchant-customer payment transactions</li>
+                        <li>Providing customer support and responding to inquiries</li>
+                        <li>Improving platform features and user experience</li>
+                        <li>Sending important updates about the platform (you can opt-out of marketing)</li>
+                        <li>Detecting and preventing fraud, security breaches, and technical issues</li>
+                        <li>Complying with legal obligations and regulatory requirements</li>
+                      </ul>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">4. Data Sharing and Disclosure</h3>
+                      <p className="text-muted-foreground mb-4">
+                        We never sell your personal information to third parties. We may share data in limited circumstances:
+                      </p>
+                      <ul className="list-disc list-inside text-muted-foreground mb-6 space-y-2">
+                        <li><strong>Blockchain Network:</strong> All on-chain transactions are publicly visible on the BNB Chain blockchain</li>
+                        <li><strong>Service Providers:</strong> Third-party analytics tools (Google Analytics) and infrastructure providers</li>
+                        <li><strong>Legal Requirements:</strong> When required by law, court order, or government regulation</li>
+                        <li><strong>Business Transfers:</strong> In case of merger, acquisition, or asset sale (you will be notified)</li>
+                        <li><strong>With Your Consent:</strong> Any other sharing will require your explicit permission</li>
+                      </ul>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">5. Security Measures</h3>
+                      <p className="text-muted-foreground mb-4">
+                        We employ industry-standard security measures to protect your data:
+                      </p>
+                      <ul className="list-disc list-inside text-muted-foreground mb-6 space-y-2">
+                        <li>All sensitive operations are executed on-chain with cryptographic verification</li>
+                        <li>SSL/TLS encryption for all data transmitted to and from our platform</li>
+                        <li>Regular security audits of our smart contracts and infrastructure</li>
+                        <li>Multi-signature wallets for managing platform funds</li>
+                        <li>Access controls and authentication mechanisms for administrative functions</li>
+                        <li>Regular backups and disaster recovery procedures</li>
+                        <li>Employee training on data protection and security best practices</li>
+                      </ul>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">6. Data Retention</h3>
                       <p className="text-muted-foreground mb-6">
-                        We employ industry-standard security measures to protect your data. All sensitive operations are
-                        executed on-chain with cryptographic verification.
+                        We retain your information only as long as necessary to provide services and comply with legal obligations. Blockchain data is permanent and immutable. Off-chain data (emails, analytics) is retained for 2 years or until you request deletion. Merchant account data is kept for 5 years for regulatory compliance.
                       </p>
 
-                      <h3 className="text-xl font-bold text-primary mb-3">Your Rights</h3>
+                      <h3 className="text-xl font-bold text-primary mb-3">7. Your Privacy Rights</h3>
+                      <p className="text-muted-foreground mb-4">
+                        You have the following rights regarding your data:
+                      </p>
+                      <ul className="list-disc list-inside text-muted-foreground mb-6 space-y-2">
+                        <li><strong>Access:</strong> Request a copy of the personal data we hold about you</li>
+                        <li><strong>Correction:</strong> Request correction of inaccurate or incomplete information</li>
+                        <li><strong>Deletion:</strong> Request deletion of your personal data (subject to legal obligations)</li>
+                        <li><strong>Portability:</strong> Request transfer of your data to another service</li>
+                        <li><strong>Opt-Out:</strong> Unsubscribe from marketing communications at any time</li>
+                        <li><strong>Object:</strong> Object to processing of your data for certain purposes</li>
+                        <li><strong>Withdraw Consent:</strong> Withdraw consent for data processing where applicable</li>
+                      </ul>
+                      <p className="text-muted-foreground mb-6">
+                        To exercise these rights, contact our support team at support@bitaecosystem.org. We will respond within 30 days.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">8. International Data Transfers</h3>
+                      <p className="text-muted-foreground mb-6">
+                        BIT Access operates globally. Your data may be transferred to and processed in countries other than your country of residence. We ensure appropriate safeguards are in place when transferring data internationally, including compliance with GDPR for EU users and adherence to data protection frameworks.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">9. Children's Privacy</h3>
+                      <p className="text-muted-foreground mb-6">
+                        Our services are not intended for individuals under 18 years of age. We do not knowingly collect personal information from children. If we discover that we have collected data from a child, we will delete it immediately. Parents who believe their child has provided information should contact us.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">10. Third-Party Links</h3>
+                      <p className="text-muted-foreground mb-6">
+                        Our platform may contain links to third-party websites, including DEX platforms, wallets, and merchant sites. We are not responsible for the privacy practices of these external sites. We encourage you to review their privacy policies before providing any personal information.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">11. Analytics and Tracking</h3>
+                      <p className="text-muted-foreground mb-6">
+                        We use analytics tools (Google Analytics, blockchain explorers) to understand how users interact with our platform. This helps us improve features and user experience. You can opt-out of analytics tracking through your browser settings or privacy tools.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">12. Marketing Communications</h3>
+                      <p className="text-muted-foreground mb-6">
+                        We may send you promotional emails about new features, special offers, and ecosystem updates. You can unsubscribe at any time by clicking the unsubscribe link in emails or contacting support. Transactional emails (security alerts, transaction confirmations) cannot be opted out of.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">13. Data Breach Notification</h3>
+                      <p className="text-muted-foreground mb-6">
+                        In the unlikely event of a data breach that affects your personal information, we will notify you within 72 hours via email and provide details about the breach, potential impact, and steps we're taking to address it. We will also report to relevant regulatory authorities as required by law.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">14. California Privacy Rights (CCPA)</h3>
+                      <p className="text-muted-foreground mb-6">
+                        California residents have additional rights under CCPA including the right to know what personal information is collected, the right to delete personal information, the right to opt-out of sale of personal information, and the right to non-discrimination for exercising privacy rights. We do not sell personal information.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">15. GDPR Compliance (EU Users)</h3>
+                      <p className="text-muted-foreground mb-6">
+                        For users in the European Economic Area, we comply with GDPR requirements including lawful basis for processing (consent, contract, legitimate interest), data minimization, purpose limitation, and the appointment of a Data Protection Officer where required. Contact dpo@bitaecosystem.org for GDPR-related inquiries.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">16. Automated Decision Making</h3>
+                      <p className="text-muted-foreground mb-6">
+                        We do not use automated decision-making or profiling that produces legal effects or similarly significantly affects you. Automated processes (like reward calculations) are transparent and based on predetermined algorithms outlined in our documentation.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">17. Changes to Privacy Policy</h3>
+                      <p className="text-muted-foreground mb-6">
+                        We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated "Last Updated" date. Material changes will be communicated via email or platform notification. Continued use of our services after changes constitutes acceptance of the updated policy.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">18. Contact Information</h3>
+                      <p className="text-muted-foreground mb-6">
+                        For questions, concerns, or requests regarding this Privacy Policy or your personal data, please contact us at:
+                        <br /><br />
+                        <strong>Email:</strong> support@bitaecosystem.org<br />
+                        <strong>Data Protection Officer:</strong> dpo@bitaecosystem.org<br />
+                        <strong>Website:</strong> https://bitaecosystem.org<br />
+                        <strong>Telegram:</strong> @bitaecosystemofficial
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">19. Regulatory Compliance</h3>
+                      <p className="text-muted-foreground mb-6">
+                        We strive to comply with all applicable data protection laws including GDPR (Europe), CCPA (California), LGPD (Brazil), and other regional regulations. We work with legal advisors to ensure ongoing compliance as regulations evolve.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">20. Your Consent</h3>
                       <p className="text-muted-foreground">
-                        You have the right to access, modify, or delete your data at any time. Contact our support team
-                        for assistance with data-related requests.
+                        By using BIT Access platform, you consent to this Privacy Policy and agree to its terms. If you do not agree, please discontinue use of our services. You can withdraw consent at any time by contacting us, though this may limit your ability to use certain features.
                       </p>
                     </CardContent>
                   </Card>
@@ -2102,28 +2322,175 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                       </div>
                     </CardHeader>
                     <CardContent className="prose prose-invert max-w-none">
-                      <h3 className="text-xl font-bold text-primary mb-3">Acceptance of Terms</h3>
-                      <p className="text-muted-foreground mb-6">
-                        By accessing and using Bit Access, you accept and agree to be bound by these terms and
-                        conditions.
+                      <p className="text-sm text-muted-foreground mb-6">
+                        <strong>Last Updated:</strong> January 2025
                       </p>
 
-                      <h3 className="text-xl font-bold text-primary mb-3">User Responsibilities</h3>
+                      <h3 className="text-xl font-bold text-primary mb-3">1. Acceptance of Terms</h3>
                       <p className="text-muted-foreground mb-6">
-                        Users are responsible for maintaining the security of their wallets and private keys. Bit Access
-                        is not liable for losses due to user negligence.
+                        By accessing and using BIT Access platform, website, services, or purchasing BIT tokens, you accept and agree to be bound by these Terms of Use ("Terms"). If you do not agree to these Terms, do not use our services. These Terms constitute a legally binding agreement between you and BIT Access.
                       </p>
 
-                      <h3 className="text-xl font-bold text-primary mb-3">Token Usage</h3>
+                      <h3 className="text-xl font-bold text-primary mb-3">2. Eligibility</h3>
                       <p className="text-muted-foreground mb-6">
-                        BIT tokens are utility tokens for use within our ecosystem. They are not securities and do not
-                        represent ownership or investment in the company.
+                        You must be at least 18 years old and legally capable of entering into binding contracts to use BIT Access. By using our services, you represent and warrant that you meet these requirements. Users from restricted jurisdictions (as outlined in Section 19) are prohibited from using our platform.
                       </p>
 
-                      <h3 className="text-xl font-bold text-primary mb-3">Limitation of Liability</h3>
+                      <h3 className="text-xl font-bold text-primary mb-3">3. User Responsibilities</h3>
+                      <p className="text-muted-foreground mb-4">
+                        Users are responsible for:
+                      </p>
+                      <ul className="list-disc list-inside text-muted-foreground mb-6 space-y-2">
+                        <li>Maintaining the security of their wallets, private keys, and seed phrases</li>
+                        <li>All transactions made from their connected wallet addresses</li>
+                        <li>Ensuring compliance with local laws and regulations</li>
+                        <li>Providing accurate information when registering as a merchant</li>
+                        <li>Paying applicable taxes on token earnings and transactions</li>
+                        <li>Not engaging in fraudulent, abusive, or illegal activities</li>
+                        <li>Protecting their account credentials and not sharing with others</li>
+                        <li>Verifying transaction details before confirming on blockchain</li>
+                      </ul>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">4. Account Security</h3>
+                      <p className="text-muted-foreground mb-6">
+                        BIT Access operates on a non-custodial model. We do not have access to your private keys or wallet funds. You are solely responsible for securing your wallet. BIT Access is not liable for losses due to compromised wallets, lost private keys, phishing attacks, or user negligence. Always verify you're interacting with official BIT Access contracts and websites.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">5. Token Usage and Classification</h3>
+                      <p className="text-muted-foreground mb-6">
+                        BIT tokens are utility tokens designed for use within our ecosystem. They are not securities and do not represent ownership, equity, or investment in BIT Access company. BIT tokens provide access to platform features including rewards programs, staking, merchant payments, and governance participation. Token value may fluctuate and past performance does not guarantee future results.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">6. Prohibited Activities</h3>
+                      <p className="text-muted-foreground mb-4">
+                        Users are prohibited from:
+                      </p>
+                      <ul className="list-disc list-inside text-muted-foreground mb-6 space-y-2">
+                        <li>Using the platform for money laundering, terrorism financing, or illegal activities</li>
+                        <li>Attempting to manipulate token prices or engage in market manipulation</li>
+                        <li>Creating multiple accounts to abuse airdrop or reward systems</li>
+                        <li>Reverse engineering, decompiling, or extracting source code</li>
+                        <li>Using bots, scripts, or automated tools to exploit the platform</li>
+                        <li>Impersonating BIT Access team members or official accounts</li>
+                        <li>Distributing malware, viruses, or harmful code</li>
+                        <li>Interfering with platform operations or security features</li>
+                        <li>Violating intellectual property rights</li>
+                        <li>Spamming, phishing, or sending unsolicited communications</li>
+                      </ul>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">7. Merchant Terms</h3>
+                      <p className="text-muted-foreground mb-6">
+                        Merchants must maintain active subscription payments, provide accurate business information, comply with local payment processing regulations, honor advertised reward rates to customers, and maintain adequate product/service quality. BIT Access reserves the right to suspend merchant accounts for violations, fraud, or excessive customer complaints. Subscription fees are non-refundable.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">8. Staking Terms</h3>
+                      <p className="text-muted-foreground mb-6">
+                        Staking programs lock your tokens for specified periods (180, 240, or 365 days). You cannot withdraw tokens or rewards before the lock period ends. APY rates (12%, 18%, 25%) are estimates and may vary based on network conditions. Rewards are calculated daily and distributed at maturity. Minimum staking amount is 1,000 BIT tokens. Unstaking early is not permitted.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">9. Transaction Fees</h3>
+                      <p className="text-muted-foreground mb-6">
+                        BIT token transactions on DEX/CEX incur a 3% buy tax and 3% sell tax. Wallet-to-wallet transfers have 0% fee. Fees support ecosystem development, marketing, and liquidity. Maximum total fee is capped at 10% (buy + sell combined) and enforced by smart contract. Additional blockchain gas fees apply for all transactions and are paid in BNB (on BSC).
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">10. Intellectual Property</h3>
+                      <p className="text-muted-foreground mb-6">
+                        All content, logos, trademarks, code, and materials on BIT Access platform are owned by BIT Access or licensed to us. You may not copy, reproduce, distribute, or create derivative works without written permission. The BIT Access name, logo, and branding are protected trademarks. Unauthorized use may result in legal action.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">11. Disclaimer of Warranties</h3>
+                      <p className="text-muted-foreground mb-6">
+                        BIT Access platform is provided "AS IS" and "AS AVAILABLE" without warranties of any kind, either express or implied. We do not warrant that the platform will be uninterrupted, error-free, or secure. We do not guarantee token value, trading prices, or investment returns. Smart contract functionality is provided without warranty.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">12. Limitation of Liability</h3>
+                      <p className="text-muted-foreground mb-6">
+                        BIT Access and its team members are not liable for any indirect, incidental, special, consequential, or punitive damages arising from use of our platform including token value loss, failed transactions, smart contract bugs, exchange hacks, regulatory changes, or market volatility. Our maximum liability is limited to the amount you paid for services in the past 6 months.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">13. Indemnification</h3>
+                      <p className="text-muted-foreground mb-6">
+                        You agree to indemnify, defend, and hold harmless BIT Access, its officers, directors, employees, and partners from any claims, damages, losses, liabilities, and expenses (including legal fees) arising from your use of the platform, violation of these Terms, or infringement of third-party rights.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">14. Privacy and Data Protection</h3>
+                      <p className="text-muted-foreground mb-6">
+                        Your use of BIT Access is also governed by our Privacy Policy. We collect and process data as described in the Privacy Policy. By using our services, you consent to data collection and processing. Blockchain transactions are public and permanent.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">15. Regulatory Compliance</h3>
+                      <p className="text-muted-foreground mb-6">
+                        BIT Access strives to comply with applicable laws and regulations. However, cryptocurrency regulations are evolving. Users are responsible for understanding and complying with laws in their jurisdiction. We may implement KYC/AML procedures as required by regulations. Failure to provide required information may result in service restrictions.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">16. Tax Obligations</h3>
+                      <p className="text-muted-foreground mb-6">
+                        You are solely responsible for determining and paying all applicable taxes related to BIT token transactions, staking rewards, and platform usage. BIT Access does not provide tax advice. Consult with a tax professional regarding your obligations. We may report transaction information to tax authorities as required by law.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">17. Platform Changes and Updates</h3>
+                      <p className="text-muted-foreground mb-6">
+                        We reserve the right to modify, suspend, or discontinue any part of the platform at any time without notice. Features, services, and reward rates may change. Smart contracts are non-upgradeable, but platform interfaces and services may be updated. We will communicate material changes via email or platform announcements.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">18. Termination</h3>
+                      <p className="text-muted-foreground mb-6">
+                        We may terminate or suspend your access to the platform immediately, without notice, for violations of these Terms, suspicious activity, legal requirements, or at our discretion. Upon termination, your right to use the platform ceases. Blockchain-based holdings remain accessible through your wallet. Merchant subscription fees are non-refundable upon termination.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">19. Geographic Restrictions</h3>
+                      <p className="text-muted-foreground mb-6">
+                        BIT Access may not be available in all countries. Services are restricted in jurisdictions where cryptocurrency activities are prohibited. Currently restricted regions include: North Korea, Iran, Syria, Cuba, and regions under international sanctions. Users must comply with local laws. Accessing the platform through VPNs to circumvent restrictions is prohibited.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">20. Third-Party Services</h3>
+                      <p className="text-muted-foreground mb-6">
+                        BIT Access integrates with third-party services including wallets (MetaMask, WalletConnect), DEX platforms (PancakeSwap, Uniswap), and blockchain explorers. We are not responsible for third-party services, their functionality, security, or terms. Review their terms before use.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">21. Dispute Resolution</h3>
+                      <p className="text-muted-foreground mb-6">
+                        Any disputes arising from these Terms or platform use will be resolved through binding arbitration rather than court litigation. Arbitration will be conducted under internationally recognized arbitration rules. You waive the right to participate in class actions. Small claims court remains available for qualifying disputes.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">22. Governing Law</h3>
+                      <p className="text-muted-foreground mb-6">
+                        These Terms are governed by and construed in accordance with international commercial law principles. For users in specific jurisdictions, local consumer protection laws may apply. Choice of law does not override mandatory consumer protection regulations in your country of residence.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">23. Force Majeure</h3>
+                      <p className="text-muted-foreground mb-6">
+                        BIT Access is not liable for delays or failures caused by events beyond our reasonable control including natural disasters, wars, government actions, network failures, blockchain congestion, exchange outages, or other force majeure events. Services may be suspended during such events.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">24. Severability</h3>
+                      <p className="text-muted-foreground mb-6">
+                        If any provision of these Terms is found invalid or unenforceable, the remaining provisions remain in full effect. Invalid provisions will be modified to the minimum extent necessary to make them valid while preserving intent.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">25. Entire Agreement</h3>
+                      <p className="text-muted-foreground mb-6">
+                        These Terms, together with our Privacy Policy and Cookie Policy, constitute the entire agreement between you and BIT Access regarding use of our services. These Terms supersede any prior agreements or understandings.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">26. Changes to Terms</h3>
+                      <p className="text-muted-foreground mb-6">
+                        We may update these Terms from time to time. Changes will be posted on this page with an updated "Last Updated" date. Material changes will be communicated via email or platform notification 30 days before taking effect. Continued use after changes constitutes acceptance. If you don't agree to changes, discontinue use.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">27. Contact Information</h3>
+                      <p className="text-muted-foreground mb-6">
+                        For questions, concerns, or requests regarding these Terms of Use, please contact us at:
+                        <br /><br />
+                        <strong>Email:</strong> support@bitaecosystem.org<br />
+                        <strong>Legal:</strong> legal@bitaecosystem.org<br />
+                        <strong>Website:</strong> https://bitaecosystem.org<br />
+                        <strong>Telegram:</strong> @bitaecosystemofficial
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">28. Acknowledgment</h3>
                       <p className="text-muted-foreground">
-                        Bit Access is provided "as is" without warranties. We are not liable for any indirect or
-                        consequential damages arising from the use of our platform.
+                        By using BIT Access, you acknowledge that you have read, understood, and agree to be bound by these Terms of Use. You understand the risks associated with cryptocurrency investments and blockchain technology. You accept full responsibility for your use of the platform and any consequences thereof.
                       </p>
                     </CardContent>
                   </Card>
@@ -2153,29 +2520,235 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                       </div>
                     </CardHeader>
                     <CardContent className="prose prose-invert max-w-none">
-                      <h3 className="text-xl font-bold text-primary mb-3">What Are Cookies?</h3>
-                      <p className="text-muted-foreground mb-6">
-                        Cookies are small text files stored on your device that help us provide a better user
-                        experience.
+                      <p className="text-sm text-muted-foreground mb-6">
+                        <strong>Last Updated:</strong> January 2025
                       </p>
 
-                      <h3 className="text-xl font-bold text-primary mb-3">How We Use Cookies</h3>
+                      <h3 className="text-xl font-bold text-primary mb-3">1. What Are Cookies?</h3>
                       <p className="text-muted-foreground mb-6">
-                        We use cookies to remember your wallet connection, preferences, and to analyze site traffic.
-                        These help us improve our services and user experience.
+                        Cookies are small text files stored on your device (computer, tablet, smartphone) when you visit BIT Access platform. They help us provide a better, faster, and more personalized user experience. Cookies contain information about your browsing session and preferences, allowing our website to recognize your device on subsequent visits.
                       </p>
 
-                      <h3 className="text-xl font-bold text-primary mb-3">Types of Cookies</h3>
+                      <h3 className="text-xl font-bold text-primary mb-3">2. How We Use Cookies</h3>
+                      <p className="text-muted-foreground mb-4">
+                        We use cookies for several important purposes:
+                      </p>
                       <ul className="list-disc list-inside text-muted-foreground mb-6 space-y-2">
-                        <li>Essential cookies: Required for basic site functionality</li>
-                        <li>Performance cookies: Help us analyze site usage</li>
-                        <li>Functional cookies: Remember your preferences</li>
+                        <li>Remember your wallet connection status and preferences</li>
+                        <li>Keep you logged in during your browsing session</li>
+                        <li>Analyze site traffic and understand user behavior</li>
+                        <li>Improve our services and user experience</li>
+                        <li>Remember your language and display preferences</li>
+                        <li>Provide personalized content and recommendations</li>
+                        <li>Prevent fraud and enhance security</li>
+                        <li>Support A/B testing of new features</li>
                       </ul>
 
-                      <h3 className="text-xl font-bold text-primary mb-3">Managing Cookies</h3>
+                      <h3 className="text-xl font-bold text-primary mb-3">3. Types of Cookies We Use</h3>
+                      
+                      <h4 className="text-lg font-bold text-primary mb-2 mt-4">Essential Cookies (Required)</h4>
+                      <p className="text-muted-foreground mb-4">
+                        These cookies are necessary for the website to function properly. They enable basic features like wallet connection, page navigation, and access to secure areas. The website cannot function properly without these cookies.
+                      </p>
+                      <ul className="list-disc list-inside text-muted-foreground mb-6 space-y-1 ml-4">
+                        <li>Session management and authentication</li>
+                        <li>Wallet connection state</li>
+                        <li>Security and fraud prevention</li>
+                        <li>Load balancing and network routing</li>
+                      </ul>
+
+                      <h4 className="text-lg font-bold text-primary mb-2 mt-4">Performance Cookies (Analytics)</h4>
+                      <p className="text-muted-foreground mb-4">
+                        These cookies help us understand how visitors interact with our website by collecting anonymous information. This helps us improve website performance and user experience.
+                      </p>
+                      <ul className="list-disc list-inside text-muted-foreground mb-6 space-y-1 ml-4">
+                        <li>Google Analytics (page views, traffic sources, bounce rate)</li>
+                        <li>User journey and behavior analysis</li>
+                        <li>Error tracking and debugging</li>
+                        <li>Performance monitoring and optimization</li>
+                      </ul>
+
+                      <h4 className="text-lg font-bold text-primary mb-2 mt-4">Functional Cookies (Preferences)</h4>
+                      <p className="text-muted-foreground mb-4">
+                        These cookies remember your preferences and choices to provide enhanced, personalized features.
+                      </p>
+                      <ul className="list-disc list-inside text-muted-foreground mb-6 space-y-1 ml-4">
+                        <li>Language and region preferences</li>
+                        <li>Dark/light mode selection</li>
+                        <li>Dashboard customization settings</li>
+                        <li>Notification preferences</li>
+                        <li>Recently viewed merchants or products</li>
+                      </ul>
+
+                      <h4 className="text-lg font-bold text-primary mb-2 mt-4">Marketing Cookies (Third-Party)</h4>
+                      <p className="text-muted-foreground mb-4">
+                        These cookies track your online activity to help us deliver more relevant advertising and measure campaign effectiveness.
+                      </p>
+                      <ul className="list-disc list-inside text-muted-foreground mb-6 space-y-1 ml-4">
+                        <li>Social media tracking (Facebook, Twitter, Telegram)</li>
+                        <li>Advertising network cookies</li>
+                        <li>Retargeting and remarketing</li>
+                        <li>Campaign attribution and conversion tracking</li>
+                      </ul>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">4. Third-Party Cookies</h3>
+                      <p className="text-muted-foreground mb-4">
+                        Some cookies are placed by third-party services that appear on our pages:
+                      </p>
+                      <ul className="list-disc list-inside text-muted-foreground mb-6 space-y-2">
+                        <li><strong>Google Analytics:</strong> Website traffic analysis and user behavior insights</li>
+                        <li><strong>Web3Modal/WalletConnect:</strong> Wallet connection and authentication</li>
+                        <li><strong>Social Media:</strong> Sharing buttons and embedded content (Twitter, Facebook, Telegram)</li>
+                        <li><strong>Blockchain Explorers:</strong> Transaction verification and data display</li>
+                        <li><strong>CDN Providers:</strong> Fast content delivery and caching</li>
+                      </ul>
+                      <p className="text-muted-foreground mb-6">
+                        We do not control these third-party cookies. Please review their privacy policies for more information.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">5. Session vs Persistent Cookies</h3>
+                      <p className="text-muted-foreground mb-4">
+                        We use two types based on duration:
+                      </p>
+                      <ul className="list-disc list-inside text-muted-foreground mb-6 space-y-2">
+                        <li><strong>Session Cookies:</strong> Temporary cookies deleted when you close your browser. Used for wallet connection and navigation.</li>
+                        <li><strong>Persistent Cookies:</strong> Remain on your device for a set period or until manually deleted. Used to remember preferences and improve experience across visits.</li>
+                      </ul>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">6. Managing and Controlling Cookies</h3>
+                      <p className="text-muted-foreground mb-4">
+                        You have several options to manage cookies:
+                      </p>
+                      
+                      <h4 className="text-lg font-bold text-primary mb-2 mt-4">Browser Settings</h4>
+                      <p className="text-muted-foreground mb-4">
+                        Most browsers allow you to control cookies through settings. You can:
+                      </p>
+                      <ul className="list-disc list-inside text-muted-foreground mb-6 space-y-1 ml-4">
+                        <li>View and delete existing cookies</li>
+                        <li>Block all cookies or only third-party cookies</li>
+                        <li>Clear cookies when closing the browser</li>
+                        <li>Create exceptions for trusted websites</li>
+                      </ul>
+
+                      <h4 className="text-lg font-bold text-primary mb-2 mt-4">Browser-Specific Instructions</h4>
+                      <ul className="list-disc list-inside text-muted-foreground mb-6 space-y-1 ml-4">
+                        <li><strong>Chrome:</strong> Settings → Privacy and Security → Cookies and other site data</li>
+                        <li><strong>Firefox:</strong> Settings → Privacy & Security → Cookies and Site Data</li>
+                        <li><strong>Safari:</strong> Preferences → Privacy → Manage Website Data</li>
+                        <li><strong>Edge:</strong> Settings → Cookies and site permissions → Manage and delete cookies</li>
+                        <li><strong>Brave:</strong> Settings → Shields → Cookie blocking</li>
+                      </ul>
+
+                      <h4 className="text-lg font-bold text-primary mb-2 mt-4">Privacy Tools</h4>
+                      <p className="text-muted-foreground mb-6">
+                        You can also use privacy-focused browser extensions like Privacy Badger, uBlock Origin, or Ghostery to block tracking cookies and enhance privacy.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">7. Impact of Disabling Cookies</h3>
+                      <p className="text-muted-foreground mb-4">
+                        Note that blocking or deleting cookies may affect site functionality:
+                      </p>
+                      <ul className="list-disc list-inside text-muted-foreground mb-6 space-y-2">
+                        <li>Wallet connection may not persist between sessions</li>
+                        <li>Preferences and settings will not be saved</li>
+                        <li>Some features may not work properly</li>
+                        <li>You may see less relevant content</li>
+                        <li>User experience may be degraded</li>
+                      </ul>
+                      <p className="text-muted-foreground mb-6">
+                        Essential cookies cannot be disabled as they are necessary for core platform functionality.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">8. Cookie Consent</h3>
+                      <p className="text-muted-foreground mb-6">
+                        When you first visit BIT Access, you'll see a cookie consent banner. You can choose to accept all cookies or customize your preferences. Your consent is stored in a cookie and remains valid for 12 months. You can change your preferences at any time through your browser settings.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">9. Do Not Track (DNT)</h3>
+                      <p className="text-muted-foreground mb-6">
+                        Some browsers offer a "Do Not Track" (DNT) feature. Currently, there is no industry standard for DNT signals. BIT Access respects browser privacy settings but may not respond to DNT signals unless required by law. We recommend using browser cookie controls and privacy tools for granular tracking control.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">10. Mobile Devices</h3>
+                      <p className="text-muted-foreground mb-6">
+                        Mobile browsers also use cookies. Managing cookies on mobile devices varies by operating system and browser. Typically, you can find cookie settings in your browser's privacy or security section. iOS users can also limit ad tracking through Settings → Privacy → Tracking.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">11. Local Storage and Similar Technologies</h3>
+                      <p className="text-muted-foreground mb-6">
+                        In addition to cookies, we may use similar technologies like Local Storage, Session Storage, and IndexedDB to store data locally on your device. These technologies serve similar purposes as cookies (storing preferences, caching data) but may have different characteristics and storage capabilities. Browser settings for cookies typically also control these technologies.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">12. Web3 and Blockchain Tracking</h3>
+                      <p className="text-muted-foreground mb-6">
+                        When you connect your wallet to BIT Access, your wallet address and transaction history are publicly visible on the blockchain. This is separate from cookies and is inherent to blockchain technology. Wallet providers (MetaMask, WalletConnect) may also use their own cookies and tracking technologies.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">13. Analytics Opt-Out</h3>
+                      <p className="text-muted-foreground mb-4">
+                        You can opt-out of Google Analytics tracking specifically by:
+                      </p>
+                      <ul className="list-disc list-inside text-muted-foreground mb-6 space-y-1 ml-4">
+                        <li>Installing the Google Analytics Opt-out Browser Add-on</li>
+                        <li>Enabling privacy-focused browser settings</li>
+                        <li>Using browser extensions that block analytics scripts</li>
+                        <li>Adjusting your cookie preferences in our consent banner</li>
+                      </ul>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">14. International Cookie Regulations</h3>
+                      <p className="text-muted-foreground mb-6">
+                        We comply with international cookie regulations including the EU ePrivacy Directive (Cookie Law), GDPR requirements for cookie consent, CCPA disclosure obligations, and other regional privacy laws. Users in these jurisdictions have enhanced rights regarding cookie usage and can withdraw consent at any time.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">15. Cookie Lifespan</h3>
+                      <p className="text-muted-foreground mb-4">
+                        Different cookies have different lifespans:
+                      </p>
+                      <ul className="list-disc list-inside text-muted-foreground mb-6 space-y-1 ml-4">
+                        <li><strong>Session cookies:</strong> Deleted when browser closes</li>
+                        <li><strong>Authentication cookies:</strong> 7-30 days</li>
+                        <li><strong>Preference cookies:</strong> 30-365 days</li>
+                        <li><strong>Analytics cookies:</strong> 24 months (Google Analytics default)</li>
+                        <li><strong>Marketing cookies:</strong> Varies by provider (typically 90-365 days)</li>
+                      </ul>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">16. Security Cookies</h3>
+                      <p className="text-muted-foreground mb-6">
+                        We use security cookies to protect against fraud, unauthorized access, and malicious activities. These cookies help verify user identity, detect suspicious behavior, prevent CSRF attacks, and maintain secure sessions. Security cookies are essential and cannot be disabled.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">17. Updates to Cookie Policy</h3>
+                      <p className="text-muted-foreground mb-6">
+                        We may update this Cookie Policy from time to time to reflect changes in our practices, technologies, or legal requirements. Changes will be posted on this page with an updated "Last Updated" date. We encourage you to review this policy periodically. Continued use after changes constitutes acceptance.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">18. Cookie List and Details</h3>
+                      <p className="text-muted-foreground mb-4">
+                        Common cookies used on BIT Access platform:
+                      </p>
+                      <ul className="list-disc list-inside text-muted-foreground mb-6 space-y-1 ml-4">
+                        <li><strong>_ga, _gid:</strong> Google Analytics (2 years / 24 hours)</li>
+                        <li><strong>walletconnect:</strong> Wallet connection state (session)</li>
+                        <li><strong>theme:</strong> Display mode preference (1 year)</li>
+                        <li><strong>lang:</strong> Language preference (1 year)</li>
+                        <li><strong>cookie_consent:</strong> Cookie consent choice (1 year)</li>
+                        <li><strong>session_id:</strong> Session authentication (session)</li>
+                      </ul>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">19. Children's Privacy</h3>
+                      <p className="text-muted-foreground mb-6">
+                        Our services are not directed to individuals under 18. We do not knowingly use cookies to collect information from children. If you believe a child has provided cookie data, please contact us immediately.
+                      </p>
+
+                      <h3 className="text-xl font-bold text-primary mb-3">20. Contact Us About Cookies</h3>
                       <p className="text-muted-foreground">
-                        You can control cookies through your browser settings. Note that disabling cookies may affect
-                        site functionality.
+                        If you have questions about our use of cookies or this Cookie Policy, please contact us at:
+                        <br /><br />
+                        <strong>Email:</strong> support@bitaecosystem.org<br />
+                        <strong>Privacy:</strong> privacy@bitaecosystem.org<br />
+                        <strong>Website:</strong> https://bitaecosystem.org<br />
+                        <strong>Telegram:</strong> @bitaecosystemofficial
                       </p>
                     </CardContent>
                   </Card>
