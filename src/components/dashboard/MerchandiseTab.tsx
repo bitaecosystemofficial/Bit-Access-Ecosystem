@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,14 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ShoppingBag, Shirt, Package, Truck, Star, Gift, CreditCard, Search, Wallet } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { useCart } from '@/contexts/CartContext';
 import { useBITBalance } from '@/contexts/BITBalanceContext';
 
 const MerchandiseTab = () => {
-  const navigate = useNavigate();
-  const { toast } = useToast();
-  const { addToCart } = useCart();
   const { balance, formatBalance } = useBITBalance();
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('name');
@@ -130,13 +124,6 @@ const MerchandiseTab = () => {
       }
     });
 
-  const handleAddToCart = (item: typeof filteredItems[0]) => {
-    navigate(`/merchandise-details?item=${encodeURIComponent(item.name)}`);
-  };
-
-  const handleQuickBuy = (item: typeof filteredItems[0]) => {
-    navigate(`/merchandise-details?item=${encodeURIComponent(item.name)}`);
-  };
 
   return (
     <motion.div
@@ -293,23 +280,15 @@ const MerchandiseTab = () => {
                     </span>
                   </div>
 
-                  {/* Actions */}
+                  {/* Stock Status Only */}
                   <div className="flex gap-2 pt-2">
                     <Button
-                      onClick={() => handleAddToCart(item)}
                       variant="outline"
                       className="flex-1"
-                      disabled={!item.inStock}
+                      disabled
                     >
                       <ShoppingBag className="w-4 h-4 mr-2" />
-                      Add to Cart
-                    </Button>
-                    <Button
-                      onClick={() => handleQuickBuy(item)}
-                      className="flex-1"
-                      disabled={!item.inStock}
-                    >
-                      View Details
+                      Coming Soon
                     </Button>
                   </div>
                 </CardContent>

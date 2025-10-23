@@ -7,13 +7,11 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Image, TrendingUp, Users, Sparkles, Lock, Trophy, Palette, ShoppingCart, Search, Wallet } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useCart } from '@/contexts/CartContext';
 import { useBITBalance } from '@/contexts/BITBalanceContext';
 
 const NFTMarketplaceTab = () => {
   const { toast } = useToast();
-  const { addToCart } = useCart();
-  const { balance, formatBalance } = useBITBalance();
+  const { balance, deductBalance, formatBalance } = useBITBalance();
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('name');
 
@@ -172,16 +170,8 @@ const NFTMarketplaceTab = () => {
   };
 
   const handleAddToCart = (nft: typeof individualNFTs[0]) => {
-    addToCart({
-      id: nft.name,
-      name: nft.name,
-      price: nft.price,
-      usdPrice: nft.usdPrice,
-      type: 'nft',
-      rarity: nft.rarity,
-    });
     toast({
-      title: 'Added to Cart',
+      title: 'Coming Soon',
       description: `${nft.name} has been added to your cart.`,
     });
   };

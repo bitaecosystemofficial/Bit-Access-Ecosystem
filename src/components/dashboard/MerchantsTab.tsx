@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,7 +8,6 @@ import { useToast } from '@/hooks/use-toast';
 import { useBITBalance } from '@/contexts/BITBalanceContext';
 
 const MerchantsTab = () => {
-  const navigate = useNavigate();
   const { toast } = useToast();
   const { balance, deductBalance, formatBalance } = useBITBalance();
   const [subscribedTier, setSubscribedTier] = useState<string | null>(null);
@@ -77,11 +75,8 @@ const MerchantsTab = () => {
       setSubscribedTier(tier.name);
       toast({
         title: 'Subscription Successful! 🎉',
-        description: `Subscribed to ${tier.name} plan. ${tier.bitStakeDisplay} BIT staked. Redirecting to dashboard...`,
+        description: `Subscribed to ${tier.name} plan. ${tier.bitStakeDisplay} BIT staked.`,
       });
-      setTimeout(() => {
-        navigate('/merchant-dashboard');
-      }, 1500);
     } else {
       toast({
         title: 'Insufficient Balance',
