@@ -5,13 +5,22 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ShoppingBag, Shirt, Package, Truck, Star, Gift, CreditCard, Search, Wallet } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { ShoppingBag, Shirt, Package, Truck, Star, Gift, CreditCard, Search, Wallet, ShoppingCart } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { useCart } from '@/contexts/CartContext';
 import { useBITBalance } from '@/contexts/BITBalanceContext';
 
 const MerchandiseTab = () => {
-  const { balance, formatBalance } = useBITBalance();
+  const { toast } = useToast();
+  const { addToCart, itemCount } = useCart();
+  const { balance, deductBalance, formatBalance } = useBITBalance();
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('name');
+  const [selectedItem, setSelectedItem] = useState<typeof filteredItems[0] | null>(null);
+  const [selectedSize, setSelectedSize] = useState('');
+  const [selectedColor, setSelectedColor] = useState('');
+  const [quantity, setQuantity] = useState(1);
 
   const merchandiseItems = [
     {
@@ -22,6 +31,7 @@ const MerchandiseTab = () => {
           name: 'BIT Access Premium Hoodie',
           description: 'Premium cotton hoodie with embroidered logo',
           price: '150 BIT',
+          priceValue: 150,
           usdPrice: '$18.75',
           sizes: ['S', 'M', 'L', 'XL', 'XXL'],
           colors: ['Black', 'Navy', 'Gray'],
@@ -33,6 +43,7 @@ const MerchandiseTab = () => {
           name: 'BIT Logo T-Shirt',
           description: 'Comfortable cotton tee with screen-printed design',
           price: '75 BIT',
+          priceValue: 75,
           usdPrice: '$9.38',
           sizes: ['S', 'M', 'L', 'XL'],
           colors: ['White', 'Black', 'Blue'],
@@ -44,6 +55,7 @@ const MerchandiseTab = () => {
           name: 'BIT Snapback Cap',
           description: 'Adjustable snapback with 3D embroidery',
           price: '100 BIT',
+          priceValue: 100,
           usdPrice: '$12.50',
           sizes: ['One Size'],
           colors: ['Black', 'White', 'Navy'],
@@ -61,6 +73,7 @@ const MerchandiseTab = () => {
           name: 'BIT Crypto Wallet (Hardware)',
           description: 'Secure hardware wallet with BIT branding',
           price: '400 BIT',
+          priceValue: 400,
           usdPrice: '$50.00',
           sizes: ['One Size'],
           colors: ['Silver', 'Black'],
@@ -72,6 +85,7 @@ const MerchandiseTab = () => {
           name: 'BIT Sticker Pack',
           description: 'Premium vinyl stickers (Pack of 10)',
           price: '40 BIT',
+          priceValue: 40,
           usdPrice: '$5.00',
           sizes: ['Standard'],
           colors: ['Multi'],
@@ -83,6 +97,7 @@ const MerchandiseTab = () => {
           name: 'BIT Metal Keychain',
           description: 'Premium metal keychain with logo',
           price: '60 BIT',
+          priceValue: 60,
           usdPrice: '$7.50',
           sizes: ['One Size'],
           colors: ['Silver', 'Gold'],
@@ -124,6 +139,56 @@ const MerchandiseTab = () => {
       }
     });
 
+
+  const handleViewDetails = (item: typeof filteredItems[0]) => {
+    setSelectedItem(item);
+    setSelectedSize(item.sizes[0] || '');
+    setSelectedColor(item.colors[0] || '');
+    setQuantity(1);
+  };
+
+  const handleAddToCart = () => {
+    if (!selectedItem) return;
+
+    for (let i = 0; i < quantity; i++) {
+      addToCart({
+        name: selectedItem.name,
+        price: selectedItem.price,
+        priceValue: selectedItem.priceValue,
+        usdPrice: selectedItem.usdPrice,
+        type: 'merchandise',
+        size: selectedSize,
+        color: selectedColor,
+      });
+    }
+
+    toast({
+      title: 'Added to Cart',
+      description: `${quantity}x ${selectedItem.name} added to cart`,
+    });
+    setSelectedItem(null);
+  };
+
+  const handleQuickBuy = () => {
+    if (!selectedItem) return;
+
+    const totalCost = selectedItem.priceValue * quantity;
+    const canPurchase = deductBalance(totalCost);
+
+    if (canPurchase) {
+      toast({
+        title: 'Purchase Successful! 🎉',
+        description: `${quantity}x ${selectedItem.name} purchased for ${totalCost} BIT`,
+      });
+      setSelectedItem(null);
+    } else {
+      toast({
+        title: 'Insufficient Balance',
+        description: `You need ${totalCost} BIT but only have ${formatBalance(balance)} BIT`,
+        variant: 'destructive',
+      });
+    }
+  };
 
   return (
     <motion.div
@@ -280,15 +345,16 @@ const MerchandiseTab = () => {
                     </span>
                   </div>
 
-                  {/* Stock Status Only */}
+                  {/* Actions */}
                   <div className="flex gap-2 pt-2">
                     <Button
+                      onClick={() => handleViewDetails(item)}
                       variant="outline"
                       className="flex-1"
-                      disabled
+                      disabled={!item.inStock}
                     >
-                      <ShoppingBag className="w-4 h-4 mr-2" />
-                      Coming Soon
+                      <ShoppingCart className="w-4 h-4 mr-2" />
+                      View Details
                     </Button>
                   </div>
                 </CardContent>
@@ -339,6 +405,130 @@ const MerchandiseTab = () => {
           </p>
         </CardContent>
       </Card>
+
+      {/* Item Details Dialog */}
+      <Dialog open={!!selectedItem} onOpenChange={(open) => !open && setSelectedItem(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">{selectedItem?.name}</DialogTitle>
+            <DialogDescription>{selectedItem?.description}</DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-6">
+            {/* Image Placeholder */}
+            <div className="aspect-square bg-gradient-to-br from-primary/20 to-primary/5 rounded-lg flex items-center justify-center">
+              <Package className="w-32 h-32 text-primary" />
+            </div>
+
+            {/* Price */}
+            <div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-3xl font-bold text-primary">{selectedItem?.price}</span>
+                <span className="text-lg text-muted-foreground">({selectedItem?.usdPrice})</span>
+              </div>
+              <p className="text-sm text-muted-foreground mt-1">per item</p>
+            </div>
+
+            {/* Size Selection */}
+            {selectedItem && selectedItem.sizes.length > 0 && (
+              <div>
+                <label className="text-sm font-semibold mb-2 block">Select Size</label>
+                <Select value={selectedSize} onValueChange={setSelectedSize}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {selectedItem.sizes.map((size) => (
+                      <SelectItem key={size} value={size}>
+                        {size}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            {/* Color Selection */}
+            {selectedItem && selectedItem.colors.length > 0 && (
+              <div>
+                <label className="text-sm font-semibold mb-2 block">Select Color</label>
+                <Select value={selectedColor} onValueChange={setSelectedColor}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {selectedItem.colors.map((color) => (
+                      <SelectItem key={color} value={color}>
+                        {color}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            {/* Quantity */}
+            <div>
+              <label className="text-sm font-semibold mb-2 block">Quantity</label>
+              <Select value={quantity.toString()} onValueChange={(v) => setQuantity(parseInt(v))}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {[1, 2, 3, 4, 5].map((q) => (
+                    <SelectItem key={q} value={q.toString()}>
+                      {q}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Total */}
+            <div className="border-t pt-4">
+              <div className="flex justify-between items-center mb-4">
+                <span className="text-lg font-semibold">Total</span>
+                <span className="text-2xl font-bold text-primary">
+                  {selectedItem && selectedItem.priceValue * quantity} BIT
+                </span>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-3">
+                <Button
+                  onClick={handleAddToCart}
+                  variant="outline"
+                  className="flex-1"
+                >
+                  <ShoppingCart className="w-4 h-4 mr-2" />
+                  Add to Cart
+                </Button>
+                <Button
+                  onClick={handleQuickBuy}
+                  className="flex-1"
+                  disabled={selectedItem && balance < selectedItem.priceValue * quantity}
+                >
+                  Quick Buy
+                </Button>
+              </div>
+
+              {/* Cart Badge */}
+              {itemCount > 0 && (
+                <Button
+                  variant="secondary"
+                  className="w-full mt-3"
+                  onClick={() => {
+                    setSelectedItem(null);
+                    // User can manually switch to cart tab
+                  }}
+                >
+                  View Cart ({itemCount} items)
+                </Button>
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </motion.div>
   );
 };
