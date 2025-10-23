@@ -16,6 +16,7 @@ import Integrators from "./pages/Integrators";
 import Helpdesk from "./pages/Helpdesk";
 import Dashboard from "./pages/Dashboard";
 import CommunityForum from "./pages/CommunityForum";
+import Cart from "./pages/Cart";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -56,6 +57,7 @@ const App = () => (
                   <Route path="/helpdesk" element={<Helpdesk />} />
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/community-forum" element={<CommunityForum />} />
+                  <Route path="/cart" element={<Cart />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Layout>

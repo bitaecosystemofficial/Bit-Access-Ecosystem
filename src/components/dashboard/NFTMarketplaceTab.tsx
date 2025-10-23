@@ -5,15 +5,21 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Image, TrendingUp, Users, Sparkles, Lock, Trophy, Palette, ShoppingCart, Search, Wallet } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useBITBalance } from '@/contexts/BITBalanceContext';
+import { useCart } from '@/contexts/CartContext';
 
 const NFTMarketplaceTab = () => {
   const { toast } = useToast();
   const { balance, deductBalance, formatBalance } = useBITBalance();
+  const { addToCart } = useCart();
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('name');
+  const [selectedCollection, setSelectedCollection] = useState<typeof nftCollections[0] | null>(null);
+  const [selectedNFT, setSelectedNFT] = useState<typeof individualNFTs[0] | null>(null);
+  const [mintQuantity, setMintQuantity] = useState(1);
 
   const nftCollections = [
     {
@@ -155,32 +161,82 @@ const NFTMarketplaceTab = () => {
       }
     });
 
-  const handleMint = (collectionName: string) => {
-    toast({
-      title: 'Minting NFT',
-      description: `Preparing to mint from ${collectionName}. Feature coming soon!`,
-    });
+  const handleMint = (collection: typeof nftCollections[0]) => {
+    setSelectedCollection(collection);
+    setMintQuantity(1);
   };
 
-  const handleViewCollection = (collectionName: string) => {
-    toast({
-      title: 'View Collection',
-      description: `Opening ${collectionName}. Marketplace launching Q1 2026!`,
-    });
+  const handleViewCollection = (collection: typeof nftCollections[0]) => {
+    setSelectedCollection(collection);
+    setMintQuantity(1);
   };
 
-  const handleAddToCart = (nft: typeof individualNFTs[0]) => {
-    toast({
-      title: 'Coming Soon',
-      description: `${nft.name} has been added to your cart.`,
-    });
+  const handleConfirmMint = () => {
+    if (!selectedCollection) return;
+    
+    const floorPrice = parseInt(selectedCollection.floor.split(' ')[0]);
+    const totalCost = floorPrice * mintQuantity;
+    
+    const canPurchase = deductBalance(totalCost);
+    
+    if (canPurchase) {
+      toast({
+        title: 'NFT Minted Successfully! 🎉',
+        description: `${mintQuantity}x ${selectedCollection.name} NFT minted for ${totalCost} BIT`,
+      });
+      setSelectedCollection(null);
+    } else {
+      toast({
+        title: 'Insufficient Balance',
+        description: `You need ${totalCost} BIT but only have ${formatBalance(balance)} BIT`,
+        variant: 'destructive',
+      });
+    }
   };
 
-  const handleQuickBuy = (nftName: string) => {
-    toast({
-      title: 'Quick Buy',
-      description: `Processing order for ${nftName}. Feature launching Q1 2026!`,
+  const handleViewNFT = (nft: typeof individualNFTs[0]) => {
+    setSelectedNFT(nft);
+  };
+
+  const handleAddNFTToCart = () => {
+    if (!selectedNFT) return;
+    
+    const priceValue = parseInt(selectedNFT.price.split(' ')[0]);
+    
+    addToCart({
+      name: selectedNFT.name,
+      price: selectedNFT.price,
+      priceValue,
+      usdPrice: selectedNFT.usdPrice,
+      type: 'merchandise',
     });
+    
+    toast({
+      title: 'Added to Cart',
+      description: `${selectedNFT.name} added to cart`,
+    });
+    setSelectedNFT(null);
+  };
+
+  const handleQuickBuyNFT = () => {
+    if (!selectedNFT) return;
+    
+    const priceValue = parseInt(selectedNFT.price.split(' ')[0]);
+    const canPurchase = deductBalance(priceValue);
+    
+    if (canPurchase) {
+      toast({
+        title: 'NFT Purchased Successfully! 🎉',
+        description: `${selectedNFT.name} purchased for ${priceValue} BIT`,
+      });
+      setSelectedNFT(null);
+    } else {
+      toast({
+        title: 'Insufficient Balance',
+        description: `You need ${priceValue} BIT but only have ${formatBalance(balance)} BIT`,
+        variant: 'destructive',
+      });
+    }
   };
 
   return (
@@ -334,7 +390,7 @@ const NFTMarketplaceTab = () => {
                   {/* Actions */}
                   <div className="flex gap-2 pt-2">
                     <Button
-                      onClick={() => handleViewCollection(collection.name)}
+                      onClick={() => handleViewCollection(collection)}
                       variant="outline"
                       className="flex-1"
                       disabled={collection.status !== 'live'}
@@ -342,7 +398,7 @@ const NFTMarketplaceTab = () => {
                       View Collection
                     </Button>
                     <Button
-                      onClick={() => handleMint(collection.name)}
+                      onClick={() => handleMint(collection)}
                       className="flex-1"
                       disabled={collection.status !== 'live'}
                     >
@@ -409,20 +465,12 @@ const NFTMarketplaceTab = () => {
                   {/* Actions */}
                   <div className="flex gap-2 pt-2">
                     <Button
-                      onClick={() => handleAddToCart(nft)}
+                      onClick={() => handleViewNFT(nft)}
                       variant="outline"
                       className="flex-1"
                       disabled={!nft.available}
                     >
-                      <ShoppingCart className="w-4 h-4 mr-2" />
-                      Add to Cart
-                    </Button>
-                    <Button
-                      onClick={() => handleQuickBuy(nft.name)}
-                      className="flex-1"
-                      disabled={!nft.available}
-                    >
-                      Quick Buy
+                      View Details
                     </Button>
                   </div>
                 </CardContent>
@@ -447,6 +495,133 @@ const NFTMarketplaceTab = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Collection Details Dialog */}
+      <Dialog open={!!selectedCollection} onOpenChange={(open) => !open && setSelectedCollection(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>{selectedCollection?.name}</DialogTitle>
+            <DialogDescription>{selectedCollection?.description}</DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            {/* Stats */}
+            <div className="grid grid-cols-3 gap-3 p-3 bg-secondary/30 rounded-lg">
+              <div>
+                <p className="text-xs text-muted-foreground">Supply</p>
+                <p className="font-bold text-sm">{selectedCollection?.supply}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Floor</p>
+                <p className="font-bold text-sm text-primary">{selectedCollection?.floor}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Holders</p>
+                <p className="font-bold text-sm">{selectedCollection?.holders}</p>
+              </div>
+            </div>
+
+            {/* Benefits */}
+            <div>
+              <p className="text-sm font-semibold mb-2">Benefits:</p>
+              <div className="flex flex-wrap gap-2">
+                {selectedCollection?.benefits.map((benefit, idx) => (
+                  <Badge key={idx} variant="outline" className="text-xs">
+                    {benefit}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+
+            {/* Quantity */}
+            <div>
+              <label className="text-sm font-semibold mb-2 block">Quantity to Mint</label>
+              <Select value={mintQuantity.toString()} onValueChange={(v) => setMintQuantity(parseInt(v))}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {[1, 2, 3, 4, 5].map((q) => (
+                    <SelectItem key={q} value={q.toString()}>
+                      {q}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Total */}
+            <div className="border-t pt-4">
+              <div className="flex justify-between items-center mb-3">
+                <span className="font-semibold">Total Cost</span>
+                <span className="text-xl font-bold text-primary">
+                  {selectedCollection && parseInt(selectedCollection.floor.split(' ')[0]) * mintQuantity} BIT
+                </span>
+              </div>
+
+              <Button
+                onClick={handleConfirmMint}
+                className="w-full"
+                disabled={selectedCollection && balance < parseInt(selectedCollection.floor.split(' ')[0]) * mintQuantity}
+              >
+                <Sparkles className="w-4 h-4 mr-2" />
+                Confirm Mint
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* NFT Details Dialog */}
+      <Dialog open={!!selectedNFT} onOpenChange={(open) => !open && setSelectedNFT(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>{selectedNFT?.name}</DialogTitle>
+            <DialogDescription>{selectedNFT?.description}</DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            {/* Price & Rarity */}
+            <div className="flex justify-between items-start">
+              <div>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-2xl font-bold text-primary">{selectedNFT?.price}</span>
+                  <span className="text-sm text-muted-foreground">({selectedNFT?.usdPrice})</span>
+                </div>
+              </div>
+              <Badge variant="default" className="bg-primary">
+                {selectedNFT?.rarity}
+              </Badge>
+            </div>
+
+            {/* Category */}
+            <div>
+              <Badge variant="outline">{selectedNFT?.category}</Badge>
+            </div>
+
+            {/* Actions */}
+            <div className="border-t pt-4 space-y-2">
+              <div className="flex gap-2">
+                <Button
+                  onClick={handleAddNFTToCart}
+                  variant="outline"
+                  className="flex-1"
+                >
+                  <ShoppingCart className="w-4 h-4 mr-2" />
+                  Add to Cart
+                </Button>
+                <Button
+                  onClick={handleQuickBuyNFT}
+                  className="flex-1"
+                  disabled={selectedNFT && balance < parseInt(selectedNFT.price.split(' ')[0])}
+                >
+                  Buy Now
+                </Button>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </motion.div>
   );
 };

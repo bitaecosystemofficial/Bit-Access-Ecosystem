@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Wallet } from 'lucide-react';
+import { Menu, X, Wallet, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,6 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { useAccount, useDisconnect } from 'wagmi';
+import { useCart } from '@/contexts/CartContext';
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -19,6 +21,7 @@ const Navigation = () => {
   const { open } = useWeb3Modal();
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
+  const { itemCount } = useCart();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -75,8 +78,23 @@ const Navigation = () => {
             ))}
           </div>
 
-          {/* Desktop - Connect Wallet */}
+          {/* Desktop - Cart & Connect Wallet */}
           <div className="hidden md:flex items-center gap-3">
+            {isConnected && (
+              <Button
+                variant="outline"
+                size="icon"
+                className="relative"
+                onClick={() => navigate('/cart')}
+              >
+                <ShoppingCart className="w-5 h-5" />
+                {itemCount > 0 && (
+                  <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs">
+                    {itemCount}
+                  </Badge>
+                )}
+              </Button>
+            )}
             <Button
               onClick={() => open()}
               className="bg-primary text-primary-foreground hover:bg-primary/90 font-mono"
@@ -87,6 +105,21 @@ const Navigation = () => {
 
           {/* Mobile Menu */}
           <div className="md:hidden flex items-center gap-2">
+            {isConnected && (
+              <Button
+                variant="outline"
+                size="icon"
+                className="relative"
+                onClick={() => navigate('/cart')}
+              >
+                <ShoppingCart className="w-5 h-5" />
+                {itemCount > 0 && (
+                  <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs">
+                    {itemCount}
+                  </Badge>
+                )}
+              </Button>
+            )}
             <DropdownMenu open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <DropdownMenuTrigger asChild>
                 <Button 

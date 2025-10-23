@@ -9,20 +9,17 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { ShoppingBag, Users, Store, TrendingUp, Menu, Image, Shirt, ShoppingCart } from 'lucide-react';
+import { ShoppingBag, Users, Store, TrendingUp, Menu, Image, Shirt } from 'lucide-react';
 import BuyBitTab from '@/components/dashboard/BuyBitTab';
 import CommunityTab from '@/components/dashboard/CommunityTab';
 import MerchantsTab from '@/components/dashboard/MerchantsTab';
 import StakingTab from '@/components/dashboard/StakingTab';
 import NFTMarketplaceTab from '@/components/dashboard/NFTMarketplaceTab';
 import MerchandiseTab from '@/components/dashboard/MerchandiseTab';
-import CartTab from '@/components/dashboard/CartTab';
-import { useCart } from '@/contexts/CartContext';
 
 const Dashboard = () => {
   const { isConnected } = useAccount();
   const navigate = useNavigate();
-  const { itemCount } = useCart();
   const [activeTab, setActiveTab] = useState('buy');
 
   useEffect(() => {
@@ -42,7 +39,6 @@ const Dashboard = () => {
     { value: 'staking', label: 'Staking', icon: TrendingUp },
     { value: 'nft', label: 'NFT Marketplace', icon: Image },
     { value: 'merchandise', label: 'Merchandise', icon: Shirt },
-    { value: 'cart', label: 'Cart', icon: ShoppingCart, badge: itemCount },
   ];
 
   return (
@@ -54,20 +50,15 @@ const Dashboard = () => {
         
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           {/* Desktop Tabs */}
-          <TabsList className="hidden md:grid w-full grid-cols-7 mb-8 bg-card/50 backdrop-blur-sm border border-border/50 p-1 h-auto">
+          <TabsList className="hidden md:grid w-full grid-cols-6 mb-8 bg-card/50 backdrop-blur-sm border border-border/50 p-1 h-auto">
             {menuItems.map((item) => (
               <TabsTrigger 
                 key={item.value} 
                 value={item.value} 
-                className="font-semibold py-3 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground relative"
+                className="font-semibold py-3 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
               >
                 <item.icon className="w-4 h-4 mr-2" />
                 {item.label}
-                {item.badge !== undefined && item.badge > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center">
-                    {item.badge}
-                  </span>
-                )}
               </TabsTrigger>
             ))}
           </TabsList>
@@ -132,10 +123,6 @@ const Dashboard = () => {
 
           <TabsContent value="merchandise" className="mt-0">
             <MerchandiseTab />
-          </TabsContent>
-
-          <TabsContent value="cart" className="mt-0">
-            <CartTab />
           </TabsContent>
         </Tabs>
       </div>

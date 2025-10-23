@@ -354,7 +354,14 @@ const MerchandiseTab = () => {
                       disabled={!item.inStock}
                     >
                       <ShoppingCart className="w-4 h-4 mr-2" />
-                      View Details
+                      Add to Cart
+                    </Button>
+                    <Button
+                      onClick={() => handleViewDetails(item)}
+                      className="flex-1"
+                      disabled={!item.inStock}
+                    >
+                      Buy Now
                     </Button>
                   </div>
                 </CardContent>
@@ -408,25 +415,19 @@ const MerchandiseTab = () => {
 
       {/* Item Details Dialog */}
       <Dialog open={!!selectedItem} onOpenChange={(open) => !open && setSelectedItem(null)}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-2xl">{selectedItem?.name}</DialogTitle>
+            <DialogTitle>{selectedItem?.name}</DialogTitle>
             <DialogDescription>{selectedItem?.description}</DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-6">
-            {/* Image Placeholder */}
-            <div className="aspect-square bg-gradient-to-br from-primary/20 to-primary/5 rounded-lg flex items-center justify-center">
-              <Package className="w-32 h-32 text-primary" />
-            </div>
-
+          <div className="space-y-4">
             {/* Price */}
             <div>
               <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-bold text-primary">{selectedItem?.price}</span>
-                <span className="text-lg text-muted-foreground">({selectedItem?.usdPrice})</span>
+                <span className="text-2xl font-bold text-primary">{selectedItem?.price}</span>
+                <span className="text-sm text-muted-foreground">({selectedItem?.usdPrice})</span>
               </div>
-              <p className="text-sm text-muted-foreground mt-1">per item</p>
             </div>
 
             {/* Size Selection */}
@@ -486,15 +487,15 @@ const MerchandiseTab = () => {
 
             {/* Total */}
             <div className="border-t pt-4">
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-lg font-semibold">Total</span>
-                <span className="text-2xl font-bold text-primary">
+              <div className="flex justify-between items-center mb-3">
+                <span className="font-semibold">Total</span>
+                <span className="text-xl font-bold text-primary">
                   {selectedItem && selectedItem.priceValue * quantity} BIT
                 </span>
               </div>
 
               {/* Actions */}
-              <div className="flex gap-3">
+              <div className="flex gap-2">
                 <Button
                   onClick={handleAddToCart}
                   variant="outline"
@@ -508,23 +509,9 @@ const MerchandiseTab = () => {
                   className="flex-1"
                   disabled={selectedItem && balance < selectedItem.priceValue * quantity}
                 >
-                  Quick Buy
+                  Buy Now
                 </Button>
               </div>
-
-              {/* Cart Badge */}
-              {itemCount > 0 && (
-                <Button
-                  variant="secondary"
-                  className="w-full mt-3"
-                  onClick={() => {
-                    setSelectedItem(null);
-                    // User can manually switch to cart tab
-                  }}
-                >
-                  View Cart ({itemCount} items)
-                </Button>
-              )}
             </div>
           </div>
         </DialogContent>
