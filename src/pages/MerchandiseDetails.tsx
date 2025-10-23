@@ -16,7 +16,7 @@ const MerchandiseDetails = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
-  const { addToCart } = useCart();
+  const { addToCart, itemCount } = useCart();
   const { balance, deductBalance, formatBalance } = useBITBalance();
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
@@ -61,9 +61,18 @@ const MerchandiseDetails = () => {
   const totalPrice = item.priceValue * quantity;
 
   const handleAddToCart = () => {
+    if (!selectedSize || !selectedColor) {
+      toast({
+        title: 'Selection Required',
+        description: 'Please select size and color',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     for (let i = 0; i < quantity; i++) {
       addToCart({
-        id: item.name,
+        id: `${item.name}-${selectedSize}-${selectedColor}`,
         name: item.name,
         price: item.price,
         usdPrice: item.usdPrice,
@@ -74,9 +83,8 @@ const MerchandiseDetails = () => {
     }
     toast({
       title: 'Added to Cart',
-      description: `${quantity}x ${item.name} added to cart`,
+      description: `${quantity}x ${item.name} (${selectedSize}, ${selectedColor}) added to cart`,
     });
-    navigate('/cart');
   };
 
   const handleQuickBuy = () => {
@@ -219,7 +227,7 @@ const MerchandiseDetails = () => {
                       onClick={handleAddToCart}
                       variant="outline"
                       className="flex-1"
-                      disabled={!item.inStock}
+                      disabled={!item.inStock || !selectedSize || !selectedColor}
                     >
                       <ShoppingCart className="w-4 h-4 mr-2" />
                       Add to Cart
@@ -227,11 +235,18 @@ const MerchandiseDetails = () => {
                     <Button
                       onClick={handleQuickBuy}
                       className="flex-1"
-                      disabled={!item.inStock || balance < totalPrice}
+                      disabled={!item.inStock || balance < totalPrice || !selectedSize || !selectedColor}
                     >
                       Quick Buy
                     </Button>
                   </div>
+                  <Button
+                    onClick={() => navigate('/cart')}
+                    variant="secondary"
+                    className="w-full mt-2"
+                  >
+                    View Cart ({itemCount} items)
+                  </Button>
                 </div>
               </CardContent>
             </Card>
