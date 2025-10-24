@@ -69,10 +69,9 @@ const BuyBitTab = () => {
     query: { enabled: !!address && isBSCNetwork }
   });
 
-  // Fixed presale end date: 120 days from today (persistent countdown)
-  // Set once and persists - update this date as needed
+  // Fixed presale end date: 120 days from now
   const getPresaleEndDate = () => {
-    const today = new Date('2025-10-24'); // Current date
+    const today = new Date(); // Current actual date
     const endDate = new Date(today);
     endDate.setDate(endDate.getDate() + 120); // Add 120 days
     return endDate;
