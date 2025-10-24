@@ -82,8 +82,11 @@ const Footer = () => {
                 <span className="text-sm text-muted-foreground">(BIT)</span>
               </div>
             </div>
-            <p className="text-sm text-muted-foreground">
-              Revolutionizing daily life through Web3. Empowering users and merchants worldwide.
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Building the future of decentralized commerce by bridging the gap between traditional business and blockchain technology. 
+              We empower users with seamless crypto transactions, enable consumers to access digital assets effortlessly, and provide 
+              merchants with innovative payment solutions that drive global adoption of Web3 technology. Join millions worldwide in 
+              revolutionizing everyday transactions through secure, transparent, and borderless financial ecosystems.
             </p>
           </div>
 
