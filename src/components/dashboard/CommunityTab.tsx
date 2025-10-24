@@ -500,7 +500,7 @@ const CommunityTab = () => {
                             <Check className="w-3 h-3 mr-1" />
                             Completed
                           </Badge>
-                        ) : task.link ? (
+                        ) : (
                           <>
                             <Button
                               onClick={() => handleTaskAction(task.id)}
@@ -526,15 +526,6 @@ const CommunityTab = () => {
                               </Badge>
                             )}
                           </>
-                        ) : (
-                          <Button
-                            onClick={() => completeTask(task.id)}
-                            size="sm"
-                            className="bg-primary hover:bg-primary/90 whitespace-nowrap"
-                          >
-                            <Check className="w-3 h-3 mr-1" />
-                            Complete
-                          </Button>
                         )}
                       </div>
                     </div>
