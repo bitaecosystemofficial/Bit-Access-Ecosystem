@@ -14,6 +14,7 @@ import bscIcon from '@/assets/bsc-icon.png';
 import polygonIcon from '@/assets/polygon-icon.png';
 import arbitrumIcon from '@/assets/arbitrum-icon.png';
 import baseIcon from '@/assets/base-icon.png';
+import bitLogo from '@/assets/bit-token-logo.png';
 
 const BuyBitTab = () => {
   const [amount, setAmount] = useState('');
@@ -120,8 +121,13 @@ const BuyBitTab = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-muted-foreground mb-1">Your BIT Balance</p>
-              <p className="text-4xl font-bold text-green-600 dark:text-green-400">{formatBalance(balance)}</p>
-              <p className="text-sm text-muted-foreground">BIT Tokens</p>
+              <div className="flex items-center gap-3">
+                <img src={bitLogo} alt="BIT Token" className="w-12 h-12" />
+                <div>
+                  <p className="text-4xl font-bold text-green-600 dark:text-green-400">{formatBalance(balance)}</p>
+                  <p className="text-sm text-muted-foreground">BIT Tokens</p>
+                </div>
+              </div>
             </div>
             <Wallet className="w-16 h-16 text-green-500 opacity-50" />
           </div>

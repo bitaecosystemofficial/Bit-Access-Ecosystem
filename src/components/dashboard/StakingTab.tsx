@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Lock, TrendingUp, Clock, Unlock, AlertTriangle, DollarSign, Wallet } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useBITBalance } from '@/contexts/BITBalanceContext';
+import bitLogo from '@/assets/bit-token-logo.png';
 
 interface StakedPosition {
   id: number;
@@ -176,8 +177,13 @@ const StakingTab = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground mb-1">Available Balance</p>
-                <p className="text-3xl font-bold text-green-600 dark:text-green-400">{formatBalance(balance)}</p>
-                <p className="text-sm text-muted-foreground">BIT Tokens</p>
+                <div className="flex items-center gap-2">
+                  <img src={bitLogo} alt="BIT Token" className="w-10 h-10" />
+                  <div>
+                    <p className="text-3xl font-bold text-green-600 dark:text-green-400">{formatBalance(balance)}</p>
+                    <p className="text-sm text-muted-foreground">BIT Tokens</p>
+                  </div>
+                </div>
               </div>
               <Wallet className="w-12 h-12 text-green-500 opacity-50" />
             </div>
@@ -189,8 +195,13 @@ const StakingTab = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground mb-1">Total Staked</p>
-                <p className="text-3xl font-bold">{totalStaked.toLocaleString()}</p>
-                <p className="text-sm text-muted-foreground">BIT Tokens</p>
+                <div className="flex items-center gap-2">
+                  <img src={bitLogo} alt="BIT Token" className="w-10 h-10" />
+                  <div>
+                    <p className="text-3xl font-bold">{totalStaked.toLocaleString()}</p>
+                    <p className="text-sm text-muted-foreground">BIT Tokens</p>
+                  </div>
+                </div>
               </div>
               <Lock className="w-12 h-12 text-primary opacity-50" />
             </div>
@@ -202,8 +213,13 @@ const StakingTab = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground mb-1">Rewards Earned</p>
-                <p className="text-3xl font-bold text-green-600 dark:text-green-400">{totalRewards.toFixed(2)}</p>
-                <p className="text-sm text-muted-foreground">BIT Tokens</p>
+                <div className="flex items-center gap-2">
+                  <img src={bitLogo} alt="BIT Token" className="w-10 h-10" />
+                  <div>
+                    <p className="text-3xl font-bold text-green-600 dark:text-green-400">{totalRewards.toFixed(2)}</p>
+                    <p className="text-sm text-muted-foreground">BIT Tokens</p>
+                  </div>
+                </div>
               </div>
               <TrendingUp className="w-12 h-12 text-green-500 opacity-50" />
             </div>
