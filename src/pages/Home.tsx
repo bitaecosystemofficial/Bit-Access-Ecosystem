@@ -6,6 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { useNavigate } from "react-router-dom";
 import heroBg from "@/assets/hero-bg.jpg";
+import bscLogo from "@/assets/bsc-logo.png";
+import polygonLogo from "@/assets/polygon-logo.png";
+import arbitrumLogo from "@/assets/arbitrum-logo.png";
+import baseLogo from "@/assets/base-logo.png";
 const Home = () => {
   const {
     open
@@ -65,19 +69,23 @@ const Home = () => {
   const blockchainNetworks = [{
     name: "BNB Chain",
     description: "Fast, low-cost transactions on BNB Smart Chain",
-    color: "from-yellow-500 to-yellow-600"
+    color: "from-yellow-500 to-yellow-600",
+    logo: bscLogo
   }, {
     name: "Polygon",
     description: "Scalable Ethereum Layer 2 solution",
-    color: "from-purple-500 to-purple-600"
+    color: "from-purple-500 to-purple-600",
+    logo: polygonLogo
   }, {
     name: "Base",
     description: "Coinbase's Ethereum L2 network",
-    color: "from-blue-500 to-blue-600"
+    color: "from-blue-500 to-blue-600",
+    logo: baseLogo
   }, {
     name: "Arbitrum",
     description: "Optimistic rollup for Ethereum scaling",
-    color: "from-cyan-500 to-cyan-600"
+    color: "from-cyan-500 to-cyan-600",
+    logo: arbitrumLogo
   }];
   const partners = [{
     name: "Biit",
@@ -269,8 +277,8 @@ const Home = () => {
                   <div className={`h-2 bg-gradient-to-r ${network.color}`} />
                   <CardContent className="p-6">
                     <div className="flex items-center justify-center mb-4">
-                      <div className={`p-4 rounded-full bg-gradient-to-br ${network.color}`}>
-                        <Network className="w-8 h-8 text-white" />
+                      <div className="p-3 rounded-full bg-white">
+                        <img src={network.logo} alt={`${network.name} logo`} className="w-16 h-16" />
                       </div>
                     </div>
                     <h3 className="text-xl font-bold mb-2 text-center">{network.name}</h3>
