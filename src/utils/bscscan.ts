@@ -1,5 +1,6 @@
 const ETHERSCAN_API_KEY = "2QY4ZBIQCD2GQT2MKC1IN1VPC1S2BEJ1UF";
 const ETHERSCAN_API_URL = "https://api.etherscan.io/v2/api";
+const CHAIN_ID = "56"; // BSC Mainnet
 const BIT_TOKEN_ADDRESS = "0xd3bDe17EbD27739cF5505Cd58Ecf31cB628E469c";
 
 export interface TokenHolder {
@@ -30,9 +31,11 @@ export interface TokenInfo {
 export const fetchTokenHolders = async (): Promise<number> => {
   try {
     const response = await fetch(
-      `${ETHERSCAN_API_URL}?chainid=56&module=token&action=tokenholderlist&contractaddress=${BIT_TOKEN_ADDRESS}&page=1&offset=1&apikey=${ETHERSCAN_API_KEY}`
+      `${ETHERSCAN_API_URL}?chainid=${CHAIN_ID}&module=token&action=tokenholderlist&contractaddress=${BIT_TOKEN_ADDRESS}&page=1&offset=1&apikey=${ETHERSCAN_API_KEY}`
     );
     const data = await response.json();
+
+    console.log("Token holders response:", data);
 
     // Return actual holder count from API response
     if (data.status === "1" && data.result) {
@@ -48,9 +51,11 @@ export const fetchTokenHolders = async (): Promise<number> => {
 export const fetchTop10Holders = async (): Promise<TokenHolder[]> => {
   try {
     const response = await fetch(
-      `${ETHERSCAN_API_URL}?chainid=56&module=token&action=tokenholderlist&contractaddress=${BIT_TOKEN_ADDRESS}&page=1&offset=10&apikey=${ETHERSCAN_API_KEY}`
+      `${ETHERSCAN_API_URL}?chainid=${CHAIN_ID}&module=token&action=tokenholderlist&contractaddress=${BIT_TOKEN_ADDRESS}&page=1&offset=10&apikey=${ETHERSCAN_API_KEY}`
     );
     const data = await response.json();
+
+    console.log("Top 10 holders response:", data);
 
     if (data.status === "1" && data.result) {
       const totalSupply = 100000000000; // 100 billion
@@ -69,9 +74,11 @@ export const fetchTop10Holders = async (): Promise<TokenHolder[]> => {
 export const fetchLatestTransactions = async (): Promise<Transaction[]> => {
   try {
     const response = await fetch(
-      `${ETHERSCAN_API_URL}?chainid=56&module=account&action=tokentx&contractaddress=${BIT_TOKEN_ADDRESS}&page=1&offset=10&sort=desc&apikey=${ETHERSCAN_API_KEY}`
+      `${ETHERSCAN_API_URL}?chainid=${CHAIN_ID}&module=account&action=tokentx&contractaddress=${BIT_TOKEN_ADDRESS}&page=1&offset=10&sort=desc&apikey=${ETHERSCAN_API_KEY}`
     );
     const data = await response.json();
+
+    console.log("Latest transactions response:", data);
 
     if (data.status === "1" && data.result) {
       return data.result;
@@ -86,9 +93,11 @@ export const fetchLatestTransactions = async (): Promise<Transaction[]> => {
 export const fetchTokenInfo = async (): Promise<TokenInfo | null> => {
   try {
     const response = await fetch(
-      `${ETHERSCAN_API_URL}?chainid=56&module=token&action=tokeninfo&contractaddress=${BIT_TOKEN_ADDRESS}&apikey=${ETHERSCAN_API_KEY}`
+      `${ETHERSCAN_API_URL}?chainid=${CHAIN_ID}&module=token&action=tokeninfo&contractaddress=${BIT_TOKEN_ADDRESS}&apikey=${ETHERSCAN_API_KEY}`
     );
     const data = await response.json();
+
+    console.log("Token info response:", data);
 
     if (data.status === "1" && data.result && data.result[0]) {
       return data.result[0];
@@ -107,9 +116,11 @@ export const formatAddress = (address: string): string => {
 export const fetchTotalTransfers = async (): Promise<number> => {
   try {
     const response = await fetch(
-      `${ETHERSCAN_API_URL}?chainid=56&module=account&action=tokentx&contractaddress=${BIT_TOKEN_ADDRESS}&page=1&offset=1&sort=desc&apikey=${ETHERSCAN_API_KEY}`
+      `${ETHERSCAN_API_URL}?chainid=${CHAIN_ID}&module=account&action=tokentx&contractaddress=${BIT_TOKEN_ADDRESS}&page=1&offset=1&sort=desc&apikey=${ETHERSCAN_API_KEY}`
     );
     const data = await response.json();
+
+    console.log("Total transfers response:", data);
 
     // Return total transfer count
     return 13082; // Real-time data from contract
@@ -123,9 +134,11 @@ export const fetch24HTransfers = async (): Promise<number> => {
   try {
     const oneDayAgo = Math.floor(Date.now() / 1000) - 86400;
     const response = await fetch(
-      `${ETHERSCAN_API_URL}?chainid=56&module=account&action=tokentx&contractaddress=${BIT_TOKEN_ADDRESS}&startblock=0&endblock=999999999&page=1&offset=100&sort=desc&apikey=${ETHERSCAN_API_KEY}`
+      `${ETHERSCAN_API_URL}?chainid=${CHAIN_ID}&module=account&action=tokentx&contractaddress=${BIT_TOKEN_ADDRESS}&startblock=0&endblock=999999999&page=1&offset=100&sort=desc&apikey=${ETHERSCAN_API_KEY}`
     );
     const data = await response.json();
+
+    console.log("24H transfers response:", data);
 
     if (data.status === "1" && data.result) {
       // Filter transactions from last 24 hours
