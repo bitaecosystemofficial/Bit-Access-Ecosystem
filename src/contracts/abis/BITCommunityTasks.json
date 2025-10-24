@@ -11,6 +11,34 @@
     "type": "constructor"
   },
   {
+    "inputs": [
+      {
+        "internalType": "string[]",
+        "name": "_taskIds",
+        "type": "string[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "_rewards",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "_activationDates",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "string[]",
+        "name": "_categories",
+        "type": "string[]"
+      }
+    ],
+    "name": "createTasksBatch",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "anonymous": false,
     "inputs": [
       {

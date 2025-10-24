@@ -126,19 +126,7 @@ contract BITCommunityTasks is Ownable, ReentrancyGuard {
     constructor(address _bitToken) {
         require(_bitToken != address(0), "Invalid BIT token address");
         bitToken = IERC20(_bitToken);
-        rewardsEnabled = false;
-        
-        // Initialize default tasks
-        _createTask("daily-check", 100 * 10**18, 0, "check-in");
-        _createTask("facebook-like", 250 * 10**18, 0, "social");
-        _createTask("twitter-follow", 250 * 10**18, 0, "social");
-        _createTask("youtube-subscribe", 250 * 10**18, 0, "social");
-        _createTask("telegram-join", 250 * 10**18, 0, "social");
-        _createTask("web3-seminar", 1000 * 10**18, block.timestamp + 7 days, "events");
-        _createTask("daily-zoom", 250 * 10**18, block.timestamp + 3 days, "webinar");
-        _createTask("webinar-invite", 5000 * 10**18, block.timestamp + 3 days, "webinar");
-        _createTask("forum-attend", 2000 * 10**18, block.timestamp + 1 days, "forum");
-        _createTask("forum-invite", 5000 * 10**18, block.timestamp + 1 days, "forum");
+        rewardsEnabled = true;
     }
     
     function _createTask(
@@ -166,6 +154,25 @@ contract BITCommunityTasks is Ownable, ReentrancyGuard {
         string memory _category
     ) external onlyOwner {
         _createTask(_taskId, _reward, _activationDate, _category);
+    }
+    
+    // Batch create tasks (only owner)
+    function createTasksBatch(
+        string[] memory _taskIds,
+        uint256[] memory _rewards,
+        uint256[] memory _activationDates,
+        string[] memory _categories
+    ) external onlyOwner {
+        require(
+            _taskIds.length == _rewards.length &&
+            _rewards.length == _activationDates.length &&
+            _activationDates.length == _categories.length,
+            "Array lengths must match"
+        );
+        
+        for (uint256 i = 0; i < _taskIds.length; i++) {
+            _createTask(_taskIds[i], _rewards[i], _activationDates[i], _categories[i]);
+        }
     }
     
     function markLinkVisited(string memory _taskId) external nonReentrant {

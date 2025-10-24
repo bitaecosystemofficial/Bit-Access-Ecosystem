@@ -26,6 +26,10 @@ import { useCountdown } from '@/hooks/useCountdown';
 import { useAccount, useReadContract, useWriteContract, useChainId, useSwitchChain } from 'wagmi';
 import { CONTRACT_ADDRESSES, CONTRACT_ABIS, SUPPORTED_CHAINS } from '@/config/contracts';
 import bitLogo from '@/assets/bit-token-logo.png';
+import { TaskAdminPanel } from './TaskAdminPanel';
+import { formatEther } from 'viem';
+import { createPublicClient, http } from 'viem';
+import { bsc } from 'viem/chains';
 
 interface Task {
   id: string;
@@ -54,9 +58,27 @@ const CommunityTab = () => {
   
   const [checkInStreak, setCheckInStreak] = useState(0);
   const [totalPoints, setTotalPoints] = useState(0);
+  const [showAdminPanel, setShowAdminPanel] = useState(false);
 
   // Check if on BSC network
   const isBSCNetwork = chainId === SUPPORTED_CHAINS.BSC_MAINNET || chainId === SUPPORTED_CHAINS.BSC_TESTNET;
+
+  // Read contract owner
+  const { data: contractOwner } = useReadContract({
+    address: CONTRACT_ADDRESSES.BIT_COMMUNITY_TASKS,
+    abi: CONTRACT_ABIS.BITCommunityTasks as any,
+    functionName: 'owner',
+  });
+
+  // Read all task IDs from contract
+  const { data: taskIdsData, refetch: refetchTaskIds } = useReadContract({
+    address: CONTRACT_ADDRESSES.BIT_COMMUNITY_TASKS,
+    abi: CONTRACT_ABIS.BITCommunityTasks as any,
+    functionName: 'getAllTaskIds',
+    query: {
+      enabled: isBSCNetwork,
+    },
+  });
 
   // Fetch user stats from blockchain
   const { data: userStats } = useReadContract({
@@ -78,127 +100,86 @@ const CommunityTab = () => {
     }
   }, [userStats]);
 
-  const [tasks, setTasks] = useState<Task[]>([
-    {
-      id: 'daily-check',
-      title: 'Daily Check-In (30 Days)',
-      description: 'Check in daily to earn 100 BIT tokens. Complete all 30 days! (Once per unique wallet)',
-      reward: 100,
-      completed: false,
-      category: 'check-in',
-      icon: Calendar,
-      color: 'from-blue-500/20 to-blue-500/5',
-    },
-    {
-      id: 'facebook-like',
-      title: 'Like Us on Facebook',
-      description: 'Like our official Facebook page (Once per unique wallet)',
-      reward: 250,
-      completed: false,
-      category: 'social',
-      icon: Facebook,
-      color: 'from-cyan-500/20 to-cyan-500/5',
-      link: 'https://facebook.com',
-    },
-    {
-      id: 'twitter-follow',
-      title: 'Follow Us on Twitter (X)',
-      description: 'Follow our Twitter account (Once per unique wallet)',
-      reward: 250,
-      completed: false,
-      category: 'social',
-      icon: Twitter,
-      color: 'from-cyan-500/20 to-cyan-500/5',
-      link: 'https://twitter.com',
-    },
-    {
-      id: 'youtube-subscribe',
-      title: 'Subscribe to YouTube',
-      description: 'Subscribe to our YouTube channel (Once per unique wallet)',
-      reward: 250,
-      completed: false,
-      category: 'social',
-      icon: Youtube,
-      color: 'from-cyan-500/20 to-cyan-500/5',
-      link: 'https://youtube.com',
-    },
-    {
-      id: 'telegram-join',
-      title: 'Join Telegram Group',
-      description: 'Join our official Telegram community (Once per unique wallet)',
-      reward: 250,
-      completed: false,
-      category: 'social',
-      icon: MessageSquare,
-      color: 'from-cyan-500/20 to-cyan-500/5',
-      link: 'https://t.me',
-    },
-    {
-      id: 'web3-seminar',
-      title: 'Attend Web3 Education & Orientation Seminar',
-      description: 'Join our comprehensive Web3 education seminar',
-      reward: 1000,
-      completed: false,
-      category: 'events',
-      icon: PartyPopper,
-      color: 'from-purple-500/20 to-purple-500/5',
-      link: 'https://meet.google.com',
-      activationDate: Date.now() + (7 * 24 * 60 * 60 * 1000), // 7 days from now
-      linkVisited: false,
-    },
-    {
-      id: 'daily-zoom',
-      title: 'Attend Daily Zoom Webinar',
-      description: 'Join our daily Zoom webinar session',
-      reward: 250,
-      completed: false,
-      category: 'webinar',
-      icon: Video,
-      color: 'from-green-500/20 to-green-500/5',
-      link: 'https://zoom.us',
-      activationDate: Date.now() + (3 * 24 * 60 * 60 * 1000), // 3 days from now
-      linkVisited: false,
-    },
-    {
-      id: 'webinar-invite',
-      title: 'Invite Participants to Webinar',
-      description: 'Invite 3-5 participants to join the webinar',
-      reward: 5000,
-      completed: false,
-      category: 'webinar',
-      icon: Users,
-      color: 'from-green-500/20 to-green-500/5',
-      requiresInvites: true,
-      inviteCount: '3-5',
-      activationDate: Date.now() + (3 * 24 * 60 * 60 * 1000), // 3 days from now
-    },
-    {
-      id: 'forum-attend',
-      title: 'Attend Daily Forum',
-      description: 'Join our daily forum session',
-      reward: 2000,
-      completed: false,
-      category: 'forum',
-      icon: MessageSquare,
-      color: 'from-orange-500/20 to-orange-500/5',
-      link: 'https://maps.google.com',
-      activationDate: Date.now() + (1 * 24 * 60 * 60 * 1000), // 1 day from now
-      linkVisited: false,
-    },
-    {
-      id: 'forum-invite',
-      title: 'Invite Participants to Forum',
-      description: 'Invite 2-3 participants to the daily forum',
-      reward: 5000,
-      completed: false,
-      category: 'forum',
-      icon: Users,
-      color: 'from-orange-500/20 to-orange-500/5',
-      requiresInvites: true,
-      inviteCount: '2-3',
-      activationDate: Date.now() + (1 * 24 * 60 * 60 * 1000), // 1 day from now
-    },
-  ]);
+  // Check if current user is owner
+  const isOwner = address && contractOwner && address.toLowerCase() === (contractOwner as string).toLowerCase();
+
+  // Helper function to read contract
+  const publicClient = createPublicClient({
+    chain: bsc,
+    transport: http(),
+  });
+
+  // Fetch and build tasks from blockchain
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      if (!taskIdsData || !Array.isArray(taskIdsData)) {
+        setLoading(false);
+        return;
+      }
+
+      const taskPromises = (taskIdsData as string[]).map(async (taskId) => {
+        try {
+          const taskInfo: any = await publicClient.readContract({
+            address: CONTRACT_ADDRESSES.BIT_COMMUNITY_TASKS,
+            abi: CONTRACT_ABIS.BITCommunityTasks as any,
+            functionName: 'getTaskInfo',
+            args: [taskId] as any,
+          } as any);
+
+          const userTaskInfo: any = address ? await publicClient.readContract({
+            address: CONTRACT_ADDRESSES.BIT_COMMUNITY_TASKS,
+            abi: CONTRACT_ABIS.BITCommunityTasks as any,
+            functionName: 'getUserTaskInfo',
+            args: [address, taskId] as any,
+          } as any) : [false, 0, false, 0];
+
+          const categoryIcons: Record<string, any> = {
+            'check-in': Calendar,
+            'social': Users,
+            'events': PartyPopper,
+            'webinar': Video,
+            'forum': MessageSquare,
+          };
+
+          const categoryColors: Record<string, string> = {
+            'check-in': 'from-blue-500/20 to-blue-500/5',
+            'social': 'from-cyan-500/20 to-cyan-500/5',
+            'events': 'from-purple-500/20 to-purple-500/5',
+            'webinar': 'from-green-500/20 to-green-500/5',
+            'forum': 'from-orange-500/20 to-orange-500/5',
+          };
+
+          const taskCategory = (taskInfo[4] || 'social') as any;
+          const activationTimestamp = Number(taskInfo[2] || 0);
+          
+          return {
+            id: taskId,
+            title: taskId.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
+            description: `Complete this ${taskCategory} task to earn BIT tokens`,
+            reward: parseFloat(formatEther(taskInfo[1] || 0n)),
+            category: taskCategory,
+            icon: categoryIcons[taskCategory] || Users,
+            color: categoryColors[taskCategory] || 'from-gray-500/20 to-gray-500/5',
+            completed: userTaskInfo[0] || false,
+            linkVisited: userTaskInfo[2] || false,
+            activationDate: activationTimestamp > 0 ? activationTimestamp * 1000 : undefined,
+          };
+        } catch (error) {
+          console.error(`Error fetching task ${taskId}:`, error);
+          return null;
+        }
+      });
+
+      const fetchedTasks = (await Promise.all(taskPromises)).filter(Boolean) as Task[];
+      setTasks(fetchedTasks);
+      setLoading(false);
+    };
+
+    fetchTasks();
+  }, [taskIdsData, address]);
 
   const handleTaskAction = async (taskId: string) => {
     const task = tasks.find(t => t.id === taskId);
@@ -383,6 +364,29 @@ const CommunityTab = () => {
       transition={{ duration: 0.5 }}
       className="space-y-6"
     >
+      {/* Admin Panel - Only show to contract owner */}
+      {isOwner && (
+        <div className="mb-6">
+          <Button
+            variant="outline"
+            onClick={() => setShowAdminPanel(!showAdminPanel)}
+            className="mb-4"
+          >
+            {showAdminPanel ? 'Hide' : 'Show'} Admin Panel
+          </Button>
+          {showAdminPanel && <TaskAdminPanel />}
+        </div>
+      )}
+
+      {/* Loading State */}
+      {loading && (
+        <Card>
+          <CardContent className="p-6 text-center">
+            <p className="text-muted-foreground">Loading tasks from blockchain...</p>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Stats Overview */}
       <div className="grid md:grid-cols-3 gap-4">
         <Card className="bg-gradient-to-br from-primary/20 to-primary/5 border-primary/30">

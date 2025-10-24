@@ -13,7 +13,7 @@ export const CONTRACT_ADDRESSES = {
   BIT_STAKING: '0x0000000000000000000000000000000000000000' as `0x${string}`, // Replace with deployed address
   
   // BIT Community Tasks Contract
-  BIT_COMMUNITY_TASKS: '0x0000000000000000000000000000000000000000' as `0x${string}`, // Replace with deployed address
+  BIT_COMMUNITY_TASKS: '0x0000000000000000000000000000000000000000' as `0x${string}`, // DEPLOY THIS CONTRACT AND UPDATE ADDRESS
   
   // Token Addresses on BSC
   BIT_TOKEN: '0xd3bDe17EbD27739cF5505Cd58Ecf31cB628E469c' as `0x${string}`, // Replace with BIT token address
