@@ -42,24 +42,36 @@ export const useTokenData = () => {
     functionName: 'decimals',
   });
 
+  // Fetch holder count every 4 hours
   useEffect(() => {
-    const loadApiData = async () => {
+    const loadHolderData = async () => {
+      const holderCountData = await fetchTokenHolders();
+      setHolderCount(holderCountData);
+    };
+
+    loadHolderData();
+    // Refresh every 4 hours (14400000 ms)
+    const holderInterval = setInterval(loadHolderData, 4 * 60 * 60 * 1000);
+    return () => clearInterval(holderInterval);
+  }, []);
+
+  // Fetch transfer data every 30 seconds
+  useEffect(() => {
+    const loadTransferData = async () => {
       setLoading(true);
-      const [holderCountData, totalTransfersData, transfers24hData] = await Promise.all([
-        fetchTokenHolders(),
+      const [totalTransfersData, transfers24hData] = await Promise.all([
         fetchTotalTransfers(),
         fetch24HTransfers(),
       ]);
-      setHolderCount(holderCountData);
       setTotalTransfers(totalTransfersData);
       setTransfers24h(transfers24hData);
       setLoading(false);
     };
 
-    loadApiData();
+    loadTransferData();
     // Refresh every 30 seconds
-    const interval = setInterval(loadApiData, 30000);
-    return () => clearInterval(interval);
+    const transferInterval = setInterval(loadTransferData, 30000);
+    return () => clearInterval(transferInterval);
   }, []);
 
   return {
