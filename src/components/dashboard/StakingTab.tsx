@@ -7,9 +7,11 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Lock, TrendingUp, Clock, Unlock, AlertTriangle, DollarSign, Wallet, Gift, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt, useChainId, useSwitchChain } from 'wagmi';
 import { parseUnits, formatUnits } from 'viem';
+import { bsc, bscTestnet } from 'wagmi/chains';
 import { CONTRACT_ADDRESSES, CONTRACT_ABIS } from '@/config/contracts';
+import { useCountdown } from '@/hooks/useCountdown';
 import bitLogo from '@/assets/bit-token-logo.png';
 
 interface StakedPosition {
@@ -28,9 +30,14 @@ const StakingTab = () => {
   const [isApproving, setIsApproving] = useState(false);
   const { toast } = useToast();
   const { address } = useAccount();
+  const chainId = useChainId();
+  const { switchChain } = useSwitchChain();
   const { writeContract, data: hash, isPending: isStaking } = useWriteContract();
   
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash });
+
+  // Determine if we're on BSC network (mainnet or testnet)
+  const isBSCNetwork = chainId === bsc.id || chainId === bscTestnet.id;
 
   const UNSTAKE_FEE = 2; // 2% fee
   const EARLY_UNSTAKE_FEE = 10; // 10% additional fee for early withdrawal
@@ -38,19 +45,19 @@ const StakingTab = () => {
   // Read BIT token balance
   const { data: bitBalance, refetch: refetchBitBalance } = useReadContract({
     address: CONTRACT_ADDRESSES.BIT_TOKEN as `0x${string}`,
-    abi: CONTRACT_ABIS.BIT_STAKING,
+    abi: CONTRACT_ABIS.ERC20,
     functionName: 'balanceOf',
     args: address ? [address as `0x${string}`] : undefined,
-    query: { enabled: !!address }
+    query: { enabled: !!address && isBSCNetwork }
   });
 
   // Read BIT token allowance for staking contract
   const { data: allowance, refetch: refetchAllowance } = useReadContract({
     address: CONTRACT_ADDRESSES.BIT_TOKEN as `0x${string}`,
-    abi: CONTRACT_ABIS.BIT_STAKING,
+    abi: CONTRACT_ABIS.ERC20,
     functionName: 'allowance',
     args: address ? [address as `0x${string}`, CONTRACT_ADDRESSES.BIT_STAKING as `0x${string}`] : undefined,
-    query: { enabled: !!address }
+    query: { enabled: !!address && isBSCNetwork }
   });
 
   // Read total staked
@@ -160,13 +167,32 @@ const StakingTab = () => {
       return;
     }
 
+    // Check if on BSC network
+    if (!isBSCNetwork) {
+      const targetChain = bsc.id;
+      toast({
+        title: 'Wrong Network',
+        description: 'Switching to BSC Mainnet...',
+      });
+      try {
+        await switchChain({ chainId: targetChain });
+      } catch (error) {
+        toast({
+          title: 'Network Switch Failed',
+          description: 'Please switch to BSC Mainnet manually',
+          variant: 'destructive',
+        });
+        return;
+      }
+    }
+
     setIsApproving(true);
     try {
       const amountToApprove = parseUnits(stakeAmount, 9); // BIT has 9 decimals
       
       await writeContract({
         address: CONTRACT_ADDRESSES.BIT_TOKEN as `0x${string}`,
-        abi: CONTRACT_ABIS.BIT_STAKING,
+        abi: CONTRACT_ABIS.ERC20,
         functionName: 'approve',
         args: [CONTRACT_ADDRESSES.BIT_STAKING as `0x${string}`, amountToApprove],
       } as any);
@@ -183,7 +209,7 @@ const StakingTab = () => {
       });
     } finally {
       setIsApproving(false);
-      setTimeout(() => refetchAllowance(), 2000);
+      setTimeout(() => refetchAllowance(), 3000);
     }
   };
 
@@ -195,6 +221,25 @@ const StakingTab = () => {
         variant: 'destructive',
       });
       return;
+    }
+
+    // Check if on BSC network
+    if (!isBSCNetwork) {
+      const targetChain = bsc.id;
+      toast({
+        title: 'Wrong Network',
+        description: 'Switching to BSC Mainnet...',
+      });
+      try {
+        await switchChain({ chainId: targetChain });
+      } catch (error) {
+        toast({
+          title: 'Network Switch Failed',
+          description: 'Please switch to BSC Mainnet manually',
+          variant: 'destructive',
+        });
+        return;
+      }
     }
 
     if (selectedPool === null) {
@@ -260,6 +305,25 @@ const StakingTab = () => {
         variant: 'destructive',
       });
       return;
+    }
+
+    // Check if on BSC network
+    if (!isBSCNetwork) {
+      const targetChain = bsc.id;
+      toast({
+        title: 'Wrong Network',
+        description: 'Switching to BSC Mainnet...',
+      });
+      try {
+        await switchChain({ chainId: targetChain });
+      } catch (error) {
+        toast({
+          title: 'Network Switch Failed',
+          description: 'Please switch to BSC Mainnet manually',
+          variant: 'destructive',
+        });
+        return;
+      }
     }
 
     try {
@@ -386,8 +450,11 @@ const StakingTab = () => {
               const pool = stakingPools[poolId];
               const startTime = Number(stake.startTime) * 1000;
               const endTime = Number(stake.endTime) * 1000;
-              const daysRemaining = Math.max(0, Math.ceil((endTime - Date.now()) / (1000 * 60 * 60 * 24)));
               const isActive = stake.isActive;
+              
+              // Use countdown hook for real-time timer
+              const timeLeft = useCountdown(endTime);
+              const daysRemaining = timeLeft.days;
 
               if (!isActive) return null;
 
@@ -420,10 +487,14 @@ const StakingTab = () => {
                           <span className="font-semibold">{new Date(endTime).toLocaleDateString()}</span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-muted-foreground">Days Remaining</span>
-                          <Badge variant={daysRemaining > 0 ? "secondary" : "default"}>
-                            {daysRemaining > 0 ? `${daysRemaining} days` : 'Matured'}
-                          </Badge>
+                          <span className="text-sm text-muted-foreground">Time Remaining</span>
+                          {daysRemaining > 0 ? (
+                            <div className="font-mono text-sm font-semibold">
+                              {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
+                            </div>
+                          ) : (
+                            <Badge variant="default">Matured</Badge>
+                          )}
                         </div>
 
                         <Button

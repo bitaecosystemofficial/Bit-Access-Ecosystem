@@ -8,8 +8,9 @@ import { Badge } from '@/components/ui/badge';
 import { ShoppingBag, AlertCircle, Wallet, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useBITBalance } from '@/contexts/BITBalanceContext';
-import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt, useChainId, useSwitchChain } from 'wagmi';
 import { parseUnits, formatUnits } from 'viem';
+import { bsc, bscTestnet } from 'wagmi/chains';
 import { CONTRACT_ADDRESSES, CONTRACT_ABIS } from '@/config/contracts';
 import usdtIcon from '@/assets/usdt-icon.png';
 import usdcIcon from '@/assets/usdc-icon.png';
@@ -26,17 +27,22 @@ const BuyBitTab = () => {
   const [isApproving, setIsApproving] = useState(false);
   const { toast } = useToast();
   const { address } = useAccount();
+  const chainId = useChainId();
+  const { switchChain } = useSwitchChain();
   const { writeContract, data: hash, isPending: isPurchasing } = useWriteContract();
   
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash });
 
+  // Determine if we're on BSC network (mainnet or testnet)
+  const isBSCNetwork = chainId === bsc.id || chainId === bscTestnet.id;
+
   // Read BIT token balance
   const { data: bitBalance, refetch: refetchBitBalance } = useReadContract({
     address: CONTRACT_ADDRESSES.BIT_TOKEN as `0x${string}`,
-    abi: CONTRACT_ABIS.BIT_PURCHASE,
+    abi: CONTRACT_ABIS.ERC20,
     functionName: 'balanceOf',
     args: address ? [address as `0x${string}`] : undefined,
-    query: { enabled: !!address }
+    query: { enabled: !!address && isBSCNetwork }
   });
 
   // Read contract price
@@ -57,10 +63,10 @@ const BuyBitTab = () => {
   const paymentTokenAddress = paymentMethod === 'USDT' ? CONTRACT_ADDRESSES.USDT_TOKEN : CONTRACT_ADDRESSES.USDC_TOKEN;
   const { data: allowance, refetch: refetchAllowance } = useReadContract({
     address: paymentTokenAddress as `0x${string}`,
-    abi: CONTRACT_ABIS.BIT_PURCHASE,
+    abi: CONTRACT_ABIS.ERC20,
     functionName: 'allowance',
     args: address ? [address as `0x${string}`, CONTRACT_ADDRESSES.BIT_PURCHASE as `0x${string}`] : undefined,
-    query: { enabled: !!address }
+    query: { enabled: !!address && isBSCNetwork }
   });
 
   // Countdown timer: 120 days from now
@@ -133,13 +139,32 @@ const BuyBitTab = () => {
       return;
     }
 
+    // Check if on BSC network
+    if (!isBSCNetwork) {
+      const targetChain = bsc.id;
+      toast({
+        title: 'Wrong Network',
+        description: 'Switching to BSC Mainnet...',
+      });
+      try {
+        await switchChain({ chainId: targetChain });
+      } catch (error) {
+        toast({
+          title: 'Network Switch Failed',
+          description: 'Please switch to BSC Mainnet manually',
+          variant: 'destructive',
+        });
+        return;
+      }
+    }
+
     setIsApproving(true);
     try {
-      const amountToApprove = parseUnits(amount, 18); // USDT/USDC has 18 decimals
+      const amountToApprove = parseUnits(amount, 18); // USDT/USDC has 18 decimals on BEP20
       
       await writeContract({
         address: paymentTokenAddress as `0x${string}`,
-        abi: CONTRACT_ABIS.BIT_PURCHASE,
+        abi: CONTRACT_ABIS.ERC20,
         functionName: 'approve',
         args: [CONTRACT_ADDRESSES.BIT_PURCHASE as `0x${string}`, amountToApprove],
       } as any);
@@ -156,7 +181,7 @@ const BuyBitTab = () => {
       });
     } finally {
       setIsApproving(false);
-      setTimeout(() => refetchAllowance(), 2000);
+      setTimeout(() => refetchAllowance(), 3000);
     }
   };
 
@@ -170,6 +195,25 @@ const BuyBitTab = () => {
         variant: 'destructive',
       });
       return;
+    }
+
+    // Check if on BSC network
+    if (!isBSCNetwork) {
+      const targetChain = bsc.id;
+      toast({
+        title: 'Wrong Network',
+        description: 'Switching to BSC Mainnet...',
+      });
+      try {
+        await switchChain({ chainId: targetChain });
+      } catch (error) {
+        toast({
+          title: 'Network Switch Failed',
+          description: 'Please switch to BSC Mainnet manually',
+          variant: 'destructive',
+        });
+        return;
+      }
     }
     
     if (!amount || parseFloat(amount) <= 0) {
@@ -199,7 +243,7 @@ const BuyBitTab = () => {
     }
 
     try {
-      const usdAmount = parseUnits(amount, 18); // USDT/USDC has 18 decimals
+      const usdAmount = parseUnits(amount, 18); // USDT/USDC has 18 decimals on BEP20
       
       // Check if approval is needed
       const currentAllowance = allowance as bigint || BigInt(0);

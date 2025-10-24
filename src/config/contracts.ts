@@ -18,10 +18,12 @@ export const CONTRACT_ADDRESSES = {
 // ABI imports
 import BITTokenPurchaseABI from '@/contracts/abis/BITTokenPurchase.json';
 import BITStakingABI from '@/contracts/abis/BITStaking.json';
+import ERC20ABI from '@/contracts/abis/ERC20.json';
 
 export const CONTRACT_ABIS = {
   BIT_PURCHASE: BITTokenPurchaseABI,
   BIT_STAKING: BITStakingABI,
+  ERC20: ERC20ABI,
 };
 
 // Network configurations
