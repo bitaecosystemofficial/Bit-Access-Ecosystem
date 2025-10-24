@@ -13,7 +13,12 @@ import {
   Check,
   Clock,
   Trophy,
-  Coins
+  Coins,
+  Facebook,
+  Twitter,
+  Youtube,
+  Users,
+  ExternalLink
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useBITBalance } from '@/contexts/BITBalanceContext';
@@ -28,88 +33,147 @@ interface Task {
   category: 'check-in' | 'social' | 'events' | 'webinar' | 'forum';
   icon: any;
   color: string;
+  link?: string;
+  requiresInvites?: boolean;
+  inviteReward?: number;
+  inviteCount?: string;
 }
 
 const CommunityTab = () => {
   const { toast } = useToast();
   const { addBalance, formatBalance } = useBITBalance();
-  const [checkInStreak, setCheckInStreak] = useState(3);
-  const [totalPoints, setTotalPoints] = useState(450);
+  const [checkInStreak, setCheckInStreak] = useState(0);
+  const [totalPoints, setTotalPoints] = useState(0);
 
   const [tasks, setTasks] = useState<Task[]>([
     {
       id: 'daily-check',
-      title: 'Daily Check-In',
-      description: 'Check in daily to earn rewards and maintain your streak',
-      reward: 10,
+      title: 'Daily Check-In (30 Days)',
+      description: 'Check in daily to earn 100 BIT tokens. Complete all 30 days! (Once per unique wallet)',
+      reward: 100,
       completed: false,
       category: 'check-in',
       icon: Calendar,
       color: 'from-blue-500/20 to-blue-500/5',
     },
     {
-      id: 'share-twitter',
-      title: 'Share on Twitter',
-      description: 'Share BIT token on your Twitter account',
-      reward: 25,
+      id: 'facebook-like',
+      title: 'Like Us on Facebook',
+      description: 'Like our official Facebook page (Once per unique wallet)',
+      reward: 250,
       completed: false,
       category: 'social',
-      icon: Share2,
+      icon: Facebook,
       color: 'from-cyan-500/20 to-cyan-500/5',
+      link: 'https://facebook.com',
     },
     {
-      id: 'join-telegram',
+      id: 'twitter-follow',
+      title: 'Follow Us on Twitter (X)',
+      description: 'Follow our Twitter account (Once per unique wallet)',
+      reward: 250,
+      completed: false,
+      category: 'social',
+      icon: Twitter,
+      color: 'from-cyan-500/20 to-cyan-500/5',
+      link: 'https://twitter.com',
+    },
+    {
+      id: 'youtube-subscribe',
+      title: 'Subscribe to YouTube',
+      description: 'Subscribe to our YouTube channel (Once per unique wallet)',
+      reward: 250,
+      completed: false,
+      category: 'social',
+      icon: Youtube,
+      color: 'from-cyan-500/20 to-cyan-500/5',
+      link: 'https://youtube.com',
+    },
+    {
+      id: 'telegram-join',
       title: 'Join Telegram Group',
-      description: 'Join our official Telegram community',
-      reward: 20,
+      description: 'Join our official Telegram community (Once per unique wallet)',
+      reward: 250,
       completed: false,
       category: 'social',
       icon: MessageSquare,
       color: 'from-cyan-500/20 to-cyan-500/5',
+      link: 'https://t.me',
     },
     {
-      id: 'attend-ama',
-      title: 'Attend AMA Session',
-      description: 'Join our monthly Ask Me Anything session',
-      reward: 50,
+      id: 'web3-seminar',
+      title: 'Attend Web3 Education & Orientation Seminar',
+      description: 'Join our comprehensive Web3 education seminar',
+      reward: 1000,
       completed: false,
       category: 'events',
       icon: PartyPopper,
       color: 'from-purple-500/20 to-purple-500/5',
+      link: 'https://meet.google.com',
     },
     {
-      id: 'watch-webinar',
-      title: 'Watch Educational Webinar',
-      description: 'Complete our crypto education webinar',
-      reward: 30,
+      id: 'daily-zoom',
+      title: 'Attend Daily Zoom Webinar',
+      description: 'Join our daily Zoom webinar session',
+      reward: 250,
       completed: false,
       category: 'webinar',
       icon: Video,
       color: 'from-green-500/20 to-green-500/5',
+      link: 'https://zoom.us',
     },
     {
-      id: 'forum-post',
-      title: 'Create Forum Post',
-      description: 'Share your thoughts in our community forum',
-      reward: 15,
+      id: 'webinar-invite',
+      title: 'Invite Participants to Webinar',
+      description: 'Invite 3-5 participants to join the webinar',
+      reward: 5000,
+      completed: false,
+      category: 'webinar',
+      icon: Users,
+      color: 'from-green-500/20 to-green-500/5',
+      requiresInvites: true,
+      inviteCount: '3-5',
+    },
+    {
+      id: 'forum-attend',
+      title: 'Attend Daily Forum at IT Park Ayala Cebu',
+      description: 'Join our daily forum session at IT Park Ayala Cebu',
+      reward: 2000,
       completed: false,
       category: 'forum',
       icon: MessageSquare,
       color: 'from-orange-500/20 to-orange-500/5',
+      link: 'https://maps.google.com',
     },
     {
-      id: 'forum-reply',
-      title: 'Reply to Forum Thread',
-      description: 'Engage with other community members',
-      reward: 10,
+      id: 'forum-invite',
+      title: 'Invite Participants to Forum',
+      description: 'Invite 2-3 participants to the daily forum',
+      reward: 5000,
       completed: false,
       category: 'forum',
-      icon: MessageSquare,
+      icon: Users,
       color: 'from-orange-500/20 to-orange-500/5',
+      requiresInvites: true,
+      inviteCount: '2-3',
     },
   ]);
 
-  const handleCompleteTask = (taskId: string) => {
+  const handleTaskAction = (taskId: string) => {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task || task.completed) return;
+
+    // If task has a link, open it in new tab
+    if (task.link) {
+      window.open(task.link, '_blank');
+      return;
+    }
+
+    // Complete the task immediately if no link required
+    completeTask(taskId);
+  };
+
+  const completeTask = (taskId: string) => {
     const task = tasks.find(t => t.id === taskId);
     if (!task || task.completed) return;
 
@@ -118,7 +182,15 @@ const CommunityTab = () => {
     ));
 
     if (task.category === 'check-in') {
-      setCheckInStreak(prev => prev + 1);
+      const newStreak = checkInStreak + 1;
+      setCheckInStreak(newStreak);
+      
+      if (newStreak === 30) {
+        toast({
+          title: '🎉 30-Day Streak Complete!',
+          description: 'Congratulations! You completed the 30-day check-in challenge!',
+        });
+      }
     }
 
     setTotalPoints(prev => prev + task.reward);
@@ -133,38 +205,43 @@ const CommunityTab = () => {
   const categories = [
     { 
       id: 'check-in', 
-      name: 'Daily Check-In', 
+      name: 'Daily Check-In (30 Days)', 
       icon: Calendar,
       color: 'text-blue-500',
-      bgColor: 'bg-blue-500/10 border-blue-500/30'
+      bgColor: 'bg-blue-500/10 border-blue-500/30',
+      description: 'Once per unique wallet address'
     },
     { 
       id: 'social', 
       name: 'Social Tasks', 
       icon: Share2,
       color: 'text-cyan-500',
-      bgColor: 'bg-cyan-500/10 border-cyan-500/30'
+      bgColor: 'bg-cyan-500/10 border-cyan-500/30',
+      description: 'Once per unique wallet and account'
     },
     { 
       id: 'events', 
       name: 'Events', 
       icon: PartyPopper,
       color: 'text-purple-500',
-      bgColor: 'bg-purple-500/10 border-purple-500/30'
+      bgColor: 'bg-purple-500/10 border-purple-500/30',
+      description: 'Earn BIT by attending events'
     },
     { 
       id: 'webinar', 
       name: 'Webinars', 
       icon: Video,
       color: 'text-green-500',
-      bgColor: 'bg-green-500/10 border-green-500/30'
+      bgColor: 'bg-green-500/10 border-green-500/30',
+      description: 'Daily Zoom sessions with bonus rewards'
     },
     { 
       id: 'forum', 
       name: 'Forum Activity', 
       icon: MessageSquare,
       color: 'text-orange-500',
-      bgColor: 'bg-orange-500/10 border-orange-500/30'
+      bgColor: 'bg-orange-500/10 border-orange-500/30',
+      description: 'IT Park Ayala Cebu daily forums'
     },
   ];
 
@@ -200,7 +277,7 @@ const CommunityTab = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground mb-1">Check-In Streak</p>
-                <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">{checkInStreak}</p>
+                <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">{checkInStreak}/30</p>
                 <p className="text-sm text-muted-foreground">Days</p>
               </div>
               <Calendar className="w-12 h-12 text-blue-500 opacity-50" />
@@ -239,7 +316,7 @@ const CommunityTab = () => {
                 {category.name}
               </CardTitle>
               <CardDescription>
-                {categoryTasks.filter(t => t.completed).length} of {categoryTasks.length} tasks completed
+                {category.description} • {categoryTasks.filter(t => t.completed).length} of {categoryTasks.length} completed
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -260,25 +337,53 @@ const CommunityTab = () => {
                         <div className="flex-1">
                           <h4 className="font-semibold text-base mb-1">{task.title}</h4>
                           <p className="text-sm text-muted-foreground mb-3">{task.description}</p>
-                          <div className="flex items-center gap-2">
-                            <Coins className="w-4 h-4 text-primary" />
-                            <span className="font-bold text-primary">+{task.reward} BIT</span>
+                          <div className="flex items-center gap-3 flex-wrap">
+                            <div className="flex items-center gap-2">
+                              <Coins className="w-4 h-4 text-primary" />
+                              <span className="font-bold text-primary">+{task.reward} BIT</span>
+                            </div>
+                            {task.requiresInvites && (
+                              <Badge variant="outline" className="text-xs">
+                                <Users className="w-3 h-3 mr-1" />
+                                {task.inviteCount} invites needed
+                              </Badge>
+                            )}
                           </div>
                         </div>
                       </div>
-                      <div>
+                      <div className="flex flex-col gap-2">
                         {task.completed ? (
-                          <Badge className="bg-green-500 text-white">
+                          <Badge className="bg-green-500 text-white whitespace-nowrap">
                             <Check className="w-3 h-3 mr-1" />
                             Completed
                           </Badge>
+                        ) : task.link ? (
+                          <>
+                            <Button
+                              onClick={() => handleTaskAction(task.id)}
+                              size="sm"
+                              className="bg-primary hover:bg-primary/90 whitespace-nowrap"
+                            >
+                              <ExternalLink className="w-3 h-3 mr-1" />
+                              Visit Link
+                            </Button>
+                            <Button
+                              onClick={() => completeTask(task.id)}
+                              size="sm"
+                              variant="outline"
+                              className="whitespace-nowrap"
+                            >
+                              <Check className="w-3 h-3 mr-1" />
+                              Mark Done
+                            </Button>
+                          </>
                         ) : (
                           <Button
-                            onClick={() => handleCompleteTask(task.id)}
+                            onClick={() => completeTask(task.id)}
                             size="sm"
-                            className="bg-primary hover:bg-primary/90"
+                            className="bg-primary hover:bg-primary/90 whitespace-nowrap"
                           >
-                            <Clock className="w-3 h-3 mr-1" />
+                            <Check className="w-3 h-3 mr-1" />
                             Complete
                           </Button>
                         )}
