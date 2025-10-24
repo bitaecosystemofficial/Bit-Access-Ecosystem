@@ -40,6 +40,7 @@ const Navigation = () => {
     { path: '/overview', label: 'Overview' },
     { path: '/ecosystem', label: 'Ecosystem' },
     { path: '/integrators', label: 'Integrators' },
+    { path: '/chart', label: 'Chart' },
     { path: '/helpdesk', label: 'Helpdesk' },
   ];
 

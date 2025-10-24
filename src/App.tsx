@@ -12,6 +12,7 @@ import Home from "./pages/Home";
 import Overview from "./pages/Overview";
 import Ecosystem from "./pages/Ecosystem";
 import Integrators from "./pages/Integrators";
+import Chart from "./pages/Chart";
 import Helpdesk from "./pages/Helpdesk";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
@@ -46,13 +47,14 @@ const App = () => (
           <BrowserRouter>
             <Layout>
               <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/overview" element={<Overview />} />
-                <Route path="/ecosystem" element={<Ecosystem />} />
-                <Route path="/integrators" element={<Integrators />} />
-                <Route path="/helpdesk" element={<Helpdesk />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="*" element={<NotFound />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/overview" element={<Overview />} />
+            <Route path="/ecosystem" element={<Ecosystem />} />
+            <Route path="/integrators" element={<Integrators />} />
+            <Route path="/chart" element={<Chart />} />
+            <Route path="/helpdesk" element={<Helpdesk />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="*" element={<NotFound />} />
               </Routes>
             </Layout>
           </BrowserRouter>

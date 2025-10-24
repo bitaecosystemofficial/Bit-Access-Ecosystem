@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { useNavigate } from "react-router-dom";
+import { useTokenHolders } from "@/hooks/useTokenHolders";
 import heroBg from "@/assets/hero-bg.jpg";
 import bscLogo from "@/assets/bsc-logo.png";
 import polygonLogo from "@/assets/polygon-logo.png";
@@ -28,6 +29,8 @@ const Home = () => {
     open
   } = useWeb3Modal();
   const navigate = useNavigate();
+  const { holderCount, loading } = useTokenHolders();
+  
   const stats = [{
     label: "Community Members",
     value: "4K+",
@@ -38,7 +41,7 @@ const Home = () => {
     icon: Coins
   }, {
     label: "Token Holders",
-    value: "4,748",
+    value: loading ? "Loading..." : holderCount > 0 ? holderCount.toLocaleString() : "4,748",
     icon: TrendingUp
   }, {
     label: "Token Transfers",
