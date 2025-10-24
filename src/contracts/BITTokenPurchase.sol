@@ -208,7 +208,7 @@ contract BITTokenPurchase is ReentrancyGuard, Ownable {
      */
     function withdrawBIT(uint256 amount) external onlyOwner {
         require(
-            IERC20(bitToken).transfer(owner, amount),
+            IERC20(bitToken).transfer(owner(), amount),
             "Withdrawal failed"
         );
     }
@@ -220,7 +220,7 @@ contract BITTokenPurchase is ReentrancyGuard, Ownable {
      */
     function emergencyWithdraw(address token, uint256 amount) external onlyOwner {
         require(
-            IERC20(token).transfer(owner, amount),
+            IERC20(token).transfer(owner(), amount),
             "Emergency withdrawal failed"
         );
     }

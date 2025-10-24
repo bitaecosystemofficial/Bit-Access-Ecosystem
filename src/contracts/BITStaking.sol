@@ -319,7 +319,7 @@ contract BITStaking is ReentrancyGuard, Ownable {
      */
     function emergencyWithdraw(uint256 amount) external onlyOwner {
         require(
-            IERC20(bitToken).transfer(owner, amount),
+            IERC20(bitToken).transfer(owner(), amount),
             "Withdrawal failed"
         );
     }
