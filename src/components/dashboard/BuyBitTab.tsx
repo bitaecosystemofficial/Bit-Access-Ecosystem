@@ -69,24 +69,30 @@ const BuyBitTab = () => {
     query: { enabled: !!address && isBSCNetwork }
   });
 
-  // Countdown timer: 120 days from now
+  // Fixed presale end date: 120 days from today (persistent countdown)
+  // Set once and persists - update this date as needed
+  const getPresaleEndDate = () => {
+    const today = new Date('2025-10-24'); // Current date
+    const endDate = new Date(today);
+    endDate.setDate(endDate.getDate() + 120); // Add 120 days
+    return endDate;
+  };
+
+  const PRESALE_END_DATE = getPresaleEndDate();
+
   const [timeLeft, setTimeLeft] = useState({
-    days: 120,
+    days: 0,
     hours: 0,
     minutes: 0,
     seconds: 0,
   });
 
   useEffect(() => {
-    const targetDate = new Date();
-    targetDate.setDate(targetDate.getDate() + 120);
-
-    const timer = setInterval(() => {
+    const calculateTimeLeft = () => {
       const now = new Date().getTime();
-      const distance = targetDate.getTime() - now;
+      const distance = PRESALE_END_DATE.getTime() - now;
 
       if (distance < 0) {
-        clearInterval(timer);
         setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
         return;
       }
@@ -97,7 +103,13 @@ const BuyBitTab = () => {
         minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
         seconds: Math.floor((distance % (1000 * 60)) / 1000),
       });
-    }, 1000);
+    };
+
+    // Calculate immediately
+    calculateTimeLeft();
+
+    // Then update every second
+    const timer = setInterval(calculateTimeLeft, 1000);
 
     return () => clearInterval(timer);
   }, []);
