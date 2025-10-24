@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion';
-import { Wallet, Award, Lock, Users } from 'lucide-react';
+import { Wallet, Award, Lock, Users, ShoppingCart, Gift, TrendingUp, Repeat, Coins } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import usdtLogo from '@/assets/usdt-logo.png';
+import usdcLogo from '@/assets/usdc-logo.png';
 
 const Overview = () => {
   const sections = [
@@ -26,19 +28,35 @@ const Overview = () => {
 
   const tokenUtility = [
     {
-      title: 'Earn BIT',
-      description: 'Participate in the ecosystem through staking, referrals, and merchant interactions',
+      icon: ShoppingCart,
+      title: 'Buy BIT',
+      description: 'Purchase BIT tokens using USDT-BEP20 or USDC-BEP20 at $0.00108 per BIT. Available on BSC, Polygon, Arbitrum, and Base networks with a minimum purchase of 100,000 BIT.',
       color: 'from-primary/20 to-primary/5',
+      logos: [usdtLogo, usdcLogo],
     },
     {
-      title: 'Spend BIT',
-      description: 'Use BIT tokens at thousands of participating merchant locations worldwide',
+      icon: Gift,
+      title: 'Collect BIT',
+      description: 'Earn BIT token rewards through daily logins, referral programs, community tasks, merchant cashback, and ecosystem participation activities.',
       color: 'from-accent/20 to-accent/5',
     },
     {
-      title: 'Stake & Earn',
-      description: 'Lock your tokens for loyalty rewards and exclusive benefits',
+      icon: Lock,
+      title: 'Stake & Grow BIT',
+      description: 'Lock your BIT tokens in staking pools to earn passive rewards with competitive APY rates. Choose from multiple tiers based on your commitment level.',
       color: 'from-muted/20 to-muted/5',
+    },
+    {
+      icon: Repeat,
+      title: 'Swap BIT',
+      description: 'Seamlessly exchange BIT tokens with other cryptocurrencies through integrated DEX functionality with minimal fees and instant execution.',
+      color: 'from-secondary/20 to-secondary/5',
+    },
+    {
+      icon: TrendingUp,
+      title: 'Earn BIT',
+      description: 'Generate continuous BIT rewards by staking, referring friends, shopping at partner merchants, participating in governance, and contributing to ecosystem growth.',
+      color: 'from-primary/20 to-primary/5',
     },
   ];
 
@@ -88,12 +106,12 @@ const Overview = () => {
           viewport={{ once: true }}
           className="mb-20"
         >
-          <h2 className="text-4xl font-bold text-center mb-4">Token Utility (BIT)</h2>
+          <h2 className="text-4xl font-bold text-center mb-4">BIT Token Utility</h2>
           <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-            BIT powers the entire ecosystem, offering multiple ways to earn, spend, and grow your holdings
+            BIT serves as rewards within our ecosystem - Multiple ways to buy, collect, stake, swap, and earn
           </p>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {tokenUtility.map((item, index) => (
               <motion.div
                 key={index}
@@ -104,9 +122,17 @@ const Overview = () => {
               >
                 <Card className={`bg-gradient-to-br ${item.color} border-border h-full`}>
                   <CardContent className="p-8">
-                    <Award className="w-10 h-10 text-primary mb-4" />
+                    <item.icon className="w-10 h-10 text-primary mb-4" />
                     <h3 className="text-2xl font-bold mb-3">{item.title}</h3>
-                    <p className="text-muted-foreground">{item.description}</p>
+                    <p className="text-muted-foreground mb-4">{item.description}</p>
+                    {item.logos && (
+                      <div className="flex gap-2 items-center pt-2">
+                        <span className="text-xs text-muted-foreground">Payment:</span>
+                        {item.logos.map((logo, i) => (
+                          <img key={i} src={logo} alt="Crypto Logo" className="w-5 h-5" />
+                        ))}
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </motion.div>
