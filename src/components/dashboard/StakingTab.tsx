@@ -98,33 +98,65 @@ const StakingTab = () => {
     }
   }, [isSuccess]);
 
+  // Fetch staking pools data from contract
+  const { data: pool1Data } = useReadContract({
+    address: CONTRACT_ADDRESSES.BIT_STAKING,
+    abi: CONTRACT_ABIS.BIT_STAKING,
+    functionName: 'stakingPools',
+    args: [1],
+  });
+
+  const { data: pool2Data } = useReadContract({
+    address: CONTRACT_ADDRESSES.BIT_STAKING,
+    abi: CONTRACT_ABIS.BIT_STAKING,
+    functionName: 'stakingPools',
+    args: [2],
+  });
+
+  const { data: pool3Data } = useReadContract({
+    address: CONTRACT_ADDRESSES.BIT_STAKING,
+    abi: CONTRACT_ABIS.BIT_STAKING,
+    functionName: 'stakingPools',
+    args: [3],
+  });
+
+  // Staking pools configuration with real-time data
   const stakingPools = [
     {
-      days: 180,
-      apy: 12,
+      id: 1,
+      days: pool1Data ? Number(pool1Data[0]) : 90,
+      apy: pool1Data ? Number(pool1Data[1]) : 25,
       minStake: 100000,
-      totalStaked: '1.2M BIT',
+      totalStaked: pool1Data ? Number(pool1Data[3]) / 1e9 : 0,
+      active: pool1Data ? pool1Data[4] : true,
       color: 'from-blue-500/20 to-blue-500/5',
       borderColor: 'border-blue-500/30',
     },
     {
-      days: 240,
-      apy: 18,
-      minStake: 500000000,
-      totalStaked: '3.5M BIT',
+      id: 2,
+      days: pool2Data ? Number(pool2Data[0]) : 180,
+      apy: pool2Data ? Number(pool2Data[1]) : 50,
+      minStake: 500000,
+      totalStaked: pool2Data ? Number(pool2Data[3]) / 1e9 : 0,
+      active: pool2Data ? pool2Data[4] : true,
       color: 'from-purple-500/20 to-purple-500/5',
       borderColor: 'border-purple-500/30',
       popular: true,
     },
     {
-      days: 365,
-      apy: 25,
+      id: 3,
+      days: pool3Data ? Number(pool3Data[0]) : 365,
+      apy: pool3Data ? Number(pool3Data[1]) : 100,
       minStake: 1000000,
-      totalStaked: '8.9M BIT',
+      totalStaked: pool3Data ? Number(pool3Data[3]) / 1e9 : 0,
+      active: pool3Data ? pool3Data[4] : true,
       color: 'from-primary/20 to-primary/5',
       borderColor: 'border-primary/30',
     },
   ];
+
+  // Calculate total staked across all pools
+  const totalStakedAllPools = stakingPools.reduce((sum, pool) => sum + pool.totalStaked, 0);
 
   const calculateRewards = (amount: string, pool: typeof stakingPools[0]) => {
     const amt = parseFloat(amount);
@@ -277,11 +309,12 @@ const StakingTab = () => {
         return;
       }
 
+      const poolId = stakingPools[selectedPool].id;
       await writeContract({
         address: CONTRACT_ADDRESSES.BIT_STAKING as `0x${string}`,
         abi: CONTRACT_ABIS.BIT_STAKING,
         functionName: 'stake',
-        args: [BigInt(selectedPool), amountToStake],
+        args: [BigInt(poolId), amountToStake],
       } as any);
 
       toast({
@@ -436,6 +469,41 @@ const StakingTab = () => {
         </Card>
       </div>
 
+      {/* Total Staked in Contract */}
+      <Card className="bg-gradient-to-br from-orange-500/10 to-yellow-500/5 border-orange-500/20">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <p className="text-sm text-muted-foreground mb-1">Total Staked in Contract</p>
+              <p className="text-4xl font-bold bg-gradient-to-r from-orange-500 to-yellow-500 bg-clip-text text-transparent">
+                {totalStakedAllPools.toLocaleString()} BIT
+              </p>
+            </div>
+            <div className="text-5xl">🏦</div>
+          </div>
+          <div className="space-y-3">
+            {stakingPools.map((pool) => (
+              <div key={pool.id}>
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="text-muted-foreground">Pool #{pool.id} ({pool.days}-Day)</span>
+                  <span className="font-medium">{pool.totalStaked.toLocaleString()} BIT</span>
+                </div>
+                <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
+                  <div 
+                    className={`h-full bg-gradient-to-r ${pool.color.replace('/20', '').replace('/5', '')} transition-all duration-500`}
+                    style={{ 
+                      width: totalStakedAllPools > 0 
+                        ? `${(pool.totalStaked / totalStakedAllPools) * 100}%` 
+                        : '0%' 
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Active Staking Positions */}
       {userStakes && (userStakes as any[]).length > 0 && (
         <Card className="bg-card/50 backdrop-blur-sm border-border/50">
@@ -547,7 +615,7 @@ const StakingTab = () => {
       <div className="grid md:grid-cols-3 gap-6">
         {stakingPools.map((pool, index) => (
           <motion.div
-            key={index}
+            key={pool.id}
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: index * 0.1 }}
@@ -557,12 +625,17 @@ const StakingTab = () => {
                 selectedPool === index
                   ? `bg-gradient-to-br ${pool.color} ${pool.borderColor} border-2`
                   : 'bg-card border-border hover:border-primary/50'
-              }`}
-              onClick={() => setSelectedPool(index)}
+              } ${!pool.active ? 'opacity-50 cursor-not-allowed' : ''}`}
+              onClick={() => pool.active ? setSelectedPool(index) : null}
             >
               {pool.popular && (
                 <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground">
                   Most Popular
+                </Badge>
+              )}
+              {!pool.active && (
+                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-destructive text-destructive-foreground">
+                  Inactive
                 </Badge>
               )}
               <CardHeader>
@@ -575,12 +648,16 @@ const StakingTab = () => {
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Pool ID:</span>
+                  <Badge variant="outline">#{pool.id}</Badge>
+                </div>
+                <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Min Stake:</span>
                   <span className="font-bold">{pool.minStake.toLocaleString()} BIT</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Total Staked:</span>
-                  <span className="font-bold">{pool.totalStaked}</span>
+                  <span className="font-bold">{pool.totalStaked.toLocaleString()} BIT</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Lock Period:</span>
