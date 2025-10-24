@@ -53,18 +53,20 @@ const BuyBitTab = () => {
     query: { enabled: !!address && isBSCNetwork },
   });
 
-  // Read contract price
+  // Read contract price (in USD per BIT with 9 decimals)
   const { data: contractPrice } = useReadContract({
     address: CONTRACT_ADDRESSES.BIT_PURCHASE as `0x${string}`,
     abi: CONTRACT_ABIS.BIT_PURCHASE,
     functionName: "pricePerBIT",
+    query: { enabled: isBSCNetwork },
   });
 
-  // Read minimum purchase
+  // Read minimum purchase (in USD with 9 decimals)
   const { data: minPurchase } = useReadContract({
     address: CONTRACT_ADDRESSES.BIT_PURCHASE as `0x${string}`,
     abi: CONTRACT_ABIS.BIT_PURCHASE,
     functionName: "minimumPurchase",
+    query: { enabled: isBSCNetwork },
   });
 
   // Read contract BIT balance
@@ -136,8 +138,10 @@ const BuyBitTab = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // Price per BIT in USD (contract stores with 9 decimals, default to 0.000108 USD per BIT)
   const pricePerBit = contractPrice ? Number(formatUnits(contractPrice as bigint, 9)) : 0.000108;
-  const minimumPurchase = minPurchase ? Number(formatUnits(minPurchase as bigint, 9)) : 100000;
+  // Minimum purchase in USD (contract stores with 9 decimals, default to $10)
+  const minimumPurchase = minPurchase ? Number(formatUnits(minPurchase as bigint, 9)) : 10;
 
   // State for total BIT sold from BSCScan
   const [totalSold, setTotalSold] = useState<number>(0);
@@ -188,10 +192,11 @@ const BuyBitTab = () => {
   const calculateBit = (usdAmount: string): string => {
     const amt = parseFloat(usdAmount);
     if (isNaN(amt) || amt <= 0) return "0";
+    // At 0.000108 USD per BIT, 1 USD = 9,259.26 BIT
     const bitAmount = amt / pricePerBit;
     // Cap at maximum allocation from contract balance
     const cappedAmount = Math.min(bitAmount, maxBITAllocation);
-    return cappedAmount.toLocaleString("en-US", { maximumFractionDigits: 0 });
+    return cappedAmount.toLocaleString("en-US", { maximumFractionDigits: 2 });
   };
 
   const handleApprove = async () => {
@@ -199,6 +204,15 @@ const BuyBitTab = () => {
       toast({
         title: "Wallet Not Connected",
         description: "Please connect your wallet first",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!amount || parseFloat(amount) <= 0) {
+      toast({
+        title: "Invalid Amount",
+        description: "Please enter a valid amount",
         variant: "destructive",
       });
       return;
@@ -225,7 +239,8 @@ const BuyBitTab = () => {
 
     setIsApproving(true);
     try {
-      const amountToApprove = parseUnits(amount, 18); // USDT/USDC has 18 decimals on BEP20
+      // USDT/USDC has 18 decimals on BSC
+      const amountToApprove = parseUnits(amount, 18);
 
       await writeContract({
         address: paymentTokenAddress as `0x${string}`,
@@ -236,12 +251,12 @@ const BuyBitTab = () => {
 
       toast({
         title: "Approval Submitted",
-        description: "Please wait for the transaction to confirm...",
+        description: `Approving ${paymentMethod} spend...`,
       });
     } catch (error: any) {
       toast({
         title: "Approval Failed",
-        description: error?.message || "Failed to approve token",
+        description: error?.shortMessage || error?.message || "Failed to approve token",
         variant: "destructive",
       });
     } finally {
@@ -251,8 +266,6 @@ const BuyBitTab = () => {
   };
 
   const handleBuy = async () => {
-    const bitAmount = parseFloat(calculateBit(amount).replace(/,/g, ""));
-
     if (!address) {
       toast({
         title: "Wallet Not Connected",
@@ -281,24 +294,28 @@ const BuyBitTab = () => {
       }
     }
 
-    if (!amount || parseFloat(amount) <= 0) {
+    const usdAmountValue = parseFloat(amount);
+    if (!amount || usdAmountValue <= 0) {
       toast({
         title: "Invalid Amount",
-        description: "Please enter a valid amount",
+        description: "Please enter a valid USD amount",
         variant: "destructive",
       });
       return;
     }
 
-    if (bitAmount < minimumPurchase) {
+    // Check minimum purchase in USD
+    if (usdAmountValue < minimumPurchase) {
       toast({
         title: "Minimum Purchase Required",
-        description: `Minimum purchase is ${minimumPurchase.toLocaleString()} BIT tokens ($${(minimumPurchase * pricePerBit).toLocaleString()})`,
+        description: `Minimum purchase is $${minimumPurchase.toLocaleString()} USD`,
         variant: "destructive",
       });
       return;
     }
 
+    const bitAmount = parseFloat(calculateBit(amount).replace(/,/g, ""));
+    
     // Check against maximum BIT allocation from contract balance
     if (bitAmount > maxBITAllocation) {
       toast({
@@ -318,19 +335,21 @@ const BuyBitTab = () => {
     }
 
     try {
-      const usdAmount = parseUnits(amount, 18); // USDT/USDC has 18 decimals on BEP20
+      // USDT/USDC has 18 decimals on BSC
+      const usdAmount = parseUnits(amount, 18);
 
       // Check if approval is needed
       const currentAllowance = (allowance as bigint) || BigInt(0);
       if (currentAllowance < usdAmount) {
         toast({
           title: "Approval Required",
-          description: "Please approve the token spend first",
+          description: `Please approve ${paymentMethod} spend first`,
           variant: "destructive",
         });
         return;
       }
 
+      // Call purchaseBIT(address paymentToken, uint256 usdAmount)
       await writeContract({
         address: CONTRACT_ADDRESSES.BIT_PURCHASE as `0x${string}`,
         abi: CONTRACT_ABIS.BIT_PURCHASE,
@@ -340,12 +359,12 @@ const BuyBitTab = () => {
 
       toast({
         title: "Purchase Submitted",
-        description: "Please wait for the transaction to confirm...",
+        description: `Buying ${bitAmount.toLocaleString()} BIT tokens...`,
       });
     } catch (error: any) {
       toast({
         title: "Purchase Failed",
-        description: error?.message || "Failed to purchase tokens",
+        description: error?.shortMessage || error?.message || "Transaction failed",
         variant: "destructive",
       });
     }
