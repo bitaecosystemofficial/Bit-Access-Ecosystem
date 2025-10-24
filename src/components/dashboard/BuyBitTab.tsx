@@ -8,8 +8,12 @@ import { Badge } from '@/components/ui/badge';
 import { ShoppingBag, AlertCircle, Wallet } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useBITBalance } from '@/contexts/BITBalanceContext';
-import usdtLogo from '@/assets/usdt-logo.png';
-import usdcLogo from '@/assets/usdc-logo.png';
+import usdtIcon from '@/assets/usdt-icon.png';
+import usdcIcon from '@/assets/usdc-icon.png';
+import bscIcon from '@/assets/bsc-icon.png';
+import polygonIcon from '@/assets/polygon-icon.png';
+import arbitrumIcon from '@/assets/arbitrum-icon.png';
+import baseIcon from '@/assets/base-icon.png';
 
 const BuyBitTab = () => {
   const [amount, setAmount] = useState('');
@@ -55,10 +59,10 @@ const BuyBitTab = () => {
   const minimumPurchase = 100000; // Minimum 100,000 BIT
 
   const networks = [
-    { name: 'BSC', active: true, color: 'from-yellow-500/20 to-yellow-500/5' },
-    { name: 'Polygon', active: false, color: 'from-purple-500/20 to-purple-500/5' },
-    { name: 'Arbitrum', active: false, color: 'from-blue-500/20 to-blue-500/5' },
-    { name: 'Base', active: false, color: 'from-blue-400/20 to-blue-400/5' },
+    { name: 'BSC', active: true, color: 'from-yellow-500/20 to-yellow-500/5', icon: bscIcon },
+    { name: 'Polygon', active: false, color: 'from-purple-500/20 to-purple-500/5', icon: polygonIcon },
+    { name: 'Arbitrum', active: false, color: 'from-blue-500/20 to-blue-500/5', icon: arbitrumIcon },
+    { name: 'Base', active: false, color: 'from-blue-400/20 to-blue-400/5', icon: baseIcon },
   ];
 
   const calculateBit = (usdAmount: string): string => {
@@ -178,7 +182,7 @@ const BuyBitTab = () => {
                 }`}
               >
                 <div className="flex flex-col items-center gap-1">
-                  <img src={usdtLogo} alt="USDT" className="w-6 h-6" />
+                  <img src={usdtIcon} alt="USDT" className="w-6 h-6" />
                   <span className="text-xs">USDT-BEP20</span>
                 </div>
               </Button>
@@ -192,7 +196,7 @@ const BuyBitTab = () => {
                 }`}
               >
                 <div className="flex flex-col items-center gap-1">
-                  <img src={usdcLogo} alt="USDC" className="w-6 h-6" />
+                  <img src={usdcIcon} alt="USDC" className="w-6 h-6" />
                   <span className="text-xs">USDC-BEP20</span>
                 </div>
               </Button>
@@ -209,14 +213,17 @@ const BuyBitTab = () => {
                   variant={selectedNetwork === network.name ? 'default' : 'outline'}
                   onClick={() => setSelectedNetwork(network.name)}
                   disabled={!network.active}
-                  className={`h-12 font-semibold transition-all ${
+                  className={`h-16 font-semibold transition-all ${
                     selectedNetwork === network.name
                       ? 'bg-primary text-primary-foreground shadow-lg scale-105'
                       : 'bg-card/50 hover:bg-secondary/50'
                   } ${!network.active && 'opacity-50 cursor-not-allowed'}`}
                 >
-                  {network.name}
-                  {network.active && <Badge className="ml-2 bg-green-500 text-white text-xs">Active</Badge>}
+                  <div className="flex flex-col items-center gap-1">
+                    <img src={network.icon} alt={network.name} className="w-6 h-6" />
+                    <span className="text-xs">{network.name}</span>
+                    {network.active && <Badge className="mt-0.5 bg-green-500 text-white text-[10px] px-1 py-0">Active</Badge>}
+                  </div>
                 </Button>
               ))}
             </div>
@@ -229,9 +236,9 @@ const BuyBitTab = () => {
             </Label>
             <div className="relative">
               {paymentMethod === 'USDT' ? (
-                <img src={usdtLogo} alt="USDT" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" />
+                <img src={usdtIcon} alt="USDT" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" />
               ) : (
-                <img src={usdcLogo} alt="USDC" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" />
+                <img src={usdcIcon} alt="USDC" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" />
               )}
               <Input
                 id="amount"
@@ -262,7 +269,7 @@ const BuyBitTab = () => {
                 <div className="flex justify-between items-center">
                   <span className="text-muted-foreground font-medium">You Pay:</span>
                   <div className="flex items-center gap-2">
-                    <img src={paymentMethod === 'USDT' ? usdtLogo : usdcLogo} alt={paymentMethod} className="w-4 h-4" />
+                    <img src={paymentMethod === 'USDT' ? usdtIcon : usdcIcon} alt={paymentMethod} className="w-4 h-4" />
                     <span className="text-xl font-bold">{parseFloat(amount).toLocaleString()} {paymentMethod}</span>
                   </div>
                 </div>
@@ -273,7 +280,7 @@ const BuyBitTab = () => {
                 <div className="flex justify-between items-center">
                   <span className="text-muted-foreground font-medium">Payment Method:</span>
                   <div className="flex items-center gap-1.5">
-                    <img src={paymentMethod === 'USDT' ? usdtLogo : usdcLogo} alt={paymentMethod} className="w-4 h-4" />
+                    <img src={paymentMethod === 'USDT' ? usdtIcon : usdcIcon} alt={paymentMethod} className="w-4 h-4" />
                     <span className="font-semibold">{paymentMethod}-BEP20</span>
                   </div>
                 </div>
