@@ -136,15 +136,16 @@ const BuyBitTab = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const pricePerBit = contractPrice ? Number(formatUnits(contractPrice as bigint, 18)) : 0.00108;
+  const pricePerBit = contractPrice ? Number(formatUnits(contractPrice as bigint, 9)) : 0.00108;
   const minimumPurchase = minPurchase ? Number(formatUnits(minPurchase as bigint, 9)) : 100000;
   
   // State for total BIT sold from BSCScan
   const [totalSold, setTotalSold] = useState<number>(0);
   
-  // Calculate based on contract balance
+  // Calculate based on contract balance (BIT token uses 9 decimals)
   const INITIAL_CONTRACT_SUPPLY = 100000000000; // 100 billion BIT tokens initially added to contract
   const contractBalance = contractBitBalance ? Number(formatUnits(contractBitBalance as bigint, 9)) : 0;
+  const maxBITAllocation = contractBalance; // Maximum BIT available for purchase from contract
   const soldPercentage = INITIAL_CONTRACT_SUPPLY > 0 ? (totalSold / INITIAL_CONTRACT_SUPPLY) * 100 : 0;
   const remainingPercentage = 100 - soldPercentage;
 
@@ -187,7 +188,10 @@ const BuyBitTab = () => {
   const calculateBit = (usdAmount: string): string => {
     const amt = parseFloat(usdAmount);
     if (isNaN(amt) || amt <= 0) return "0";
-    return (amt / pricePerBit).toLocaleString("en-US", { maximumFractionDigits: 0 });
+    const bitAmount = amt / pricePerBit;
+    // Cap at maximum allocation from contract balance
+    const cappedAmount = Math.min(bitAmount, maxBITAllocation);
+    return cappedAmount.toLocaleString("en-US", { maximumFractionDigits: 0 });
   };
 
   const handleApprove = async () => {
@@ -290,6 +294,16 @@ const BuyBitTab = () => {
       toast({
         title: "Minimum Purchase Required",
         description: `Minimum purchase is ${minimumPurchase.toLocaleString()} BIT tokens ($${(minimumPurchase * pricePerBit).toLocaleString()})`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check against maximum BIT allocation from contract balance
+    if (bitAmount > maxBITAllocation) {
+      toast({
+        title: "Exceeds Available Allocation",
+        description: `Maximum available BIT in presale: ${maxBITAllocation.toLocaleString()}`,
         variant: "destructive",
       });
       return;
