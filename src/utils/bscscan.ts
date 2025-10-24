@@ -157,3 +157,33 @@ export const formatTokenAmount = (amount: string, decimals: string): string => {
   const value = parseFloat(amount) / divisor;
   return value.toLocaleString(undefined, { maximumFractionDigits: 2 });
 };
+
+export const fetchTotalBITSold = async (): Promise<number> => {
+  try {
+    const BIT_PURCHASE_CONTRACT = "0xaa4763b736eD739694b44c2A718Dbe936EFe28Fa";
+    
+    // Fetch TokensPurchased events from the BIT Purchase contract
+    const response = await fetch(
+      `${ETHERSCAN_API_URL}?chainid=${CHAIN_ID}&module=account&action=tokentx&contractaddress=${BIT_TOKEN_ADDRESS}&address=${BIT_PURCHASE_CONTRACT}&page=1&offset=10000&sort=desc&apikey=${ETHERSCAN_API_KEY}`
+    );
+    const data = await response.json();
+
+    console.log("Total BIT sold response:", data);
+
+    if (data.status === "1" && data.result) {
+      // Sum all transfers FROM the BIT Purchase contract (these are purchases)
+      const totalSold = data.result
+        .filter((tx: Transaction) => tx.from.toLowerCase() === BIT_PURCHASE_CONTRACT.toLowerCase())
+        .reduce((sum: number, tx: Transaction) => {
+          const amount = parseFloat(tx.value) / Math.pow(10, parseInt(tx.tokenDecimal));
+          return sum + amount;
+        }, 0);
+      
+      return totalSold;
+    }
+    return 0;
+  } catch (error) {
+    console.error("Error fetching total BIT sold:", error);
+    return 0;
+  }
+};

@@ -18,6 +18,7 @@ import {
 } from "wagmi";
 import { parseUnits, formatUnits } from "viem";
 import { bsc, bscTestnet } from "wagmi/chains";
+import { fetchTotalBITSold } from "@/utils/bscscan";
 import { CONTRACT_ADDRESSES, CONTRACT_ABIS } from "@/config/contracts";
 import usdtIcon from "@/assets/usdt-icon.png";
 import usdcIcon from "@/assets/usdc-icon.png";
@@ -138,23 +139,43 @@ const BuyBitTab = () => {
   const pricePerBit = contractPrice ? Number(formatUnits(contractPrice as bigint, 18)) : 0.00108;
   const minimumPurchase = minPurchase ? Number(formatUnits(minPurchase as bigint, 9)) : 100000;
   
+  // State for total BIT sold from BSCScan
+  const [totalSold, setTotalSold] = useState<number>(0);
+  
   // Calculate based on contract balance
   const INITIAL_CONTRACT_SUPPLY = 100000000000; // 100 billion BIT tokens initially added to contract
   const contractBalance = contractBitBalance ? Number(formatUnits(contractBitBalance as bigint, 9)) : 0;
-  const totalSold = INITIAL_CONTRACT_SUPPLY - contractBalance; // Total sold = Initial - Current Balance
   const soldPercentage = INITIAL_CONTRACT_SUPPLY > 0 ? (totalSold / INITIAL_CONTRACT_SUPPLY) * 100 : 0;
+  const remainingPercentage = 100 - soldPercentage;
+
+  // Fetch total BIT sold from blockchain
+  useEffect(() => {
+    const loadTotalSold = async () => {
+      const sold = await fetchTotalBITSold();
+      setTotalSold(sold);
+    };
+    loadTotalSold();
+    
+    // Refresh every 30 seconds
+    const interval = setInterval(loadTotalSold, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     if (isSuccess) {
       refetchBitBalance();
       refetchContractBalance();
+      
+      // Refresh total sold data
+      fetchTotalBITSold().then(setTotalSold);
+      
       toast({
         title: "Purchase Successful! 🎉",
         description: `BIT tokens have been transferred to your wallet.`,
       });
       setAmount("");
     }
-  }, [isSuccess]);
+  }, [isSuccess, refetchBitBalance, toast]);
 
   const networks = [
     { name: "BSC", active: true, color: "from-yellow-500/20 to-yellow-500/5", icon: bscIcon },
