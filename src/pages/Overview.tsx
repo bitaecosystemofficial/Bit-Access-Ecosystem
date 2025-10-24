@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Wallet, Award, Lock, Users, ShoppingCart, Gift, TrendingUp, Repeat, Coins } from 'lucide-react';
+import { Wallet, Award, Lock, Users, ShoppingCart, Gift, TrendingUp, Repeat, Crown, Check } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import usdtLogo from '@/assets/usdt-logo.png';
 import usdcLogo from '@/assets/usdc-logo.png';
@@ -30,33 +30,58 @@ const Overview = () => {
     {
       icon: ShoppingCart,
       title: 'Buy BIT',
-      description: 'Purchase BIT tokens using USDT-BEP20 or USDC-BEP20 at $0.00108 per BIT. Available on BSC, Polygon, Arbitrum, and Base networks with a minimum purchase of 100,000 BIT.',
+      description: 'Purchase BIT tokens using USDT-BEP20 or USDC-BEP20 at $0.00108 per BIT. Available on BSC, Polygon, Arbitrum, and Base networks. Minimum purchase of 100,000 BIT tokens to get started.',
       color: 'from-primary/20 to-primary/5',
       logos: [usdtLogo, usdcLogo],
     },
     {
       icon: Gift,
       title: 'Collect BIT',
-      description: 'Earn BIT token rewards through daily logins, referral programs, community tasks, merchant cashback, and ecosystem participation activities.',
+      description: 'Earn BIT tokens as rewards through multiple activities: daily login bonuses, referral programs, completing community tasks, shopping at partner merchants, and participating in ecosystem events.',
       color: 'from-accent/20 to-accent/5',
     },
     {
       icon: Lock,
       title: 'Stake & Grow BIT',
-      description: 'Lock your BIT tokens in staking pools to earn passive rewards with competitive APY rates. Choose from multiple tiers based on your commitment level.',
+      description: 'Lock your BIT tokens in our staking platform to earn passive rewards. Choose from multiple staking tiers with competitive APY rates. The longer you stake, the higher your potential rewards.',
       color: 'from-muted/20 to-muted/5',
     },
     {
       icon: Repeat,
       title: 'Swap BIT',
-      description: 'Seamlessly exchange BIT tokens with other cryptocurrencies through integrated DEX functionality with minimal fees and instant execution.',
+      description: 'Seamlessly swap your BIT tokens with other cryptocurrencies through our integrated DEX functionality. Trade with minimal fees, instant execution, and full transparency on the blockchain.',
       color: 'from-secondary/20 to-secondary/5',
     },
     {
       icon: TrendingUp,
       title: 'Earn BIT',
-      description: 'Generate continuous BIT rewards by staking, referring friends, shopping at partner merchants, participating in governance, and contributing to ecosystem growth.',
+      description: 'Generate BIT token rewards by staking, referring friends, shopping at partner merchants, participating in governance, and contributing to community growth. Multiple earning streams available.',
       color: 'from-primary/20 to-primary/5',
+    },
+    {
+      icon: Crown,
+      title: 'Membership Benefits',
+      description: 'Unlock exclusive perks with tiered membership levels. Higher tiers offer premium features, enhanced reward multipliers, priority support, and early access to new opportunities.',
+      color: 'from-accent/20 to-accent/5',
+    },
+  ];
+
+  const roadmap = [
+    {
+      phase: 'Phase 1: Foundation',
+      items: ['Token launch and initial distribution', 'Smart contract deployment across networks', 'Launch staking platform with multiple tiers', 'Onboard first merchant partners'],
+    },
+    {
+      phase: 'Phase 2: Expansion',
+      items: ['DEX integration for token swaps', 'Mobile wallet app development', 'Expand merchant network globally', 'Implement tiered membership system'],
+    },
+    {
+      phase: 'Phase 3: Ecosystem Growth',
+      items: ['Launch governance platform for voting', 'Cross-chain bridge implementation', 'Advanced analytics dashboard release', 'Partnership with major e-commerce platforms'],
+    },
+    {
+      phase: 'Phase 4: Mass Adoption',
+      items: ['Global payment processor integration', 'Enterprise merchant solutions', 'DeFi yield farming opportunities', 'Worldwide community expansion'],
     },
   ];
 
@@ -133,6 +158,51 @@ const Overview = () => {
                         ))}
                       </div>
                     )}
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Roadmap */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="mb-20"
+        >
+          <h2 className="text-4xl font-bold text-center mb-4">Development Roadmap</h2>
+          <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
+            Our strategic plan for ecosystem growth and expansion
+          </p>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {roadmap.map((phase, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
+              >
+                <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-border h-full">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold">
+                        {index + 1}
+                      </div>
+                      <h3 className="text-lg font-bold">{phase.phase}</h3>
+                    </div>
+                    <ul className="space-y-2">
+                      {phase.items.map((item, i) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <Check className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                          <span className="text-sm text-muted-foreground">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </CardContent>
                 </Card>
               </motion.div>

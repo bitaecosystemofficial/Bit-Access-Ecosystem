@@ -37,64 +37,83 @@ const Ecosystem = () => {
   ];
 
   const tokenHolderBenefits = [
-    'Earn BIT token rewards through staking activities',
-    'Receive BIT rewards for platform participation and engagement',
-    'Get BIT bonuses through governance participation',
-    'Earn BIT incentives for early feature adoption',
-    'Collect BIT rewards from referral programs',
-    'Receive BIT appreciation as ecosystem grows',
-    'Earn discounted transaction fees paid in BIT rewards',
-    'Get priority BIT rewards from limited edition events',
+    'Stake BIT tokens to earn competitive APY rewards passively',
+    'Access tiered membership benefits with exclusive perks and features',
+    'Participate in governance voting to shape ecosystem decisions',
+    'Receive enhanced reward multipliers for long-term holding',
+    'Earn bonus BIT rewards through referral program participation',
+    'Get priority access to new features and token sale events',
+    'Unlock premium support channels and dedicated account management',
+    'Build reputation score for increased rewards and special opportunities',
   ];
 
   const merchantBenefits = [
-    'Accept USDT/USDC payments across 4 blockchain networks',
-    'Earn BIT token rewards for processing customer transactions',
-    'Receive BIT bonuses for hitting transaction milestones',
-    'Get instant settlement in USDT or USDC stablecoins',
-    'Collect BIT rewards through merchant loyalty program',
-    'Lower transaction fees with BIT reward incentives',
-    'Earn BIT tokens for referring other merchants',
-    'Access real-time analytics dashboard and BIT earnings tracking',
+    'Accept USDT/USDC payments on BSC, Polygon, Arbitrum, and Base networks',
+    'Receive instant settlement in stablecoins with zero chargeback risk',
+    'Earn BIT token rewards for every transaction processed',
+    'Access comprehensive analytics dashboard for sales and BIT earnings',
+    'Get BIT bonus rewards for achieving monthly transaction milestones',
+    'Benefit from lower transaction fees compared to traditional payment processors',
+    'Earn additional BIT rewards for referring new merchant partners',
+    'Integrate easily with existing POS systems and e-commerce platforms',
   ];
 
   const customerBenefits = [
-    'Pay with USDT or USDC at participating merchants',
-    'Earn BIT token rewards as cashback on every purchase',
-    'Collect BIT bonuses for shopping frequency milestones',
-    'Get instant confirmation with blockchain verification',
-    'Receive BIT loyalty rewards and exclusive discounts',
-    'Earn BIT tokens through referral program participation',
-    'Pay across 4 networks: BSC, Polygon, Arbitrum, and Base',
-    'Build BIT reward history for premium membership tiers',
+    'Pay merchants using USDT/USDC across 4 blockchain networks',
+    'Earn BIT token cashback rewards on every purchase made',
+    'Receive instant payment confirmation with blockchain transparency',
+    'Collect bonus BIT rewards for shopping frequency milestones',
+    'Access exclusive merchant discounts and promotional offers',
+    'Choose preferred network based on transaction fees and speed',
+    'Earn additional BIT tokens through customer referral programs',
+    'Progress through reward tiers to unlock enhanced cashback rates',
   ];
 
   const communityBenefits = [
-    'Earn BIT rewards for community participation and engagement',
-    'Collect BIT tokens through social-to-earn opportunities',
-    'Receive BIT bonuses from regular airdrop events',
-    'Get BIT rewards for educational content creation',
-    'Multi-chain support: BSC, Polygon, Arbitrum, Base networks',
-    'Earn BIT through community-driven governance participation',
-    'Access BIT-rewarded educational resources and webinars',
-    'Receive BIT incentives for active forum and support contributions',
+    'Earn BIT rewards for active participation in community events',
+    'Participate in regular airdrops and community reward distributions',
+    'Create educational content to earn BIT token incentives',
+    'Engage in governance proposals and voting for BIT rewards',
+    'Complete social media tasks and campaigns for BIT earnings',
+    'Contribute to forums and help other members for reward bonuses',
+    'Join ambassador programs to earn consistent BIT incentives',
+    'Access exclusive community-only features and early announcements',
+  ];
+
+  const roadmap = [
+    {
+      phase: 'Phase 1: Foundation',
+      items: ['Token launch and initial distribution', 'Smart contract deployment across networks', 'Launch staking platform with multiple tiers', 'Onboard first merchant partners'],
+    },
+    {
+      phase: 'Phase 2: Expansion',
+      items: ['DEX integration for token swaps', 'Mobile wallet app development', 'Expand merchant network globally', 'Implement tiered membership system'],
+    },
+    {
+      phase: 'Phase 3: Ecosystem Growth',
+      items: ['Launch governance platform for voting', 'Cross-chain bridge implementation', 'Advanced analytics dashboard release', 'Partnership with major e-commerce platforms'],
+    },
+    {
+      phase: 'Phase 4: Mass Adoption',
+      items: ['Global payment processor integration', 'Enterprise merchant solutions', 'DeFi yield farming opportunities', 'Worldwide community expansion'],
+    },
   ];
 
   const techStack = [
     {
       icon: Shield,
-      title: 'Blockchain',
-      description: 'Binance Smart Chain (BEP-20)',
+      title: 'Multi-Chain Support',
+      description: 'BSC, Polygon, Arbitrum, Base',
     },
     {
       icon: Code,
       title: 'Smart Contracts',
-      description: 'Solidity, Audited & Verified',
+      description: 'Audited Solidity contracts',
     },
     {
       icon: Lock,
-      title: 'Security',
-      description: 'Multi-sig wallets, Regular audits',
+      title: 'Security First',
+      description: 'Multi-sig wallets & regular audits',
     },
   ];
 
@@ -259,6 +278,51 @@ const Ecosystem = () => {
           </div>
         </motion.div>
 
+        {/* Roadmap */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="mb-20"
+        >
+          <h2 className="text-4xl font-bold text-center mb-4">Development Roadmap</h2>
+          <p className="text-center text-muted-foreground mb-12">
+            Our strategic plan for ecosystem growth and expansion
+          </p>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {roadmap.map((phase, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
+              >
+                <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-border h-full">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold">
+                        {index + 1}
+                      </div>
+                      <h3 className="text-lg font-bold">{phase.phase}</h3>
+                    </div>
+                    <ul className="space-y-2">
+                      {phase.items.map((item, i) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <Check className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                          <span className="text-sm text-muted-foreground">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
         {/* Technology Stack */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -268,7 +332,7 @@ const Ecosystem = () => {
         >
           <h2 className="text-4xl font-bold text-center mb-4">Technology Stack</h2>
           <p className="text-center text-muted-foreground mb-12">
-            Built on industry-leading blockchain technology
+            Built on industry-leading blockchain infrastructure
           </p>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
