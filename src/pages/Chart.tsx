@@ -4,52 +4,32 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { motion } from "framer-motion";
 import { ExternalLink, TrendingUp, Users, ArrowUpDown, Coins } from "lucide-react";
 import {
-  fetchTop10Holders,
   fetchLatestTransactions,
-  fetchTokenInfo,
-  fetchTokenHolders,
-  fetchTotalTransfers,
-  fetch24HTransfers,
   formatAddress,
   formatTokenAmount,
-  type TokenHolder,
   type Transaction,
-  type TokenInfo,
 } from "@/utils/bscscan";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useTokenData } from "@/hooks/useTokenData";
 
 export default function Chart() {
-  const [holders, setHolders] = useState<TokenHolder[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [tokenInfo, setTokenInfo] = useState<TokenInfo | null>(null);
-  const [holderCount, setHolderCount] = useState<number>(0);
-  const [totalTransfers, setTotalTransfers] = useState<number>(0);
-  const [transfers24h, setTransfers24h] = useState<number>(0);
-  const [loading, setLoading] = useState(true);
+  const [loadingTx, setLoadingTx] = useState(true);
+  
+  // Fetch token data from smart contracts and API
+  const { tokenName, totalSupply, decimals, holderCount, totalTransfers, transfers24h, loading } = useTokenData();
 
   useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      const [holdersData, txData, infoData, holderCountData, totalTransfersData, transfers24hData] = await Promise.all([
-        fetchTop10Holders(),
-        fetchLatestTransactions(),
-        fetchTokenInfo(),
-        fetchTokenHolders(),
-        fetchTotalTransfers(),
-        fetch24HTransfers(),
-      ]);
-      setHolders(holdersData);
+    const loadTransactions = async () => {
+      setLoadingTx(true);
+      const txData = await fetchLatestTransactions();
       setTransactions(txData);
-      setTokenInfo(infoData);
-      setHolderCount(holderCountData);
-      setTotalTransfers(totalTransfersData);
-      setTransfers24h(transfers24hData);
-      setLoading(false);
+      setLoadingTx(false);
     };
 
-    loadData();
+    loadTransactions();
     // Refresh every 30 seconds
-    const interval = setInterval(loadData, 30000);
+    const interval = setInterval(loadTransactions, 30000);
     return () => clearInterval(interval);
   }, []);
 
@@ -87,7 +67,7 @@ export default function Chart() {
                   {loading ? (
                     <Skeleton className="h-8 w-32" />
                   ) : (
-                    <p className="text-2xl font-bold">Bit Access</p>
+                    <p className="text-2xl font-bold">{tokenName}</p>
                   )}
                 </div>
               </div>
@@ -103,7 +83,7 @@ export default function Chart() {
                   {loading ? (
                     <Skeleton className="h-8 w-32" />
                   ) : (
-                    <p className="text-2xl font-bold">100,000,000,000 BIT</p>
+                    <p className="text-2xl font-bold">{Number(totalSupply).toLocaleString()} BIT</p>
                   )}
                 </div>
               </div>
@@ -167,7 +147,7 @@ export default function Chart() {
                   {loading ? (
                     <Skeleton className="h-8 w-16" />
                   ) : (
-                    <p className="text-2xl font-bold">9</p>
+                    <p className="text-2xl font-bold">{decimals}</p>
                   )}
                 </div>
               </div>
@@ -199,7 +179,7 @@ export default function Chart() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {loading ? (
+                  {loadingTx ? (
                     Array.from({ length: 5 }).map((_, i) => (
                       <TableRow key={i}>
                         <TableCell><Skeleton className="h-6 w-24" /></TableCell>
