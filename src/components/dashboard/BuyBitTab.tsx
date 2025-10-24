@@ -66,6 +66,18 @@ const BuyBitTab = () => {
     functionName: "minimumPurchase",
   });
 
+  // Read contract BIT balance
+  const { data: contractBitBalance } = useReadContract({
+    address: CONTRACT_ADDRESSES.BIT_TOKEN as `0x${string}`,
+    abi: CONTRACT_ABIS.ERC20,
+    functionName: "balanceOf",
+    args: [CONTRACT_ADDRESSES.BIT_PURCHASE as `0x${string}`],
+    query: { enabled: isBSCNetwork },
+  });
+
+  // Read total BIT sold (we'll calculate from initial supply minus current contract balance)
+  const INITIAL_CONTRACT_SUPPLY = 50000000000; // 50 billion BIT tokens (adjust as needed)
+
   // Read payment token allowance
   const paymentTokenAddress = paymentMethod === "USDT" ? CONTRACT_ADDRESSES.USDT_TOKEN : CONTRACT_ADDRESSES.USDC_TOKEN;
   const { data: allowance, refetch: refetchAllowance } = useReadContract({
@@ -128,6 +140,10 @@ const BuyBitTab = () => {
 
   const pricePerBit = contractPrice ? Number(formatUnits(contractPrice as bigint, 18)) : 0.00108;
   const minimumPurchase = minPurchase ? Number(formatUnits(minPurchase as bigint, 9)) : 100000;
+  
+  const contractBalance = contractBitBalance ? Number(formatUnits(contractBitBalance as bigint, 9)) : 0;
+  const totalSold = INITIAL_CONTRACT_SUPPLY - contractBalance;
+  const soldPercentage = (totalSold / INITIAL_CONTRACT_SUPPLY) * 100;
 
   useEffect(() => {
     if (isSuccess) {
@@ -307,27 +323,88 @@ const BuyBitTab = () => {
       transition={{ duration: 0.5 }}
       className="space-y-6"
     >
-      {/* Balance Display */}
-      <Card className="bg-gradient-to-br from-green-500/20 via-green-500/10 to-background border-green-500/30">
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">Your BIT Balance</p>
-              <div className="flex items-center gap-3">
-                <img src={bitLogo} alt="BIT Token" className="w-12 h-12" />
-                <div>
-                  <p className="text-4xl font-bold text-green-600 dark:text-green-400">
-                    {bitBalance
-                      ? Number(formatUnits(bitBalance as bigint, 9)).toLocaleString(undefined, {
-                          maximumFractionDigits: 2,
-                        })
-                      : "0"}
-                  </p>
-                  <p className="text-sm text-muted-foreground">BIT Tokens</p>
+      {/* Balance Display - Grid Layout */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card className="bg-gradient-to-br from-green-500/20 via-green-500/10 to-background border-green-500/30">
+          <CardContent className="p-4 md:p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <p className="text-xs md:text-sm text-muted-foreground mb-1">Your BIT Balance</p>
+                <div className="flex items-center gap-2 md:gap-3">
+                  <img src={bitLogo} alt="BIT Token" className="w-8 h-8 md:w-12 md:h-12" />
+                  <div>
+                    <p className="text-2xl md:text-4xl font-bold text-green-600 dark:text-green-400">
+                      {bitBalance
+                        ? Number(formatUnits(bitBalance as bigint, 9)).toLocaleString(undefined, {
+                            maximumFractionDigits: 2,
+                          })
+                        : "0"}
+                    </p>
+                    <p className="text-xs md:text-sm text-muted-foreground">BIT Tokens</p>
+                  </div>
                 </div>
               </div>
+              <Wallet className="w-12 h-12 md:w-16 md:h-16 text-green-500 opacity-50" />
             </div>
-            <Wallet className="w-16 h-16 text-green-500 opacity-50" />
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gradient-to-br from-blue-500/20 via-blue-500/10 to-background border-blue-500/30">
+          <CardContent className="p-4 md:p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <p className="text-xs md:text-sm text-muted-foreground mb-1">Contract Balance</p>
+                <div className="flex items-center gap-2 md:gap-3">
+                  <img src={bitLogo} alt="BIT Token" className="w-8 h-8 md:w-12 md:h-12" />
+                  <div>
+                    <p className="text-2xl md:text-4xl font-bold text-blue-600 dark:text-blue-400">
+                      {contractBalance.toLocaleString(undefined, {
+                        maximumFractionDigits: 0,
+                      })}
+                    </p>
+                    <p className="text-xs md:text-sm text-muted-foreground">Remaining</p>
+                  </div>
+                </div>
+              </div>
+              <ShoppingBag className="w-12 h-12 md:w-16 md:h-16 text-blue-500 opacity-50" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Total Sold and Progress Bar */}
+      <Card className="bg-gradient-to-br from-purple-500/20 via-purple-500/10 to-background border-purple-500/30">
+        <CardContent className="p-4 md:p-6 space-y-4">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+            <div>
+              <p className="text-xs md:text-sm text-muted-foreground">Total BIT Sold</p>
+              <p className="text-2xl md:text-3xl font-bold text-purple-600 dark:text-purple-400">
+                {totalSold.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+              </p>
+            </div>
+            <div className="text-left md:text-right">
+              <p className="text-xs md:text-sm text-muted-foreground">Progress</p>
+              <p className="text-2xl md:text-3xl font-bold text-purple-600 dark:text-purple-400">
+                {soldPercentage.toFixed(2)}%
+              </p>
+            </div>
+          </div>
+          
+          {/* Progress Bar */}
+          <div className="w-full bg-secondary/50 rounded-full h-4 md:h-6 overflow-hidden border border-purple-500/30">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${soldPercentage}%` }}
+              transition={{ duration: 1, ease: "easeOut" }}
+              className="h-full bg-gradient-to-r from-purple-600 to-purple-400 rounded-full relative"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse" />
+            </motion.div>
+          </div>
+          
+          <div className="flex justify-between text-xs text-muted-foreground">
+            <span>0 BIT</span>
+            <span>{INITIAL_CONTRACT_SUPPLY.toLocaleString()} BIT</span>
           </div>
         </CardContent>
       </Card>

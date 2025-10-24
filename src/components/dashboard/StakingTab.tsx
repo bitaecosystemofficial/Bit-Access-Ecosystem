@@ -5,24 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Lock, TrendingUp, Clock, Unlock, AlertTriangle, DollarSign, Wallet, Gift, Loader2 } from 'lucide-react';
+import { AlertCircle, Loader2, TrendingUp, Wallet } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt, useChainId, useSwitchChain } from 'wagmi';
 import { parseUnits, formatUnits } from 'viem';
 import { bsc, bscTestnet } from 'wagmi/chains';
 import { CONTRACT_ADDRESSES, CONTRACT_ABIS } from '@/config/contracts';
-import { useCountdown } from '@/hooks/useCountdown';
 import bitLogo from '@/assets/bit-token-logo.png';
-
-interface StakedPosition {
-  id: number;
-  amount: number;
-  poolIndex: number;
-  startDate: Date;
-  endDate: Date;
-  apy: number;
-  days: number;
-}
 
 const StakingTab = () => {
   const [selectedPool, setSelectedPool] = useState<number | null>(null);
@@ -33,60 +22,58 @@ const StakingTab = () => {
   const chainId = useChainId();
   const { switchChain } = useSwitchChain();
   const { writeContract, data: hash, isPending: isStaking } = useWriteContract();
-  
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash });
 
-  // Determine if we're on BSC network (mainnet or testnet)
   const isBSCNetwork = chainId === bsc.id || chainId === bscTestnet.id;
 
-  const UNSTAKE_FEE = 2; // 2% fee
-  const EARLY_UNSTAKE_FEE = 10; // 10% additional fee for early withdrawal
+  const UNSTAKE_FEE = 2;
+  const EARLY_UNSTAKE_FEE = 10;
 
-  // Read BIT token balance
+  // BIT Token balance
   const { data: bitBalance, refetch: refetchBitBalance } = useReadContract({
     address: CONTRACT_ADDRESSES.BIT_TOKEN as `0x${string}`,
     abi: CONTRACT_ABIS.ERC20,
     functionName: 'balanceOf',
     args: address ? [address as `0x${string}`] : undefined,
-    query: { enabled: !!address && isBSCNetwork }
+    query: { enabled: !!address && isBSCNetwork },
   });
 
-  // Read BIT token allowance for staking contract
+  // Allowance
   const { data: allowance, refetch: refetchAllowance } = useReadContract({
     address: CONTRACT_ADDRESSES.BIT_TOKEN as `0x${string}`,
     abi: CONTRACT_ABIS.ERC20,
     functionName: 'allowance',
     args: address ? [address as `0x${string}`, CONTRACT_ADDRESSES.BIT_STAKING as `0x${string}`] : undefined,
-    query: { enabled: !!address && isBSCNetwork }
+    query: { enabled: !!address && isBSCNetwork },
   });
 
-  // Read total staked
+  // Total staked per user
   const { data: totalUserStaked, refetch: refetchTotalStaked } = useReadContract({
     address: CONTRACT_ADDRESSES.BIT_STAKING as `0x${string}`,
     abi: CONTRACT_ABIS.BIT_STAKING,
     functionName: 'userTotalStaked',
     args: address ? [address as `0x${string}`] : undefined,
-    query: { enabled: !!address }
+    query: { enabled: !!address },
   });
 
-  // Read user stakes
+  // User stakes
   const { data: userStakes, refetch: refetchUserStakes } = useReadContract({
     address: CONTRACT_ADDRESSES.BIT_STAKING as `0x${string}`,
     abi: CONTRACT_ABIS.BIT_STAKING,
     functionName: 'getUserStakes',
     args: address ? [address as `0x${string}`] : undefined,
-    query: { enabled: !!address }
+    query: { enabled: !!address },
   });
 
-  // Read total rewards
+  // Rewards
   const { data: totalRewardsData, refetch: refetchRewards } = useReadContract({
     address: CONTRACT_ADDRESSES.BIT_STAKING as `0x${string}`,
     abi: CONTRACT_ABIS.BIT_STAKING,
     functionName: 'getTotalRewards',
     args: address ? [address as `0x${string}`] : undefined,
-    query: { enabled: !!address }
+    query: { enabled: !!address },
   });
-  
+
   useEffect(() => {
     if (isSuccess) {
       refetchBitBalance();
@@ -98,7 +85,6 @@ const StakingTab = () => {
     }
   }, [isSuccess]);
 
-  // Fetch staking pools data from contract (pools 0, 1, 2)
   const { data: pool0Data } = useReadContract({
     address: CONTRACT_ADDRESSES.BIT_STAKING,
     abi: CONTRACT_ABIS.BIT_STAKING,
@@ -120,14 +106,13 @@ const StakingTab = () => {
     args: [2],
   });
 
-  // Staking pools configuration with real-time data from contract
   const stakingPools = [
     {
       id: 0,
       days: pool0Data ? Number(pool0Data[0]) : 180,
       apy: pool0Data ? Number(pool0Data[1]) : 12,
-      minStake: 100000,
-      totalStaked: pool0Data ? Number(pool0Data[3]) / 1e9 : 0,
+      minStake: pool0Data ? Number(formatUnits(pool0Data[2], 9)) : 100000,
+      totalStaked: pool0Data ? Number(formatUnits(pool0Data[3], 9)) : 0,
       active: pool0Data ? pool0Data[4] : true,
       color: 'from-blue-500/20 to-blue-500/5',
       borderColor: 'border-blue-500/30',
@@ -136,8 +121,8 @@ const StakingTab = () => {
       id: 1,
       days: pool1Data ? Number(pool1Data[0]) : 240,
       apy: pool1Data ? Number(pool1Data[1]) : 18,
-      minStake: 500000,
-      totalStaked: pool1Data ? Number(pool1Data[3]) / 1e9 : 0,
+      minStake: pool1Data ? Number(formatUnits(pool1Data[2], 9)) : 500000,
+      totalStaked: pool1Data ? Number(formatUnits(pool1Data[3], 9)) : 0,
       active: pool1Data ? pool1Data[4] : true,
       color: 'from-purple-500/20 to-purple-500/5',
       borderColor: 'border-purple-500/30',
@@ -147,15 +132,14 @@ const StakingTab = () => {
       id: 2,
       days: pool2Data ? Number(pool2Data[0]) : 365,
       apy: pool2Data ? Number(pool2Data[1]) : 25,
-      minStake: 1000000,
-      totalStaked: pool2Data ? Number(pool2Data[3]) / 1e9 : 0,
+      minStake: pool2Data ? Number(formatUnits(pool2Data[2], 9)) : 1000000,
+      totalStaked: pool2Data ? Number(formatUnits(pool2Data[3], 9)) : 0,
       active: pool2Data ? pool2Data[4] : true,
       color: 'from-primary/20 to-primary/5',
       borderColor: 'border-primary/30',
     },
   ];
 
-  // Calculate total staked across all pools
   const totalStakedAllPools = stakingPools.reduce((sum, pool) => sum + pool.totalStaked, 0);
 
   const calculateRewards = (amount: string, pool: typeof stakingPools[0]) => {
@@ -166,199 +150,77 @@ const StakingTab = () => {
     return totalReward.toFixed(2);
   };
 
-  const calculateCurrentRewards = (position: StakedPosition) => {
-    const now = new Date();
-    const daysElapsed = Math.floor((now.getTime() - position.startDate.getTime()) / (1000 * 60 * 60 * 24));
-    const dailyRate = position.apy / 100 / 365;
-    const currentReward = position.amount * dailyRate * daysElapsed;
-    return currentReward.toFixed(2);
-  };
-
-  const isEarlyUnstake = (position: StakedPosition) => {
-    return new Date() < position.endDate;
-  };
-
-  const calculateUnstakeFees = (amount: number, isEarly: boolean) => {
-    const baseFee = amount * (UNSTAKE_FEE / 100);
-    const earlyFee = isEarly ? amount * (EARLY_UNSTAKE_FEE / 100) : 0;
-    return {
-      baseFee: baseFee.toFixed(2),
-      earlyFee: earlyFee.toFixed(2),
-      totalFee: (baseFee + earlyFee).toFixed(2),
-      netAmount: (amount - baseFee - earlyFee).toFixed(2),
-    };
-  };
-
   const handleApprove = async () => {
     if (!address) {
-      toast({
-        title: 'Wallet Not Connected',
-        description: 'Please connect your wallet first',
-        variant: 'destructive',
-      });
+      toast({ title: 'Wallet Not Connected', description: 'Please connect your wallet', variant: 'destructive' });
       return;
     }
 
-    // Check if on BSC network
     if (!isBSCNetwork) {
-      const targetChain = bsc.id;
-      toast({
-        title: 'Wrong Network',
-        description: 'Switching to BSC Mainnet...',
-      });
       try {
-        await switchChain({ chainId: targetChain });
-      } catch (error) {
-        toast({
-          title: 'Network Switch Failed',
-          description: 'Please switch to BSC Mainnet manually',
-          variant: 'destructive',
-        });
+        await switchChain({ chainId: bsc.id });
+      } catch {
+        toast({ title: 'Network Switch Failed', description: 'Switch to BSC manually', variant: 'destructive' });
         return;
       }
     }
 
     setIsApproving(true);
     try {
-      const amountToApprove = parseUnits(stakeAmount, 9); // BIT has 9 decimals
-      
+      const amountToApprove = parseUnits(stakeAmount || '0', 9);
       await writeContract({
         address: CONTRACT_ADDRESSES.BIT_TOKEN as `0x${string}`,
         abi: CONTRACT_ABIS.ERC20,
         functionName: 'approve',
         args: [CONTRACT_ADDRESSES.BIT_STAKING as `0x${string}`, amountToApprove],
       } as any);
-
-      toast({
-        title: 'Approval Submitted',
-        description: 'Please wait for the transaction to confirm...',
-      });
+      toast({ title: 'Approval Submitted', description: 'Waiting for confirmation...' });
     } catch (error: any) {
-      toast({
-        title: 'Approval Failed',
-        description: error?.message || 'Failed to approve token',
-        variant: 'destructive',
-      });
+      toast({ title: 'Approval Failed', description: error?.message || 'Approval error', variant: 'destructive' });
     } finally {
       setIsApproving(false);
-      setTimeout(() => refetchAllowance(), 3000);
+      setTimeout(() => refetchAllowance(), 4000);
     }
   };
 
   const handleStake = async () => {
-    if (!address) {
-      toast({
-        title: 'Wallet Not Connected',
-        description: 'Please connect your wallet first',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    // Check if on BSC network
-    if (!isBSCNetwork) {
-      const targetChain = bsc.id;
-      toast({
-        title: 'Wrong Network',
-        description: 'Switching to BSC Mainnet...',
-      });
-      try {
-        await switchChain({ chainId: targetChain });
-      } catch (error) {
-        toast({
-          title: 'Network Switch Failed',
-          description: 'Please switch to BSC Mainnet manually',
-          variant: 'destructive',
-        });
-        return;
-      }
-    }
-
-    if (selectedPool === null) {
-      toast({
-        title: 'Select Pool',
-        description: 'Please select a staking pool first',
-        variant: 'destructive',
-      });
+    if (!address || selectedPool === null) {
+      toast({ title: 'Select Pool', description: 'Choose a staking pool first', variant: 'destructive' });
       return;
     }
 
     const pool = stakingPools[selectedPool];
     const amount = parseFloat(stakeAmount);
-
     if (isNaN(amount) || amount < pool.minStake) {
       toast({
         title: 'Invalid Amount',
-        description: `Minimum stake is ${pool.minStake.toLocaleString()} BIT`,
+        description: `Minimum stake: ${pool.minStake.toLocaleString()} BIT`,
         variant: 'destructive',
       });
+      return;
+    }
+
+    const amountToStake = parseUnits(stakeAmount, 9);
+    const currentAllowance = allowance as bigint || BigInt(0);
+    if (currentAllowance < amountToStake) {
+      toast({ title: 'Approval Required', description: 'Please approve BIT token spend first', variant: 'destructive' });
       return;
     }
 
     try {
-      const amountToStake = parseUnits(stakeAmount, 9); // BIT has 9 decimals
-      
-      // Check if approval is needed
-      const currentAllowance = allowance as bigint || BigInt(0);
-      if (currentAllowance < amountToStake) {
-        toast({
-          title: 'Approval Required',
-          description: 'Please approve the token spend first',
-          variant: 'destructive',
-        });
-        return;
-      }
-
-      const poolId = stakingPools[selectedPool].id;
       await writeContract({
         address: CONTRACT_ADDRESSES.BIT_STAKING as `0x${string}`,
         abi: CONTRACT_ABIS.BIT_STAKING,
         functionName: 'stake',
-        args: [BigInt(poolId), amountToStake],
+        args: [BigInt(pool.id), amountToStake],
       } as any);
-
-      toast({
-        title: 'Staking Submitted',
-        description: 'Please wait for the transaction to confirm...',
-      });
+      toast({ title: 'Staking Submitted', description: 'Transaction pending confirmation...' });
     } catch (error: any) {
-      toast({
-        title: 'Staking Failed',
-        description: error?.message || 'Failed to stake tokens',
-        variant: 'destructive',
-      });
+      toast({ title: 'Staking Failed', description: error?.message || 'Transaction failed', variant: 'destructive' });
     }
   };
 
   const handleUnstake = async (stakeId: number) => {
-    if (!address) {
-      toast({
-        title: 'Wallet Not Connected',
-        description: 'Please connect your wallet first',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    // Check if on BSC network
-    if (!isBSCNetwork) {
-      const targetChain = bsc.id;
-      toast({
-        title: 'Wrong Network',
-        description: 'Switching to BSC Mainnet...',
-      });
-      try {
-        await switchChain({ chainId: targetChain });
-      } catch (error) {
-        toast({
-          title: 'Network Switch Failed',
-          description: 'Please switch to BSC Mainnet manually',
-          variant: 'destructive',
-        });
-        return;
-      }
-    }
-
     try {
       await writeContract({
         address: CONTRACT_ADDRESSES.BIT_STAKING as `0x${string}`,
@@ -366,17 +228,9 @@ const StakingTab = () => {
         functionName: 'unstake',
         args: [BigInt(stakeId)],
       } as any);
-
-      toast({
-        title: 'Unstake Submitted',
-        description: 'Please wait for the transaction to confirm...',
-      });
+      toast({ title: 'Unstake Submitted', description: 'Waiting for confirmation...' });
     } catch (error: any) {
-      toast({
-        title: 'Unstake Failed',
-        description: error?.message || 'Failed to unstake tokens',
-        variant: 'destructive',
-      });
+      toast({ title: 'Unstake Failed', description: error?.message || 'Unstake failed', variant: 'destructive' });
     }
   };
 
@@ -385,424 +239,194 @@ const StakingTab = () => {
   const balance = bitBalance ? Number(formatUnits(bitBalance as bigint, 9)) : 0;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="space-y-6"
-    >
-      {/* Dashboard Overview */}
-      <div className="grid md:grid-cols-4 gap-4">
-        <Card className="bg-gradient-to-br from-green-500/20 to-green-500/5 border-green-500/30">
-          <CardContent className="p-6">
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="space-y-6">
+      {/* Overview Stats */}
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card className="bg-gradient-to-br from-primary/20 via-primary/10 to-background border-primary/30">
+          <CardContent className="p-4 md:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground mb-1">Available Balance</p>
-                <div className="flex items-center gap-2">
-                  <img src={bitLogo} alt="BIT Token" className="w-10 h-10" />
-                  <div>
-                    <p className="text-3xl font-bold text-green-600 dark:text-green-400">{balance.toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
-                    <p className="text-sm text-muted-foreground">BIT Tokens</p>
-                  </div>
-                </div>
+                <p className="text-xs md:text-sm text-muted-foreground mb-1">Your Balance</p>
+                <p className="text-xl md:text-3xl font-bold">{balance.toLocaleString()}</p>
+                <p className="text-xs text-muted-foreground">BIT</p>
               </div>
-              <Wallet className="w-12 h-12 text-green-500 opacity-50" />
+              <Wallet className="w-10 h-10 md:w-12 md:h-12 text-primary opacity-50" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-primary/20 to-primary/5 border-primary/30">
-          <CardContent className="p-6">
+        <Card className="bg-gradient-to-br from-blue-500/20 via-blue-500/10 to-background border-blue-500/30">
+          <CardContent className="p-4 md:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground mb-1">Total Staked</p>
-                <div className="flex items-center gap-2">
-                  <img src={bitLogo} alt="BIT Token" className="w-10 h-10" />
-                  <div>
-                    <p className="text-3xl font-bold">{totalStaked.toLocaleString()}</p>
-                    <p className="text-sm text-muted-foreground">BIT Tokens</p>
-                  </div>
-                </div>
+                <p className="text-xs md:text-sm text-muted-foreground mb-1">Total Staked</p>
+                <p className="text-xl md:text-3xl font-bold">{totalStaked.toLocaleString()}</p>
+                <p className="text-xs text-muted-foreground">BIT</p>
               </div>
-              <Lock className="w-12 h-12 text-primary opacity-50" />
+              <TrendingUp className="w-10 h-10 md:w-12 md:h-12 text-blue-500 opacity-50" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-green-500/20 to-green-500/5 border-green-500/30">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">Rewards Earned</p>
-                <div className="flex items-center gap-2">
-                  <img src={bitLogo} alt="BIT Token" className="w-10 h-10" />
-                  <div>
-                    <p className="text-3xl font-bold text-green-600 dark:text-green-400">{totalRewards.toFixed(2)}</p>
-                    <p className="text-sm text-muted-foreground">BIT Tokens</p>
-                  </div>
-                </div>
-              </div>
-              <TrendingUp className="w-12 h-12 text-green-500 opacity-50" />
-            </div>
-            <Button 
-              disabled
-              className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold opacity-50 cursor-not-allowed"
-              size="sm"
-            >
-              <Gift className="w-4 h-4 mr-2" />
-              Claim (Coming Soon)
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-blue-500/20 to-blue-500/5 border-blue-500/30">
-          <CardContent className="p-6">
+        <Card className="bg-gradient-to-br from-green-500/20 via-green-500/10 to-background border-green-500/30">
+          <CardContent className="p-4 md:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground mb-1">Active Positions</p>
-                <p className="text-3xl font-bold">{userStakes ? (userStakes as any[]).filter((s: any) => s.active).length : 0}</p>
-                <p className="text-sm text-muted-foreground">Staking Pools</p>
+                <p className="text-xs md:text-sm text-muted-foreground mb-1">Total Rewards</p>
+                <p className="text-xl md:text-3xl font-bold">{totalRewards.toLocaleString()}</p>
+                <p className="text-xs text-muted-foreground">BIT</p>
               </div>
-              <Clock className="w-12 h-12 text-blue-500 opacity-50" />
+              <img src={bitLogo} alt="BIT" className="w-10 h-10 md:w-12 md:h-12 opacity-70" />
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Total Staked in Contract */}
-      <Card className="bg-gradient-to-br from-orange-500/10 to-yellow-500/5 border-orange-500/20">
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">Total Staked in Contract</p>
-              <p className="text-4xl font-bold bg-gradient-to-r from-orange-500 to-yellow-500 bg-clip-text text-transparent">
-                {totalStakedAllPools.toLocaleString()} BIT
-              </p>
-            </div>
-          </div>
-          <div className="space-y-3">
-            {stakingPools.map((pool) => (
-              <div key={pool.id}>
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="text-muted-foreground">Pool #{pool.id} ({pool.days}-Day)</span>
-                  <span className="font-medium">{pool.totalStaked.toLocaleString()} BIT</span>
-                </div>
-                <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
-                  <div 
-                    className={`h-full bg-gradient-to-r ${pool.color.replace('/20', '').replace('/5', '')} transition-all duration-500`}
-                    style={{ 
-                      width: totalStakedAllPools > 0 
-                        ? `${(pool.totalStaked / totalStakedAllPools) * 100}%` 
-                        : '0%' 
-                    }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Active Staking Positions */}
-      {userStakes && (userStakes as any[]).length > 0 && (
-        <Card className="bg-card/50 backdrop-blur-sm border-border/50">
-          <CardHeader>
-            <CardTitle className="text-2xl">Your Staking Positions</CardTitle>
-            <CardDescription>Manage your active stakes and view rewards</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {(userStakes as any[]).map((stake: any, idx: number) => {
-              const amount = Number(formatUnits(stake.amount, 9));
-              const poolId = Number(stake.poolId);
-              const pool = stakingPools[poolId];
-              const startTime = Number(stake.startTime) * 1000;
-              const endTime = Number(stake.endTime) * 1000;
-              const isActive = stake.isActive;
-              
-              // Use countdown hook for real-time timer
-              const timeLeft = useCountdown(endTime);
-              const daysRemaining = timeLeft.days;
-
-              if (!isActive) return null;
-
-              return (
-                <Card key={idx} className={`bg-gradient-to-r ${pool?.color || 'from-primary/20 to-primary/5'} ${pool?.borderColor || 'border-primary/30'} border`}>
-                  <CardContent className="p-4">
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-muted-foreground">Staked Amount</span>
-                          <span className="font-bold text-lg">{amount.toLocaleString()} BIT</span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-muted-foreground">APY</span>
-                          <Badge variant="default">{pool?.apy || 0}%</Badge>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-muted-foreground">Lock Period</span>
-                          <span className="font-semibold">{pool?.days || 0} days</span>
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-muted-foreground">Start Date</span>
-                          <span className="font-semibold">{new Date(startTime).toLocaleDateString()}</span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-muted-foreground">End Date</span>
-                          <span className="font-semibold">{new Date(endTime).toLocaleDateString()}</span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-muted-foreground">Time Remaining</span>
-                          {daysRemaining > 0 ? (
-                            <div className="font-mono text-sm font-semibold">
-                              {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
-                            </div>
-                          ) : (
-                            <Badge variant="default">Matured</Badge>
-                          )}
-                        </div>
-
-                        <Button
-                          onClick={() => handleUnstake(idx)}
-                          variant={daysRemaining > 0 ? "destructive" : "default"}
-                          className="w-full mt-2"
-                          size="sm"
-                        >
-                          <Unlock className="w-4 h-4 mr-2" />
-                          Unstake {daysRemaining > 0 ? '(Early)' : ''}
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Fee Information */}
-      <Card className="bg-card/50 backdrop-blur-sm border-border/50">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <DollarSign className="w-5 h-5 text-primary" />
-            Unstaking Fees
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="bg-secondary/30 p-4 rounded-lg">
-              <p className="font-semibold mb-2">Standard Unstake Fee</p>
-              <p className="text-3xl font-bold text-primary">{UNSTAKE_FEE}%</p>
-              <p className="text-sm text-muted-foreground mt-1">Applied to all unstaking operations</p>
-            </div>
-            <div className="bg-destructive/10 p-4 rounded-lg border border-destructive/30">
-              <p className="font-semibold mb-2 flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4" />
-                Early Unstake Penalty
-              </p>
-              <p className="text-3xl font-bold text-destructive">{EARLY_UNSTAKE_FEE}%</p>
-              <p className="text-sm text-muted-foreground mt-1">Additional fee for unstaking before maturity</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Staking Pools */}
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid gap-4 md:grid-cols-3">
         {stakingPools.map((pool, index) => (
-          <motion.div
-            key={pool.id}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: index * 0.1 }}
-          >
-            <Card
-              className={`relative cursor-pointer transition-all ${
-                selectedPool === index
-                  ? `bg-gradient-to-br ${pool.color} ${pool.borderColor} border-2`
-                  : 'bg-card border-border hover:border-primary/50'
-              } ${!pool.active ? 'opacity-50 cursor-not-allowed' : ''}`}
-              onClick={() => pool.active ? setSelectedPool(index) : null}
-            >
-              {pool.popular && (
-                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground">
-                  Most Popular
-                </Badge>
-              )}
-              {!pool.active && (
-                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-destructive text-destructive-foreground">
-                  Inactive
-                </Badge>
-              )}
-              <CardHeader>
-                <Lock className="w-10 h-10 text-primary mb-2" />
-                <CardTitle className="text-2xl">{pool.days} Days Lock</CardTitle>
-                <div className="space-y-1">
-                  <p className="text-4xl font-bold text-primary">{pool.apy}%</p>
-                  <p className="text-sm text-muted-foreground">APY</p>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Pool ID:</span>
-                  <Badge variant="outline">#{pool.id}</Badge>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Min Stake:</span>
-                  <span className="font-bold">{pool.minStake.toLocaleString()} BIT</span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Total Staked:</span>
-                  <span className="font-bold">{pool.totalStaked.toLocaleString()} BIT</span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Lock Period:</span>
-                  <span className="font-bold">{pool.days} days</span>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
+          <Card key={pool.id} className={`relative border ${pool.borderColor} bg-gradient-to-b ${pool.color}`}>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center justify-between text-base md:text-lg">
+                <span>{pool.days}-Day Pool</span>
+                {pool.popular && <Badge className="bg-purple-500/20 text-purple-400 text-xs">Popular</Badge>}
+              </CardTitle>
+              <CardDescription className="text-sm md:text-base font-bold">APY: {pool.apy}%</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-2 pb-4">
+              <div className="flex items-center justify-between text-xs md:text-sm">
+                <span className="text-muted-foreground">Min Stake:</span>
+                <span className="font-medium">{pool.minStake.toLocaleString()} BIT</span>
+              </div>
+              <div className="flex items-center justify-between text-xs md:text-sm">
+                <span className="text-muted-foreground">Total Staked:</span>
+                <span className="font-medium">{pool.totalStaked.toLocaleString()} BIT</span>
+              </div>
+              <Button
+                className="w-full mt-2"
+                size="sm"
+                variant={selectedPool === index ? 'default' : 'outline'}
+                onClick={() => setSelectedPool(index)}
+              >
+                {selectedPool === index ? 'Selected' : 'Select Pool'}
+              </Button>
+            </CardContent>
+          </Card>
         ))}
       </div>
 
-      {/* Staking Form */}
-      <Card className="bg-card/50 backdrop-blur-sm border-border/50 shadow-xl">
+      {/* Stake Form */}
+      <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Stake Your BIT Tokens</CardTitle>
-          <CardDescription>
-            {selectedPool !== null
-              ? `Selected: ${stakingPools[selectedPool].days} days pool with ${stakingPools[selectedPool].apy}% APY`
-              : 'Select a pool above to start staking'}
-          </CardDescription>
+          <CardTitle className="text-lg md:text-xl">Stake Your BIT Tokens</CardTitle>
+          <CardDescription>Enter amount and stake into selected pool</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="stakeAmount" className="text-lg">
-              Amount to Stake (BIT)
-            </Label>
+            <Label className="text-sm md:text-base">Amount (BIT)</Label>
             <Input
-              id="stakeAmount"
-              type="number"
-              placeholder="Enter amount"
               value={stakeAmount}
               onChange={(e) => setStakeAmount(e.target.value)}
-              className="text-lg h-12"
+              placeholder="Enter amount"
+              type="number"
               min="0"
-              disabled={selectedPool === null}
+              className="text-base md:text-lg h-12"
             />
+          </div>
+          
+          <div className="flex flex-col sm:flex-row sm:justify-between gap-2 text-xs md:text-sm text-muted-foreground">
+            <span>Balance: {balance.toLocaleString()} BIT</span>
             {selectedPool !== null && (
-              <p className="text-sm text-muted-foreground">
-                Minimum: {stakingPools[selectedPool].minStake.toLocaleString()} BIT
-              </p>
+              <span className="text-green-600 dark:text-green-400">
+                Est. Rewards: {calculateRewards(stakeAmount, stakingPools[selectedPool])} BIT
+              </span>
             )}
           </div>
-
-          {selectedPool !== null && stakeAmount && parseFloat(stakeAmount) > 0 && (
-            <div className="bg-secondary/50 p-6 rounded-lg border border-border">
-              <h3 className="font-bold mb-4 flex items-center">
-                <TrendingUp className="w-5 h-5 mr-2 text-primary" />
-                Staking Summary
-              </h3>
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Staking Amount:</span>
-                  <span className="font-bold">{parseFloat(stakeAmount).toLocaleString()} BIT</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Lock Period:</span>
-                  <span className="font-bold">{stakingPools[selectedPool].days} days</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">APY:</span>
-                  <span className="font-bold text-primary">{stakingPools[selectedPool].apy}%</span>
-                </div>
-                <div className="border-t border-border pt-2 mt-2">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Estimated Rewards:</span>
-                    <span className="text-xl font-bold text-primary">
-                      {calculateRewards(stakeAmount, stakingPools[selectedPool])} BIT
-                    </span>
-                  </div>
-                  <div className="flex justify-between mt-1">
-                    <span className="text-muted-foreground">Total at Maturity:</span>
-                    <span className="text-lg font-bold">
-                      {(
-                        parseFloat(stakeAmount) +
-                        parseFloat(calculateRewards(stakeAmount, stakingPools[selectedPool]))
-                      ).toFixed(2)}{' '}
-                      BIT
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="space-y-3">
-            {stakeAmount && parseFloat(stakeAmount) > 0 && (
-              <>
-                {!allowance || (allowance as bigint) < parseUnits(stakeAmount, 9) ? (
-                  <Button
-                    onClick={handleApprove}
-                    disabled={!address || isApproving || selectedPool === null}
-                    className="w-full h-12 text-lg bg-blue-600 hover:bg-blue-700"
-                  >
-                    {isApproving ? (
-                      <>
-                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                        Approving...
-                      </>
-                    ) : (
-                      <>
-                        <Lock className="w-5 h-5 mr-2" />
-                        Approve BIT
-                      </>
-                    )}
-                  </Button>
-                ) : null}
-              </>
-            )}
-
+          
+          <div className="flex gap-3">
             <Button
-              onClick={handleStake}
-              disabled={
-                !address ||
-                isStaking ||
-                isConfirming ||
-                selectedPool === null ||
-                !stakeAmount ||
-                parseFloat(stakeAmount) <= 0 ||
-                !allowance ||
-                (allowance as bigint) < parseUnits(stakeAmount || '0', 9)
-              }
-              className="w-full h-12 text-lg bg-primary hover:bg-primary/90"
+              disabled={isApproving}
+              onClick={handleApprove}
+              variant="outline"
+              className="flex-1 h-11"
             >
-              {isStaking || isConfirming ? (
-                <>
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  {isConfirming ? 'Confirming...' : 'Processing...'}
-                </>
-              ) : (
-                <>
-                  <Lock className="w-5 h-5 mr-2" />
-                  {!address ? 'Connect Wallet' : 'Stake BIT Tokens'}
-                </>
-              )}
+              {isApproving ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : null}
+              Approve
+            </Button>
+            <Button
+              disabled={isStaking || selectedPool === null}
+              onClick={handleStake}
+              className="flex-1 h-11"
+            >
+              {isStaking ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : null}
+              Stake
             </Button>
           </div>
+        </CardContent>
+      </Card>
 
-          <div className="text-sm text-muted-foreground space-y-2">
-            <p className="flex items-center">
-              <Clock className="w-4 h-4 mr-2" />
-              Tokens will be locked for the selected period
-            </p>
-            <p>• Rewards are calculated daily and distributed at maturity</p>
-            <p>• Standard unstake fee: {UNSTAKE_FEE}%</p>
-            <p>• Early unstake penalty: {EARLY_UNSTAKE_FEE}% (total {UNSTAKE_FEE + EARLY_UNSTAKE_FEE}%)</p>
+      {/* Unstaking Fees Info */}
+      <Card className="bg-gradient-to-br from-orange-500/20 via-orange-500/10 to-background border-orange-500/30">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base md:text-lg">
+            <AlertCircle className="w-5 h-5 text-orange-500" />
+            Unstaking Fees
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex items-center justify-between p-3 bg-background/50 rounded-lg">
+            <span className="text-xs md:text-sm text-muted-foreground">Normal Unstaking Fee:</span>
+            <span className="text-sm md:text-base font-bold text-orange-600 dark:text-orange-400">{UNSTAKE_FEE}%</span>
           </div>
+          <div className="flex items-center justify-between p-3 bg-background/50 rounded-lg">
+            <span className="text-xs md:text-sm text-muted-foreground">Early Unstaking Fee:</span>
+            <span className="text-sm md:text-base font-bold text-red-600 dark:text-red-400">{EARLY_UNSTAKE_FEE}%</span>
+          </div>
+          <p className="text-xs text-muted-foreground italic">
+            Note: Early unstaking before lock period ends incurs a higher fee
+          </p>
+        </CardContent>
+      </Card>
+
+      {/* Your Active Stakes */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg md:text-xl">Your Active Stakes</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {userStakes && (userStakes as any[]).length > 0 ? (
+            <div className="space-y-3">
+              {(userStakes as any[]).map((stake, index) => {
+                const pool = stakingPools[Number(stake.poolId)];
+                const amount = Number(formatUnits(stake.amount, 9));
+                const endTime = new Date(Number(stake.endTime) * 1000);
+                const isActive = stake.active;
+
+                return (
+                  <div key={index} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border rounded-lg p-3 bg-card">
+                    <div className="flex-1">
+                      <div className="font-semibold text-base md:text-lg">{amount.toLocaleString()} BIT</div>
+                      <div className="text-xs md:text-sm text-muted-foreground">
+                        Pool: {pool.days} Days | APY: {pool.apy}%
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        Ends: {endTime.toLocaleString()}
+                      </div>
+                    </div>
+                    {isActive ? (
+                      <Button variant="outline" size="sm" onClick={() => handleUnstake(index)}>
+                        Unstake
+                      </Button>
+                    ) : (
+                      <Badge variant="secondary">Completed</Badge>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-center text-sm text-muted-foreground py-6">No active stakes</p>
+          )}
         </CardContent>
       </Card>
     </motion.div>
