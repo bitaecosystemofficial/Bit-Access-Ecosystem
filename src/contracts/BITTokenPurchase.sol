@@ -84,7 +84,7 @@ contract BITTokenPurchase is ReentrancyGuard, Ownable {
     address public usdtToken;
     address public usdcToken;
     
-    uint256 public pricePerBIT = 1080000; // $0.00108 in USDT/USDC (6 decimals) per BIT (9 decimals)
+    uint256 public pricePerBIT = 1080000000000000; // $0.00108 in USDT/USDC (18 decimals) per BIT (9 decimals)
     uint256 public minimumPurchase = 100000 * 10**9; // 100,000 BIT minimum (9 decimals)
     
     bool public paused;
@@ -120,7 +120,7 @@ contract BITTokenPurchase is ReentrancyGuard, Ownable {
     /**
      * @dev Purchase BIT tokens with USDT or USDC
      * @param paymentToken Address of payment token (USDT or USDC)
-     * @param usdAmount Amount of USD to pay (in token decimals - 6 for USDT/USDC)
+     * @param usdAmount Amount of USD to pay (in token decimals - 18 for USDT/USDC BEP20)
      */
     function purchaseBIT(address paymentToken, uint256 usdAmount) external nonReentrant whenNotPaused {
         require(
@@ -130,8 +130,8 @@ contract BITTokenPurchase is ReentrancyGuard, Ownable {
         require(usdAmount > 0, "Amount must be greater than 0");
         
         // Calculate BIT tokens to receive
-        // usdAmount is in 6 decimals (USDT/USDC)
-        // pricePerBIT is in 6 decimals per BIT
+        // usdAmount is in 18 decimals (USDT/USDC BEP20)
+        // pricePerBIT is in 18 decimals per BIT
         // Result needs to be in 9 decimals (BIT decimals)
         uint256 bitAmount = (usdAmount * 10**9) / pricePerBIT;
         
@@ -158,7 +158,7 @@ contract BITTokenPurchase is ReentrancyGuard, Ownable {
     
     /**
      * @dev Calculate BIT tokens for given USD amount
-     * @param usdAmount Amount in USD (with 6 decimals for USDT/USDC)
+     * @param usdAmount Amount in USD (with 18 decimals for USDT/USDC BEP20)
      * @return Amount of BIT tokens (with 9 decimals)
      */
     function calculateBITAmount(uint256 usdAmount) external view returns (uint256) {
