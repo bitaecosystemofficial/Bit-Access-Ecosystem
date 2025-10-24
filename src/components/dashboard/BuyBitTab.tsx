@@ -1,36 +1,43 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { ShoppingBag, AlertCircle, Wallet, Loader2 } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { useBITBalance } from '@/contexts/BITBalanceContext';
-import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt, useChainId, useSwitchChain } from 'wagmi';
-import { parseUnits, formatUnits } from 'viem';
-import { bsc, bscTestnet } from 'wagmi/chains';
-import { CONTRACT_ADDRESSES, CONTRACT_ABIS } from '@/config/contracts';
-import usdtIcon from '@/assets/usdt-icon.png';
-import usdcIcon from '@/assets/usdc-icon.png';
-import bscIcon from '@/assets/bsc-icon.png';
-import polygonIcon from '@/assets/polygon-icon.png';
-import arbitrumIcon from '@/assets/arbitrum-icon.png';
-import baseIcon from '@/assets/base-icon.png';
-import bitLogo from '@/assets/bit-token-logo.png';
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { ShoppingBag, AlertCircle, Wallet, Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useBITBalance } from "@/contexts/BITBalanceContext";
+import {
+  useAccount,
+  useReadContract,
+  useWriteContract,
+  useWaitForTransactionReceipt,
+  useChainId,
+  useSwitchChain,
+} from "wagmi";
+import { parseUnits, formatUnits } from "viem";
+import { bsc, bscTestnet } from "wagmi/chains";
+import { CONTRACT_ADDRESSES, CONTRACT_ABIS } from "@/config/contracts";
+import usdtIcon from "@/assets/usdt-icon.png";
+import usdcIcon from "@/assets/usdc-icon.png";
+import bscIcon from "@/assets/bsc-icon.png";
+import polygonIcon from "@/assets/polygon-icon.png";
+import arbitrumIcon from "@/assets/arbitrum-icon.png";
+import baseIcon from "@/assets/base-icon.png";
+import bitLogo from "@/assets/bit-token-logo.png";
 
 const BuyBitTab = () => {
-  const [amount, setAmount] = useState('');
-  const [selectedNetwork, setSelectedNetwork] = useState('BSC');
-  const [paymentMethod, setPaymentMethod] = useState<'USDT' | 'USDC'>('USDT');
+  const [amount, setAmount] = useState("");
+  const [selectedNetwork, setSelectedNetwork] = useState("BSC");
+  const [paymentMethod, setPaymentMethod] = useState<"USDT" | "USDC">("USDT");
   const [isApproving, setIsApproving] = useState(false);
   const { toast } = useToast();
   const { address } = useAccount();
   const chainId = useChainId();
   const { switchChain } = useSwitchChain();
   const { writeContract, data: hash, isPending: isPurchasing } = useWriteContract();
-  
+
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash });
 
   // Determine if we're on BSC network (mainnet or testnet)
@@ -40,38 +47,38 @@ const BuyBitTab = () => {
   const { data: bitBalance, refetch: refetchBitBalance } = useReadContract({
     address: CONTRACT_ADDRESSES.BIT_TOKEN as `0x${string}`,
     abi: CONTRACT_ABIS.ERC20,
-    functionName: 'balanceOf',
+    functionName: "balanceOf",
     args: address ? [address as `0x${string}`] : undefined,
-    query: { enabled: !!address && isBSCNetwork }
+    query: { enabled: !!address && isBSCNetwork },
   });
 
   // Read contract price
   const { data: contractPrice } = useReadContract({
     address: CONTRACT_ADDRESSES.BIT_PURCHASE as `0x${string}`,
     abi: CONTRACT_ABIS.BIT_PURCHASE,
-    functionName: 'pricePerBIT',
+    functionName: "pricePerBIT",
   });
 
   // Read minimum purchase
   const { data: minPurchase } = useReadContract({
     address: CONTRACT_ADDRESSES.BIT_PURCHASE as `0x${string}`,
     abi: CONTRACT_ABIS.BIT_PURCHASE,
-    functionName: 'minimumPurchase',
+    functionName: "minimumPurchase",
   });
 
   // Read payment token allowance
-  const paymentTokenAddress = paymentMethod === 'USDT' ? CONTRACT_ADDRESSES.USDT_TOKEN : CONTRACT_ADDRESSES.USDC_TOKEN;
+  const paymentTokenAddress = paymentMethod === "USDT" ? CONTRACT_ADDRESSES.USDT_TOKEN : CONTRACT_ADDRESSES.USDC_TOKEN;
   const { data: allowance, refetch: refetchAllowance } = useReadContract({
     address: paymentTokenAddress as `0x${string}`,
     abi: CONTRACT_ABIS.ERC20,
-    functionName: 'allowance',
+    functionName: "allowance",
     args: address ? [address as `0x${string}`, CONTRACT_ADDRESSES.BIT_PURCHASE as `0x${string}`] : undefined,
-    query: { enabled: !!address && isBSCNetwork }
+    query: { enabled: !!address && isBSCNetwork },
   });
 
   // Fixed presale end date - stored in localStorage to persist across refreshes
   const getPresaleEndDate = () => {
-    const stored = localStorage.getItem('presaleEndDate');
+    const stored = localStorage.getItem("presaleEndDate");
     if (stored) {
       return new Date(stored);
     }
@@ -79,7 +86,7 @@ const BuyBitTab = () => {
     const today = new Date();
     const endDate = new Date(today);
     endDate.setDate(endDate.getDate() + 120);
-    localStorage.setItem('presaleEndDate', endDate.toISOString());
+    localStorage.setItem("presaleEndDate", endDate.toISOString());
     return endDate;
   };
 
@@ -121,37 +128,37 @@ const BuyBitTab = () => {
 
   const pricePerBit = contractPrice ? Number(formatUnits(contractPrice as bigint, 18)) : 0.00108;
   const minimumPurchase = minPurchase ? Number(formatUnits(minPurchase as bigint, 9)) : 100000;
-  
+
   useEffect(() => {
     if (isSuccess) {
       refetchBitBalance();
       toast({
-        title: 'Purchase Successful! 🎉',
+        title: "Purchase Successful! 🎉",
         description: `BIT tokens have been transferred to your wallet.`,
       });
-      setAmount('');
+      setAmount("");
     }
   }, [isSuccess]);
 
   const networks = [
-    { name: 'BSC', active: true, color: 'from-yellow-500/20 to-yellow-500/5', icon: bscIcon },
-    { name: 'Polygon', active: false, color: 'from-purple-500/20 to-purple-500/5', icon: polygonIcon },
-    { name: 'Arbitrum', active: false, color: 'from-blue-500/20 to-blue-500/5', icon: arbitrumIcon },
-    { name: 'Base', active: false, color: 'from-blue-400/20 to-blue-400/5', icon: baseIcon },
+    { name: "BSC", active: true, color: "from-yellow-500/20 to-yellow-500/5", icon: bscIcon },
+    { name: "Polygon", active: false, color: "from-purple-500/20 to-purple-500/5", icon: polygonIcon },
+    { name: "Arbitrum", active: false, color: "from-blue-500/20 to-blue-500/5", icon: arbitrumIcon },
+    { name: "Base", active: false, color: "from-blue-400/20 to-blue-400/5", icon: baseIcon },
   ];
 
   const calculateBit = (usdAmount: string): string => {
     const amt = parseFloat(usdAmount);
-    if (isNaN(amt) || amt <= 0) return '0';
-    return (amt / pricePerBit).toLocaleString('en-US', { maximumFractionDigits: 0 });
+    if (isNaN(amt) || amt <= 0) return "0";
+    return (amt / pricePerBit).toLocaleString("en-US", { maximumFractionDigits: 0 });
   };
 
   const handleApprove = async () => {
     if (!address) {
       toast({
-        title: 'Wallet Not Connected',
-        description: 'Please connect your wallet first',
-        variant: 'destructive',
+        title: "Wallet Not Connected",
+        description: "Please connect your wallet first",
+        variant: "destructive",
       });
       return;
     }
@@ -160,16 +167,16 @@ const BuyBitTab = () => {
     if (!isBSCNetwork) {
       const targetChain = bsc.id;
       toast({
-        title: 'Wrong Network',
-        description: 'Switching to BSC Mainnet...',
+        title: "Wrong Network",
+        description: "Switching to BSC Mainnet...",
       });
       try {
         await switchChain({ chainId: targetChain });
       } catch (error) {
         toast({
-          title: 'Network Switch Failed',
-          description: 'Please switch to BSC Mainnet manually',
-          variant: 'destructive',
+          title: "Network Switch Failed",
+          description: "Please switch to BSC Mainnet manually",
+          variant: "destructive",
         });
         return;
       }
@@ -178,23 +185,23 @@ const BuyBitTab = () => {
     setIsApproving(true);
     try {
       const amountToApprove = parseUnits(amount, 18); // USDT/USDC has 18 decimals on BEP20
-      
+
       await writeContract({
         address: paymentTokenAddress as `0x${string}`,
         abi: CONTRACT_ABIS.ERC20,
-        functionName: 'approve',
+        functionName: "approve",
         args: [CONTRACT_ADDRESSES.BIT_PURCHASE as `0x${string}`, amountToApprove],
       } as any);
 
       toast({
-        title: 'Approval Submitted',
-        description: 'Please wait for the transaction to confirm...',
+        title: "Approval Submitted",
+        description: "Please wait for the transaction to confirm...",
       });
     } catch (error: any) {
       toast({
-        title: 'Approval Failed',
-        description: error?.message || 'Failed to approve token',
-        variant: 'destructive',
+        title: "Approval Failed",
+        description: error?.message || "Failed to approve token",
+        variant: "destructive",
       });
     } finally {
       setIsApproving(false);
@@ -203,13 +210,13 @@ const BuyBitTab = () => {
   };
 
   const handleBuy = async () => {
-    const bitAmount = parseFloat(calculateBit(amount).replace(/,/g, ''));
-    
+    const bitAmount = parseFloat(calculateBit(amount).replace(/,/g, ""));
+
     if (!address) {
       toast({
-        title: 'Wallet Not Connected',
-        description: 'Please connect your wallet first',
-        variant: 'destructive',
+        title: "Wallet Not Connected",
+        description: "Please connect your wallet first",
+        variant: "destructive",
       });
       return;
     }
@@ -218,42 +225,42 @@ const BuyBitTab = () => {
     if (!isBSCNetwork) {
       const targetChain = bsc.id;
       toast({
-        title: 'Wrong Network',
-        description: 'Switching to BSC Mainnet...',
+        title: "Wrong Network",
+        description: "Switching to BSC Mainnet...",
       });
       try {
         await switchChain({ chainId: targetChain });
       } catch (error) {
         toast({
-          title: 'Network Switch Failed',
-          description: 'Please switch to BSC Mainnet manually',
-          variant: 'destructive',
+          title: "Network Switch Failed",
+          description: "Please switch to BSC Mainnet manually",
+          variant: "destructive",
         });
         return;
       }
     }
-    
+
     if (!amount || parseFloat(amount) <= 0) {
       toast({
-        title: 'Invalid Amount',
-        description: 'Please enter a valid amount',
-        variant: 'destructive',
+        title: "Invalid Amount",
+        description: "Please enter a valid amount",
+        variant: "destructive",
       });
       return;
     }
 
     if (bitAmount < minimumPurchase) {
       toast({
-        title: 'Minimum Purchase Required',
+        title: "Minimum Purchase Required",
         description: `Minimum purchase is ${minimumPurchase.toLocaleString()} BIT tokens ($${(minimumPurchase * pricePerBit).toLocaleString()})`,
-        variant: 'destructive',
+        variant: "destructive",
       });
       return;
     }
 
-    if (selectedNetwork !== 'BSC') {
+    if (selectedNetwork !== "BSC") {
       toast({
-        title: 'Network Coming Soon',
+        title: "Network Coming Soon",
         description: `${selectedNetwork} network will be available soon`,
       });
       return;
@@ -261,14 +268,14 @@ const BuyBitTab = () => {
 
     try {
       const usdAmount = parseUnits(amount, 18); // USDT/USDC has 18 decimals on BEP20
-      
+
       // Check if approval is needed
-      const currentAllowance = allowance as bigint || BigInt(0);
+      const currentAllowance = (allowance as bigint) || BigInt(0);
       if (currentAllowance < usdAmount) {
         toast({
-          title: 'Approval Required',
-          description: 'Please approve the token spend first',
-          variant: 'destructive',
+          title: "Approval Required",
+          description: "Please approve the token spend first",
+          variant: "destructive",
         });
         return;
       }
@@ -276,19 +283,19 @@ const BuyBitTab = () => {
       await writeContract({
         address: CONTRACT_ADDRESSES.BIT_PURCHASE as `0x${string}`,
         abi: CONTRACT_ABIS.BIT_PURCHASE,
-        functionName: 'purchaseBIT',
+        functionName: "purchaseBIT",
         args: [paymentTokenAddress as `0x${string}`, usdAmount],
       } as any);
 
       toast({
-        title: 'Purchase Submitted',
-        description: 'Please wait for the transaction to confirm...',
+        title: "Purchase Submitted",
+        description: "Please wait for the transaction to confirm...",
       });
     } catch (error: any) {
       toast({
-        title: 'Purchase Failed',
-        description: error?.message || 'Failed to purchase tokens',
-        variant: 'destructive',
+        title: "Purchase Failed",
+        description: error?.message || "Failed to purchase tokens",
+        variant: "destructive",
       });
     }
   };
@@ -310,7 +317,11 @@ const BuyBitTab = () => {
                 <img src={bitLogo} alt="BIT Token" className="w-12 h-12" />
                 <div>
                   <p className="text-4xl font-bold text-green-600 dark:text-green-400">
-                    {bitBalance ? Number(formatUnits(bitBalance as bigint, 9)).toLocaleString(undefined, { maximumFractionDigits: 2 }) : '0'}
+                    {bitBalance
+                      ? Number(formatUnits(bitBalance as bigint, 9)).toLocaleString(undefined, {
+                          maximumFractionDigits: 2,
+                        })
+                      : "0"}
                   </p>
                   <p className="text-sm text-muted-foreground">BIT Tokens</p>
                 </div>
@@ -329,15 +340,15 @@ const BuyBitTab = () => {
         <CardContent>
           <div className="grid grid-cols-4 gap-2 md:gap-4">
             {[
-              { label: 'Days', value: timeLeft.days },
-              { label: 'Hours', value: timeLeft.hours },
-              { label: 'Minutes', value: timeLeft.minutes },
-              { label: 'Seconds', value: timeLeft.seconds },
+              { label: "Days", value: timeLeft.days },
+              { label: "Hours", value: timeLeft.hours },
+              { label: "Minutes", value: timeLeft.minutes },
+              { label: "Seconds", value: timeLeft.seconds },
             ].map((item, index) => (
               <div key={index} className="flex flex-col items-center">
                 <div className="bg-card border-2 border-primary/30 rounded-lg p-3 md:p-6 w-full shadow-lg">
                   <div className="text-2xl md:text-5xl font-bold text-primary text-center tabular-nums">
-                    {String(item.value).padStart(2, '0')}
+                    {String(item.value).padStart(2, "0")}
                   </div>
                 </div>
                 <p className="text-xs md:text-sm font-semibold text-muted-foreground mt-2 uppercase tracking-wide">
@@ -356,9 +367,7 @@ const BuyBitTab = () => {
             <ShoppingBag className="w-7 h-7 mr-3 text-primary" />
             Purchase BIT Tokens
           </CardTitle>
-          <CardDescription className="text-base">
-            Enter your desired amount in USD
-          </CardDescription>
+          <CardDescription className="text-base">Enter your desired amount in USD</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Payment Method Selection */}
@@ -366,12 +375,12 @@ const BuyBitTab = () => {
             <Label className="text-base font-semibold">Payment Method</Label>
             <div className="grid grid-cols-2 gap-3">
               <Button
-                variant={paymentMethod === 'USDT' ? 'default' : 'outline'}
-                onClick={() => setPaymentMethod('USDT')}
+                variant={paymentMethod === "USDT" ? "default" : "outline"}
+                onClick={() => setPaymentMethod("USDT")}
                 className={`h-16 font-semibold transition-all ${
-                  paymentMethod === 'USDT'
-                    ? 'bg-primary text-primary-foreground shadow-lg scale-105'
-                    : 'bg-card/50 hover:bg-secondary/50'
+                  paymentMethod === "USDT"
+                    ? "bg-primary text-primary-foreground shadow-lg scale-105"
+                    : "bg-card/50 hover:bg-secondary/50"
                 }`}
               >
                 <div className="flex flex-col items-center gap-1">
@@ -380,12 +389,12 @@ const BuyBitTab = () => {
                 </div>
               </Button>
               <Button
-                variant={paymentMethod === 'USDC' ? 'default' : 'outline'}
-                onClick={() => setPaymentMethod('USDC')}
+                variant={paymentMethod === "USDC" ? "default" : "outline"}
+                onClick={() => setPaymentMethod("USDC")}
                 className={`h-16 font-semibold transition-all ${
-                  paymentMethod === 'USDC'
-                    ? 'bg-primary text-primary-foreground shadow-lg scale-105'
-                    : 'bg-card/50 hover:bg-secondary/50'
+                  paymentMethod === "USDC"
+                    ? "bg-primary text-primary-foreground shadow-lg scale-105"
+                    : "bg-card/50 hover:bg-secondary/50"
                 }`}
               >
                 <div className="flex flex-col items-center gap-1">
@@ -403,19 +412,21 @@ const BuyBitTab = () => {
               {networks.map((network) => (
                 <Button
                   key={network.name}
-                  variant={selectedNetwork === network.name ? 'default' : 'outline'}
+                  variant={selectedNetwork === network.name ? "default" : "outline"}
                   onClick={() => setSelectedNetwork(network.name)}
                   disabled={!network.active}
                   className={`h-16 font-semibold transition-all ${
                     selectedNetwork === network.name
-                      ? 'bg-primary text-primary-foreground shadow-lg scale-105'
-                      : 'bg-card/50 hover:bg-secondary/50'
-                  } ${!network.active && 'opacity-50 cursor-not-allowed'}`}
+                      ? "bg-primary text-primary-foreground shadow-lg scale-105"
+                      : "bg-card/50 hover:bg-secondary/50"
+                  } ${!network.active && "opacity-50 cursor-not-allowed"}`}
                 >
                   <div className="flex flex-col items-center gap-1">
                     <img src={network.icon} alt={network.name} className="w-6 h-6" />
                     <span className="text-xs">{network.name}</span>
-                    {network.active && <Badge className="mt-0.5 bg-green-500 text-white text-[10px] px-1 py-0">Active</Badge>}
+                    {network.active && (
+                      <Badge className="mt-0.5 bg-green-500 text-white text-[10px] px-1 py-0">Active</Badge>
+                    )}
                   </div>
                 </Button>
               ))}
@@ -428,7 +439,7 @@ const BuyBitTab = () => {
               Amount ({paymentMethod})
             </Label>
             <div className="relative">
-              {paymentMethod === 'USDT' ? (
+              {paymentMethod === "USDT" ? (
                 <img src={usdtIcon} alt="USDT" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" />
               ) : (
                 <img src={usdcIcon} alt="USDC" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" />
@@ -446,7 +457,8 @@ const BuyBitTab = () => {
             </div>
             <p className="text-sm text-muted-foreground flex items-center">
               <AlertCircle className="w-4 h-4 mr-1" />
-              Minimum purchase: {minimumPurchase.toLocaleString()} BIT ({(minimumPurchase * pricePerBit).toLocaleString()} {paymentMethod})
+              Minimum purchase: {minimumPurchase.toLocaleString()} BIT (
+              {(minimumPurchase * pricePerBit).toLocaleString()} {paymentMethod})
             </p>
           </div>
 
@@ -454,7 +466,7 @@ const BuyBitTab = () => {
           {amount && parseFloat(amount) > 0 && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
+              animate={{ opacity: 1, height: "auto" }}
               className="bg-secondary/30 border-2 border-primary/20 p-6 rounded-xl space-y-3"
             >
               <h3 className="font-bold text-lg mb-4">Purchase Summary</h3>
@@ -462,8 +474,10 @@ const BuyBitTab = () => {
                 <div className="flex justify-between items-center">
                   <span className="text-muted-foreground font-medium">You Pay:</span>
                   <div className="flex items-center gap-2">
-                    <img src={paymentMethod === 'USDT' ? usdtIcon : usdcIcon} alt={paymentMethod} className="w-4 h-4" />
-                    <span className="text-xl font-bold">{parseFloat(amount).toLocaleString()} {paymentMethod}</span>
+                    <img src={paymentMethod === "USDT" ? usdtIcon : usdcIcon} alt={paymentMethod} className="w-4 h-4" />
+                    <span className="text-xl font-bold">
+                      {parseFloat(amount).toLocaleString()} {paymentMethod}
+                    </span>
                   </div>
                 </div>
                 <div className="flex justify-between items-center">
@@ -473,7 +487,7 @@ const BuyBitTab = () => {
                 <div className="flex justify-between items-center">
                   <span className="text-muted-foreground font-medium">Payment Method:</span>
                   <div className="flex items-center gap-1.5">
-                    <img src={paymentMethod === 'USDT' ? usdtIcon : usdcIcon} alt={paymentMethod} className="w-4 h-4" />
+                    <img src={paymentMethod === "USDT" ? usdtIcon : usdcIcon} alt={paymentMethod} className="w-4 h-4" />
                     <span className="font-semibold">{paymentMethod}-BEP20</span>
                   </div>
                 </div>
@@ -498,7 +512,7 @@ const BuyBitTab = () => {
                 {!allowance || (allowance as bigint) < parseUnits(amount, 18) ? (
                   <Button
                     onClick={handleApprove}
-                    disabled={!address || isApproving || selectedNetwork !== 'BSC'}
+                    disabled={!address || isApproving || selectedNetwork !== "BSC"}
                     className="w-full h-14 text-lg font-bold bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all"
                   >
                     {isApproving ? (
@@ -516,30 +530,30 @@ const BuyBitTab = () => {
                 ) : null}
               </>
             )}
-            
+
             <Button
               onClick={handleBuy}
               disabled={
                 !address ||
                 isPurchasing ||
                 isConfirming ||
-                selectedNetwork !== 'BSC' ||
+                selectedNetwork !== "BSC" ||
                 !amount ||
                 parseFloat(amount) <= 0 ||
                 !allowance ||
-                (allowance as bigint) < parseUnits(amount || '0', 18)
+                (allowance as bigint) < parseUnits(amount || "0", 18)
               }
               className="w-full h-14 text-lg font-bold bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all"
             >
               {isPurchasing || isConfirming ? (
                 <>
                   <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  {isConfirming ? 'Confirming...' : 'Processing...'}
+                  {isConfirming ? "Confirming..." : "Processing..."}
                 </>
               ) : (
                 <>
                   <ShoppingBag className="w-5 h-5 mr-2" />
-                  {selectedNetwork !== 'BSC' ? 'Network Coming Soon' : !address ? 'Connect Wallet' : 'Buy BIT Tokens'}
+                  {selectedNetwork !== "BSC" ? "Network Coming Soon" : !address ? "Connect Wallet" : "Buy BIT Tokens"}
                 </>
               )}
             </Button>
@@ -548,10 +562,11 @@ const BuyBitTab = () => {
           {/* Info */}
           <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
             <p className="text-sm leading-relaxed">
-              <strong className="text-primary">Purchase Mechanics:</strong> Choose between USDT-BEP20 or USDC-BEP20 as payment method. 
-              Enter your desired investment amount and you will receive BIT tokens at a fixed rate of ${pricePerBit} per token. 
-              Minimum purchase requirement is {minimumPurchase.toLocaleString()} BIT tokens. 
-              Tokens will be transferred to your connected wallet address on the selected network (BSC, Polygon, Arbitrum, or Base).
+              <strong className="text-primary">Purchase Mechanics:</strong> Choose between USDT-BEP20 or USDC-BEP20 as
+              payment method. Enter your desired amount and you will receive BIT tokens at a fixed rate of $
+              {pricePerBit} per token. Minimum purchase requirement is {minimumPurchase.toLocaleString()} BIT tokens.
+              Tokens will be transferred to your connected wallet address on the selected network (BSC, Polygon,
+              Arbitrum, or Base).
             </p>
           </div>
         </CardContent>
