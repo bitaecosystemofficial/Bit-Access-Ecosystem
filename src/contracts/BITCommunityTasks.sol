@@ -2,11 +2,82 @@
 pragma solidity ^0.8.19;
 
 /**
+ * @title IERC20
+ * @dev Interface for ERC20 token standard
+ */
+interface IERC20 {
+    function transfer(address to, uint256 amount) external returns (bool);
+    function transferFrom(address from, address to, uint256 amount) external returns (bool);
+    function balanceOf(address account) external view returns (uint256);
+}
+
+/**
+ * @title ReentrancyGuard
+ * @dev Contract module that helps prevent reentrant calls to a function
+ */
+abstract contract ReentrancyGuard {
+    uint256 private constant _NOT_ENTERED = 1;
+    uint256 private constant _ENTERED = 2;
+    
+    uint256 private _status;
+    
+    constructor() {
+        _status = _NOT_ENTERED;
+    }
+    
+    modifier nonReentrant() {
+        require(_status != _ENTERED, "ReentrancyGuard: reentrant call");
+        _status = _ENTERED;
+        _;
+        _status = _NOT_ENTERED;
+    }
+}
+
+/**
+ * @title Ownable
+ * @dev Contract module which provides a basic access control mechanism
+ */
+abstract contract Ownable {
+    address private _owner;
+    
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+    
+    constructor() {
+        _transferOwnership(msg.sender);
+    }
+    
+    modifier onlyOwner() {
+        require(owner() == msg.sender, "Ownable: caller is not the owner");
+        _;
+    }
+    
+    function owner() public view virtual returns (address) {
+        return _owner;
+    }
+    
+    function renounceOwnership() public virtual onlyOwner {
+        _transferOwnership(address(0));
+    }
+    
+    function transferOwnership(address newOwner) public virtual onlyOwner {
+        require(newOwner != address(0), "Ownable: new owner is the zero address");
+        _transferOwnership(newOwner);
+    }
+    
+    function _transferOwnership(address newOwner) internal virtual {
+        address oldOwner = _owner;
+        _owner = newOwner;
+        emit OwnershipTransferred(oldOwner, newOwner);
+    }
+}
+
+/**
  * @title BITCommunityTasks
  * @dev Manages community task completion and rewards for BIT token ecosystem
  */
-contract BITCommunityTasks {
-    address public owner;
+contract BITCommunityTasks is Ownable, ReentrancyGuard {
+    IERC20 public bitToken;
+    bool public rewardsEnabled;
     
     struct Task {
         string taskId;
@@ -38,6 +109,9 @@ contract BITCommunityTasks {
     // Mapping: user => check-in streak
     mapping(address => uint256) public userCheckInStreak;
     
+    // Mapping: user => last check-in timestamp
+    mapping(address => uint256) public userLastCheckIn;
+    
     // Array of all task IDs
     string[] public taskIds;
     
@@ -45,26 +119,26 @@ contract BITCommunityTasks {
     event TaskCompleted(address indexed user, string taskId, uint256 reward);
     event LinkVisited(address indexed user, string taskId, uint256 timestamp);
     event CheckInStreakUpdated(address indexed user, uint256 newStreak);
+    event RewardsClaimed(address indexed user, uint256 amount);
+    event BITTokenUpdated(address indexed tokenAddress);
+    event RewardsToggled(bool enabled);
     
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Only owner can call this function");
-        _;
-    }
-    
-    constructor() {
-        owner = msg.sender;
+    constructor(address _bitToken) {
+        require(_bitToken != address(0), "Invalid BIT token address");
+        bitToken = IERC20(_bitToken);
+        rewardsEnabled = false;
         
         // Initialize default tasks
-        _createTask("daily-check", 100, 0, "check-in");
-        _createTask("facebook-like", 250, 0, "social");
-        _createTask("twitter-follow", 250, 0, "social");
-        _createTask("youtube-subscribe", 250, 0, "social");
-        _createTask("telegram-join", 250, 0, "social");
-        _createTask("web3-seminar", 1000, block.timestamp + 7 days, "events");
-        _createTask("daily-zoom", 250, block.timestamp + 3 days, "webinar");
-        _createTask("webinar-invite", 5000, block.timestamp + 3 days, "webinar");
-        _createTask("forum-attend", 2000, block.timestamp + 1 days, "forum");
-        _createTask("forum-invite", 5000, block.timestamp + 1 days, "forum");
+        _createTask("daily-check", 100 * 10**18, 0, "check-in");
+        _createTask("facebook-like", 250 * 10**18, 0, "social");
+        _createTask("twitter-follow", 250 * 10**18, 0, "social");
+        _createTask("youtube-subscribe", 250 * 10**18, 0, "social");
+        _createTask("telegram-join", 250 * 10**18, 0, "social");
+        _createTask("web3-seminar", 1000 * 10**18, block.timestamp + 7 days, "events");
+        _createTask("daily-zoom", 250 * 10**18, block.timestamp + 3 days, "webinar");
+        _createTask("webinar-invite", 5000 * 10**18, block.timestamp + 3 days, "webinar");
+        _createTask("forum-attend", 2000 * 10**18, block.timestamp + 1 days, "forum");
+        _createTask("forum-invite", 5000 * 10**18, block.timestamp + 1 days, "forum");
     }
     
     function _createTask(
@@ -94,7 +168,7 @@ contract BITCommunityTasks {
         _createTask(_taskId, _reward, _activationDate, _category);
     }
     
-    function markLinkVisited(string memory _taskId) external {
+    function markLinkVisited(string memory _taskId) external nonReentrant {
         Task memory task = tasks[_taskId];
         require(task.isActive, "Task is not active");
         require(block.timestamp >= task.activationDate, "Task not yet active");
@@ -106,11 +180,28 @@ contract BITCommunityTasks {
         emit LinkVisited(msg.sender, _taskId, block.timestamp);
     }
     
-    function completeTask(string memory _taskId) external {
+    function completeTask(string memory _taskId) external nonReentrant {
         Task memory task = tasks[_taskId];
         require(task.isActive, "Task is not active");
         require(block.timestamp >= task.activationDate, "Task not yet active");
         require(!userTasks[msg.sender][_taskId].completed, "Task already completed");
+        
+        // Handle check-in streak logic
+        if (keccak256(bytes(task.category)) == keccak256(bytes("check-in"))) {
+            uint256 lastCheckIn = userLastCheckIn[msg.sender];
+            if (lastCheckIn > 0) {
+                uint256 daysSinceLastCheckIn = (block.timestamp - lastCheckIn) / 1 days;
+                if (daysSinceLastCheckIn <= 1) {
+                    userCheckInStreak[msg.sender]++;
+                } else {
+                    userCheckInStreak[msg.sender] = 1;
+                }
+            } else {
+                userCheckInStreak[msg.sender] = 1;
+            }
+            userLastCheckIn[msg.sender] = block.timestamp;
+            emit CheckInStreakUpdated(msg.sender, userCheckInStreak[msg.sender]);
+        }
         
         userTasks[msg.sender][_taskId].completed = true;
         userTasks[msg.sender][_taskId].completedAt = block.timestamp;
@@ -118,13 +209,27 @@ contract BITCommunityTasks {
         userCompletedTasks[msg.sender]++;
         userTotalRewards[msg.sender] += task.reward;
         
-        // Update check-in streak if it's a check-in task
-        if (keccak256(bytes(task.category)) == keccak256(bytes("check-in"))) {
-            userCheckInStreak[msg.sender]++;
-            emit CheckInStreakUpdated(msg.sender, userCheckInStreak[msg.sender]);
-        }
-        
         emit TaskCompleted(msg.sender, _taskId, task.reward);
+        
+        // Auto-transfer rewards if enabled
+        if (rewardsEnabled) {
+            _claimReward(task.reward);
+        }
+    }
+    
+    function claimRewards() external nonReentrant {
+        require(rewardsEnabled, "Rewards are not enabled");
+        uint256 pendingRewards = userTotalRewards[msg.sender];
+        require(pendingRewards > 0, "No rewards to claim");
+        
+        _claimReward(pendingRewards);
+    }
+    
+    function _claimReward(uint256 amount) internal {
+        require(bitToken.balanceOf(address(this)) >= amount, "Insufficient contract balance");
+        require(bitToken.transfer(msg.sender, amount), "Token transfer failed");
+        
+        emit RewardsClaimed(msg.sender, amount);
     }
     
     function isTaskCompleted(address _user, string memory _taskId) external view returns (bool) {
@@ -188,8 +293,22 @@ contract BITCommunityTasks {
         tasks[_taskId].activationDate = _newActivationDate;
     }
     
-    function transferOwnership(address newOwner) external onlyOwner {
-        require(newOwner != address(0), "New owner is the zero address");
-        owner = newOwner;
+    function updateBITToken(address _newBITToken) external onlyOwner {
+        require(_newBITToken != address(0), "Invalid BIT token address");
+        bitToken = IERC20(_newBITToken);
+        emit BITTokenUpdated(_newBITToken);
+    }
+    
+    function toggleRewards(bool _enabled) external onlyOwner {
+        rewardsEnabled = _enabled;
+        emit RewardsToggled(_enabled);
+    }
+    
+    function withdrawTokens(address _token, uint256 _amount) external onlyOwner {
+        require(IERC20(_token).transfer(owner(), _amount), "Token transfer failed");
+    }
+    
+    function getContractBalance() external view returns (uint256) {
+        return bitToken.balanceOf(address(this));
     }
 }
