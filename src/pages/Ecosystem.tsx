@@ -6,78 +6,78 @@ const Ecosystem = () => {
   const coreComponents = [
     {
       icon: Coins,
-      title: 'BIT Token',
-      description: 'The native utility token powering all ecosystem transactions, rewards, and governance activities. Stake BIT tokens to earn passive income and participate in platform decisions.',
+      title: 'Buy BIT',
+      description: 'Purchase BIT tokens using USDT-BEP20 or USDC-BEP20 at a fixed price of $0.00108 per BIT. Available on BSC, Polygon, Arbitrum, and Base networks. Minimum purchase of 100,000 BIT tokens to get started.',
+    },
+    {
+      icon: Gift,
+      title: 'Collect BIT',
+      description: 'Earn BIT tokens as rewards through multiple activities: daily login bonuses, referral programs, completing tasks, participating in community events, and engaging with our ecosystem partners.',
     },
     {
       icon: Lock,
-      title: 'Staking Platform',
-      description: 'Multiple staking tiers offering competitive APY rates. Lock your tokens to earn rewards while supporting network security and stability.',
+      title: 'Stake & Grow BIT',
+      description: 'Lock your BIT tokens in our staking platform to earn passive rewards. Choose from multiple staking tiers with competitive APY rates. The longer you stake, the higher your rewards potential.',
     },
     {
       icon: Repeat,
-      title: 'DEX Integration',
-      description: 'Seamlessly swap BIT tokens with other cryptocurrencies through our integrated decentralized exchange functionality with minimal fees.',
+      title: 'Swap BIT',
+      description: 'Seamlessly swap your BIT tokens with other cryptocurrencies through our integrated DEX. Trade with minimal fees, instant execution, and full transparency on the blockchain.',
     },
     {
-      icon: CalendarCheck,
-      title: 'Daily Rewards Claim',
-      description: 'Claim daily rewards and bonuses. Participate in social-to-earn activities and engage in community-driven initiatives to maximize your earnings.',
+      icon: TrendingUp,
+      title: 'Earn BIT',
+      description: 'Generate BIT token rewards by staking, referring friends, shopping at partner merchants, participating in governance, and contributing to community growth. Multiple earning streams available.',
     },
     {
       icon: Crown,
-      title: 'Membership System',
-      description: 'Unlock exclusive benefits with tiered membership levels offering premium features, enhanced rewards, and priority access to new opportunities.',
-    },
-    {
-      icon: Zap,
-      title: 'Airdrop Campaign',
-      description: 'Participate in regular airdrops and token distribution events. Complete tasks to earn BIT tokens and build your portfolio.',
+      title: 'Membership Benefits',
+      description: 'Unlock exclusive perks with tiered membership levels. Higher tiers offer premium features, enhanced reward multipliers, priority support, and early access to new opportunities.',
     },
   ];
 
   const tokenHolderBenefits = [
-    'Earn passive income through staking rewards',
-    'Access to exclusive membership benefits',
-    'Participate in platform governance',
-    'Early access to new features and opportunities',
-    'Referral rewards and community incentives',
-    'Token appreciation potential as ecosystem grows',
-    'Discounted transaction fees for BIT holders',
-    'Priority access to limited edition NFT drops',
+    'Earn BIT token rewards through staking activities',
+    'Receive BIT rewards for platform participation and engagement',
+    'Get BIT bonuses through governance participation',
+    'Earn BIT incentives for early feature adoption',
+    'Collect BIT rewards from referral programs',
+    'Receive BIT appreciation as ecosystem grows',
+    'Earn discounted transaction fees paid in BIT rewards',
+    'Get priority BIT rewards from limited edition events',
   ];
 
   const merchantBenefits = [
-    'Accept BIT token payments with instant settlement',
-    'Lower transaction fees compared to traditional payment processors',
-    'Access to a growing customer base of crypto users',
-    'No chargebacks - irreversible blockchain transactions',
-    'Easy integration with existing systems via API',
-    'Real-time payment tracking and analytics dashboard',
-    'Multi-currency support with automatic conversion',
-    'Enhanced security through blockchain technology',
+    'Accept USDT/USDC payments across 4 blockchain networks',
+    'Earn BIT token rewards for processing customer transactions',
+    'Receive BIT bonuses for hitting transaction milestones',
+    'Get instant settlement in USDT or USDC stablecoins',
+    'Collect BIT rewards through merchant loyalty program',
+    'Lower transaction fees with BIT reward incentives',
+    'Earn BIT tokens for referring other merchants',
+    'Access real-time analytics dashboard and BIT earnings tracking',
   ];
 
   const customerBenefits = [
-    'Pay with BIT tokens at participating merchants',
-    'Earn cashback rewards on every purchase',
-    'Instant payment confirmation with blockchain verification',
-    'Lower fees compared to traditional payment methods',
-    'Loyalty rewards and exclusive discounts',
-    'Privacy-focused transactions with wallet protection',
-    'Cross-border payments without currency conversion fees',
-    'Build transaction history for premium membership tiers',
+    'Pay with USDT or USDC at participating merchants',
+    'Earn BIT token rewards as cashback on every purchase',
+    'Collect BIT bonuses for shopping frequency milestones',
+    'Get instant confirmation with blockchain verification',
+    'Receive BIT loyalty rewards and exclusive discounts',
+    'Earn BIT tokens through referral program participation',
+    'Pay across 4 networks: BSC, Polygon, Arbitrum, and Base',
+    'Build BIT reward history for premium membership tiers',
   ];
 
   const communityBenefits = [
-    'Transparent and secure blockchain infrastructure',
-    'Low transaction fees on BSC network',
-    'Regular airdrops and promotional events',
-    'Social-to-earn opportunities',
-    'Growing ecosystem of partners and integrations',
-    'Community-driven development and governance',
-    'Educational resources and webinars',
-    'Active support channels and community forums',
+    'Earn BIT rewards for community participation and engagement',
+    'Collect BIT tokens through social-to-earn opportunities',
+    'Receive BIT bonuses from regular airdrop events',
+    'Get BIT rewards for educational content creation',
+    'Multi-chain support: BSC, Polygon, Arbitrum, Base networks',
+    'Earn BIT through community-driven governance participation',
+    'Access BIT-rewarded educational resources and webinars',
+    'Receive BIT incentives for active forum and support contributions',
   ];
 
   const techStack = [
@@ -121,9 +121,9 @@ const Ecosystem = () => {
           viewport={{ once: true }}
           className="mb-20"
         >
-          <h2 className="text-4xl font-bold text-center mb-4">Core Components</h2>
+          <h2 className="text-4xl font-bold text-center mb-4">BIT Token Utility</h2>
           <p className="text-center text-muted-foreground mb-12">
-            Everything you need for a complete Web3 experience
+            BIT tokens serve as rewards within our ecosystem - not as payment or security
           </p>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -155,9 +155,9 @@ const Ecosystem = () => {
           viewport={{ once: true }}
           className="mb-20"
         >
-          <h2 className="text-4xl font-bold text-center mb-4">Ecosystem Benefits</h2>
+          <h2 className="text-4xl font-bold text-center mb-4">BIT Rewards Ecosystem</h2>
           <p className="text-center text-muted-foreground mb-12">
-            Value for every participant in our ecosystem
+            Earn BIT tokens as rewards - Payments processed via USDT/USDC on 4 networks
           </p>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
