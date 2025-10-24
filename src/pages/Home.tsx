@@ -105,19 +105,19 @@ const Home = () => {
     category: "DEX Analytics Platform",
     logo: dexscreenerLogo
   }, {
-    name: "Bunny Protocol",
-    category: "DeFi Yield Optimizer",
+    name: "PancakeSwap",
+    category: "Leading DEX on BNB Chain",
     logo: partner2
   }, {
-    name: "Unicorn Exchange",
-    category: "Decentralized Exchange",
+    name: "Uniswap",
+    category: "Decentralized Trading Protocol",
     logo: partner3
   }, {
-    name: "Gecko Network",
-    category: "Market Data Analytics",
+    name: "CoinGecko",
+    category: "Cryptocurrency Data Aggregator",
     logo: partner4
   }, {
-    name: "BiT",
+    name: "BIIT",
     category: "Blockchain Integrative Technology",
     logo: partner5
   }, {
@@ -137,12 +137,12 @@ const Home = () => {
     category: "Security Platform",
     logo: partner9
   }, {
-    name: "Binance",
-    category: "Cryptocurrency Exchange",
+    name: "Binplorer",
+    category: "Blockchain Explorer",
     logo: partner10
   }, {
-    name: "CoinGecko",
-    category: "Market Data",
+    name: "BscScan",
+    category: "BNB Chain Block Explorer",
     logo: partner11
   }, {
     name: "Cyberscope",
