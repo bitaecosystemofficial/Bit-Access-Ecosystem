@@ -98,7 +98,14 @@ const StakingTab = () => {
     }
   }, [isSuccess]);
 
-  // Fetch staking pools data from contract
+  // Fetch staking pools data from contract (pools 0, 1, 2)
+  const { data: pool0Data } = useReadContract({
+    address: CONTRACT_ADDRESSES.BIT_STAKING,
+    abi: CONTRACT_ABIS.BIT_STAKING,
+    functionName: 'stakingPools',
+    args: [0],
+  });
+
   const { data: pool1Data } = useReadContract({
     address: CONTRACT_ADDRESSES.BIT_STAKING,
     abi: CONTRACT_ABIS.BIT_STAKING,
@@ -113,43 +120,36 @@ const StakingTab = () => {
     args: [2],
   });
 
-  const { data: pool3Data } = useReadContract({
-    address: CONTRACT_ADDRESSES.BIT_STAKING,
-    abi: CONTRACT_ABIS.BIT_STAKING,
-    functionName: 'stakingPools',
-    args: [3],
-  });
-
-  // Staking pools configuration with real-time data
+  // Staking pools configuration with real-time data from contract
   const stakingPools = [
     {
-      id: 1,
-      days: pool1Data ? Number(pool1Data[0]) : 90,
-      apy: pool1Data ? Number(pool1Data[1]) : 25,
+      id: 0,
+      days: pool0Data ? Number(pool0Data[0]) : 180,
+      apy: pool0Data ? Number(pool0Data[1]) : 12,
       minStake: 100000,
-      totalStaked: pool1Data ? Number(pool1Data[3]) / 1e9 : 0,
-      active: pool1Data ? pool1Data[4] : true,
+      totalStaked: pool0Data ? Number(pool0Data[3]) / 1e9 : 0,
+      active: pool0Data ? pool0Data[4] : true,
       color: 'from-blue-500/20 to-blue-500/5',
       borderColor: 'border-blue-500/30',
     },
     {
-      id: 2,
-      days: pool2Data ? Number(pool2Data[0]) : 180,
-      apy: pool2Data ? Number(pool2Data[1]) : 50,
+      id: 1,
+      days: pool1Data ? Number(pool1Data[0]) : 240,
+      apy: pool1Data ? Number(pool1Data[1]) : 18,
       minStake: 500000,
-      totalStaked: pool2Data ? Number(pool2Data[3]) / 1e9 : 0,
-      active: pool2Data ? pool2Data[4] : true,
+      totalStaked: pool1Data ? Number(pool1Data[3]) / 1e9 : 0,
+      active: pool1Data ? pool1Data[4] : true,
       color: 'from-purple-500/20 to-purple-500/5',
       borderColor: 'border-purple-500/30',
       popular: true,
     },
     {
-      id: 3,
-      days: pool3Data ? Number(pool3Data[0]) : 365,
-      apy: pool3Data ? Number(pool3Data[1]) : 100,
+      id: 2,
+      days: pool2Data ? Number(pool2Data[0]) : 365,
+      apy: pool2Data ? Number(pool2Data[1]) : 25,
       minStake: 1000000,
-      totalStaked: pool3Data ? Number(pool3Data[3]) / 1e9 : 0,
-      active: pool3Data ? pool3Data[4] : true,
+      totalStaked: pool2Data ? Number(pool2Data[3]) / 1e9 : 0,
+      active: pool2Data ? pool2Data[4] : true,
       color: 'from-primary/20 to-primary/5',
       borderColor: 'border-primary/30',
     },
@@ -460,7 +460,7 @@ const StakingTab = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground mb-1">Active Positions</p>
-                <p className="text-3xl font-bold">{userStakes ? (userStakes as any[]).filter((s: any) => s.isActive).length : 0}</p>
+                <p className="text-3xl font-bold">{userStakes ? (userStakes as any[]).filter((s: any) => s.active).length : 0}</p>
                 <p className="text-sm text-muted-foreground">Staking Pools</p>
               </div>
               <Clock className="w-12 h-12 text-blue-500 opacity-50" />
