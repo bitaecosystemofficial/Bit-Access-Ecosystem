@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import BuyBitTab from '@/components/dashboard/BuyBitTab';
 import StakingTab from '@/components/dashboard/StakingTab';
 import CommunityTab from '@/components/dashboard/CommunityTab';
+import AddToMetamaskButton from '@/components/dashboard/AddToMetamaskButton';
 
 const Dashboard = () => {
   const { isConnected } = useAccount();
@@ -33,6 +34,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen pt-24 pb-16 bg-background">
+      <AddToMetamaskButton />
       <div className="container mx-auto px-4">
         <h1 className="text-4xl md:text-5xl font-bold mb-8 text-center bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent">
           Dashboard

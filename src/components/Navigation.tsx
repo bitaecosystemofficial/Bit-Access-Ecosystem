@@ -16,6 +16,7 @@ const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const isDashboard = location.pathname === '/dashboard';
   const navigate = useNavigate();
   const { open } = useWeb3Modal();
   const { address, isConnected } = useAccount();
@@ -91,8 +92,9 @@ const Navigation = () => {
           </div>
 
           {/* Mobile Menu */}
-          <div className="md:hidden flex items-center gap-2">
-            <DropdownMenu open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+          {!isDashboard && (
+            <div className="md:hidden flex items-center gap-2">
+              <DropdownMenu open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <DropdownMenuTrigger asChild>
                 <Button 
                   size="icon" 
@@ -148,7 +150,8 @@ const Navigation = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          </div>
+            </div>
+          )}
         </div>
 
       </div>
