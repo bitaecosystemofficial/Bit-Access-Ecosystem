@@ -146,7 +146,7 @@ contract BITStaking is ReentrancyGuard, Ownable {
         stakingPools[1] = StakingPool({
             lockDays: 240,
             apy: 18,
-            minStake: 500000000 * 10**9,
+            minStake: 500000 * 10**9,
             totalStaked: 0,
             active: true
         });
