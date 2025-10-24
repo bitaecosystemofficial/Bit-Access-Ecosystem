@@ -23,6 +23,8 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { useBITBalance } from '@/contexts/BITBalanceContext';
 import { useCountdown } from '@/hooks/useCountdown';
+import { useAccount, useReadContract, useWriteContract, useChainId, useSwitchChain } from 'wagmi';
+import { CONTRACT_ADDRESSES, CONTRACT_ABIS, SUPPORTED_CHAINS } from '@/config/contracts';
 import bitLogo from '@/assets/bit-token-logo.png';
 
 interface Task {
@@ -45,8 +47,36 @@ interface Task {
 const CommunityTab = () => {
   const { toast } = useToast();
   const { addBalance, formatBalance } = useBITBalance();
+  const { address } = useAccount();
+  const chainId = useChainId();
+  const { switchChain } = useSwitchChain();
+  const { writeContract } = useWriteContract();
+  
   const [checkInStreak, setCheckInStreak] = useState(0);
   const [totalPoints, setTotalPoints] = useState(0);
+
+  // Check if on BSC network
+  const isBSCNetwork = chainId === SUPPORTED_CHAINS.BSC_MAINNET || chainId === SUPPORTED_CHAINS.BSC_TESTNET;
+
+  // Fetch user stats from blockchain
+  const { data: userStats } = useReadContract({
+    address: CONTRACT_ADDRESSES.BIT_COMMUNITY_TASKS,
+    abi: CONTRACT_ABIS.BITCommunityTasks as any,
+    functionName: 'getUserStats',
+    args: address ? [address] : undefined,
+    query: {
+      enabled: !!address && isBSCNetwork,
+    },
+  });
+
+  // Update local state from blockchain data
+  useEffect(() => {
+    if (userStats && Array.isArray(userStats)) {
+      const [completedTasks, totalRewards, checkInStreakValue] = userStats;
+      setTotalPoints(Number(totalRewards));
+      setCheckInStreak(Number(checkInStreakValue));
+    }
+  }, [userStats]);
 
   const [tasks, setTasks] = useState<Task[]>([
     {
@@ -140,6 +170,7 @@ const CommunityTab = () => {
       color: 'from-green-500/20 to-green-500/5',
       requiresInvites: true,
       inviteCount: '3-5',
+      activationDate: Date.now() + (3 * 24 * 60 * 60 * 1000), // 3 days from now
     },
     {
       id: 'forum-attend',
@@ -165,10 +196,11 @@ const CommunityTab = () => {
       color: 'from-orange-500/20 to-orange-500/5',
       requiresInvites: true,
       inviteCount: '2-3',
+      activationDate: Date.now() + (1 * 24 * 60 * 60 * 1000), // 1 day from now
     },
   ]);
 
-  const handleTaskAction = (taskId: string) => {
+  const handleTaskAction = async (taskId: string) => {
     const task = tasks.find(t => t.id === taskId);
     if (!task || task.completed) return;
 
@@ -182,19 +214,54 @@ const CommunityTab = () => {
       return;
     }
 
-    // If task has a link, open it in new tab and mark as visited
-    if (task.link) {
-      window.open(task.link, '_blank');
-      
-      // Mark link as visited
-      setTasks(tasks.map(t => 
-        t.id === taskId ? { ...t, linkVisited: true } : t
-      ));
+    // Check if on BSC network
+    if (!isBSCNetwork) {
+      try {
+        await switchChain({ chainId: SUPPORTED_CHAINS.BSC_MAINNET });
+      } catch (error) {
+        toast({
+          title: 'Network Switch Required',
+          description: 'Please switch to BSC network to complete tasks',
+          variant: 'destructive',
+        });
+        return;
+      }
+    }
 
-      // Auto-complete after visiting the link
-      setTimeout(() => {
-        completeTask(taskId);
-      }, 2000); // Give user 2 seconds to see the external link opened
+    // If task has a link, mark as visited on blockchain first
+    if (task.link) {
+      try {
+        await writeContract({
+          address: CONTRACT_ADDRESSES.BIT_COMMUNITY_TASKS,
+          abi: CONTRACT_ABIS.BITCommunityTasks as any,
+          functionName: 'markLinkVisited',
+          args: [taskId] as any,
+        } as any);
+
+        // Open link in new tab
+        window.open(task.link, '_blank');
+        
+        // Mark link as visited locally
+        setTasks(tasks.map(t => 
+          t.id === taskId ? { ...t, linkVisited: true } : t
+        ));
+
+        toast({
+          title: 'Link Visited',
+          description: 'Your visit has been recorded on the blockchain',
+        });
+
+        // Auto-complete after visiting the link
+        setTimeout(() => {
+          completeTask(taskId);
+        }, 2000);
+      } catch (error) {
+        toast({
+          title: 'Transaction Failed',
+          description: 'Failed to record link visit on blockchain',
+          variant: 'destructive',
+        });
+      }
       
       return;
     }
@@ -203,33 +270,64 @@ const CommunityTab = () => {
     completeTask(taskId);
   };
 
-  const completeTask = (taskId: string) => {
+  const completeTask = async (taskId: string) => {
     const task = tasks.find(t => t.id === taskId);
     if (!task || task.completed) return;
 
-    setTasks(tasks.map(t => 
-      t.id === taskId ? { ...t, completed: true } : t
-    ));
-
-    if (task.category === 'check-in') {
-      const newStreak = checkInStreak + 1;
-      setCheckInStreak(newStreak);
-      
-      if (newStreak === 30) {
+    // Check if on BSC network
+    if (!isBSCNetwork) {
+      try {
+        await switchChain({ chainId: SUPPORTED_CHAINS.BSC_MAINNET });
+      } catch (error) {
         toast({
-          title: '🎉 30-Day Streak Complete!',
-          description: 'Congratulations! You completed the 30-day check-in challenge!',
+          title: 'Network Switch Required',
+          description: 'Please switch to BSC network to complete tasks',
+          variant: 'destructive',
         });
+        return;
       }
     }
 
-    setTotalPoints(prev => prev + task.reward);
-    addBalance(task.reward);
+    try {
+      // Complete task on blockchain
+      await writeContract({
+        address: CONTRACT_ADDRESSES.BIT_COMMUNITY_TASKS,
+        abi: CONTRACT_ABIS.BITCommunityTasks as any,
+        functionName: 'completeTask',
+        args: [taskId] as any,
+      } as any);
 
-    toast({
-      title: 'Task Completed! 🎉',
-      description: `You earned ${task.reward} BIT tokens! Keep it up!`,
-    });
+      // Update local state
+      setTasks(tasks.map(t => 
+        t.id === taskId ? { ...t, completed: true } : t
+      ));
+
+      if (task.category === 'check-in') {
+        const newStreak = checkInStreak + 1;
+        setCheckInStreak(newStreak);
+        
+        if (newStreak === 30) {
+          toast({
+            title: '🎉 30-Day Streak Complete!',
+            description: 'Congratulations! You completed the 30-day check-in challenge!',
+          });
+        }
+      }
+
+      setTotalPoints(prev => prev + task.reward);
+      addBalance(task.reward);
+
+      toast({
+        title: 'Task Completed! 🎉',
+        description: `You earned ${task.reward} BIT tokens! Recorded on blockchain.`,
+      });
+    } catch (error) {
+      toast({
+        title: 'Transaction Failed',
+        description: 'Failed to complete task on blockchain',
+        variant: 'destructive',
+      });
+    }
   };
 
   const categories = [
