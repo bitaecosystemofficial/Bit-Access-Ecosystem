@@ -83,10 +83,9 @@ const Footer = () => {
               </div>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Building the future of decentralized commerce by bridging the gap between traditional business and blockchain technology. 
-              We empower users with seamless crypto transactions, enable consumers to access digital assets effortlessly, and provide 
-              merchants with innovative payment solutions that drive global adoption of Web3 technology. Join millions worldwide in 
-              revolutionizing everyday transactions through secure, transparent, and borderless financial ecosystems.
+              Bridging traditional business and blockchain technology. We empower users with seamless crypto transactions, 
+              enable consumers to access digital assets effortlessly, and provide merchants with innovative payment solutions. 
+              Join the global movement revolutionizing everyday transactions through secure, transparent, and borderless Web3 ecosystems.
             </p>
           </div>
 
