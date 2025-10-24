@@ -1,21 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAccount } from 'wagmi';
+import { useAccount, useDisconnect } from 'wagmi';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { ShoppingBag, TrendingUp, Menu, Users } from 'lucide-react';
+import { ShoppingBag, TrendingUp, Users, LogOut } from 'lucide-react';
+import { motion } from 'framer-motion';
 import BuyBitTab from '@/components/dashboard/BuyBitTab';
 import StakingTab from '@/components/dashboard/StakingTab';
 import CommunityTab from '@/components/dashboard/CommunityTab';
 
 const Dashboard = () => {
   const { isConnected } = useAccount();
+  const { disconnect } = useDisconnect();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('buy');
 
@@ -57,44 +53,6 @@ const Dashboard = () => {
             ))}
           </TabsList>
 
-          {/* Mobile Dropdown Menu */}
-          <div className="md:hidden mb-6">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="w-full h-14 justify-between bg-card/50 backdrop-blur-sm border-border/50">
-                  <div className="flex items-center">
-                    {menuItems.find(item => item.value === activeTab)?.icon && (
-                      <>
-                        {(() => {
-                          const Icon = menuItems.find(item => item.value === activeTab)!.icon;
-                          return <Icon className="w-5 h-5 mr-2" />;
-                        })()}
-                      </>
-                    )}
-                    <span className="font-semibold">{menuItems.find(item => item.value === activeTab)?.label}</span>
-                  </div>
-                  <Menu className="w-5 h-5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-[calc(100vw-2rem)] bg-card/95 backdrop-blur-sm border-border/50">
-                <div className="grid grid-cols-2 gap-2 p-2">
-                  {menuItems.map((item) => (
-                    <DropdownMenuItem
-                      key={item.value}
-                      onClick={() => setActiveTab(item.value)}
-                      className={`flex flex-col items-center justify-center p-4 cursor-pointer rounded-lg ${
-                        activeTab === item.value ? 'bg-primary text-primary-foreground' : 'hover:bg-secondary/50'
-                      }`}
-                    >
-                      <item.icon className="w-6 h-6 mb-2" />
-                      <span className="text-sm font-medium text-center">{item.label}</span>
-                    </DropdownMenuItem>
-                  ))}
-                </div>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-
           <TabsContent value="buy" className="mt-0">
             <BuyBitTab />
           </TabsContent>
@@ -107,6 +65,67 @@ const Dashboard = () => {
             <CommunityTab />
           </TabsContent>
         </Tabs>
+
+        {/* Mobile Floating Bottom Navigation */}
+        <motion.div 
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="md:hidden fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-lg border-t border-border/50 shadow-2xl z-50"
+        >
+          <div className="grid grid-cols-4 gap-1 p-2">
+            <Button
+              variant={activeTab === 'buy' ? 'default' : 'ghost'}
+              onClick={() => setActiveTab('buy')}
+              className={`flex flex-col items-center justify-center h-16 gap-1 transition-all ${
+                activeTab === 'buy' 
+                  ? 'bg-primary text-primary-foreground shadow-lg' 
+                  : 'hover:bg-secondary/50'
+              }`}
+            >
+              <ShoppingBag className="w-5 h-5" />
+              <span className="text-[10px] font-medium">Buy BIT</span>
+            </Button>
+            
+            <Button
+              variant={activeTab === 'staking' ? 'default' : 'ghost'}
+              onClick={() => setActiveTab('staking')}
+              className={`flex flex-col items-center justify-center h-16 gap-1 transition-all ${
+                activeTab === 'staking' 
+                  ? 'bg-primary text-primary-foreground shadow-lg' 
+                  : 'hover:bg-secondary/50'
+              }`}
+            >
+              <TrendingUp className="w-5 h-5" />
+              <span className="text-[10px] font-medium">Staking</span>
+            </Button>
+            
+            <Button
+              variant={activeTab === 'community' ? 'default' : 'ghost'}
+              onClick={() => setActiveTab('community')}
+              className={`flex flex-col items-center justify-center h-16 gap-1 transition-all ${
+                activeTab === 'community' 
+                  ? 'bg-primary text-primary-foreground shadow-lg' 
+                  : 'hover:bg-secondary/50'
+              }`}
+            >
+              <Users className="w-5 h-5" />
+              <span className="text-[10px] font-medium">Community</span>
+            </Button>
+            
+            <Button
+              variant="ghost"
+              onClick={() => disconnect()}
+              className="flex flex-col items-center justify-center h-16 gap-1 hover:bg-destructive/10 hover:text-destructive transition-all"
+            >
+              <LogOut className="w-5 h-5" />
+              <span className="text-[10px] font-medium">Disconnect</span>
+            </Button>
+          </div>
+        </motion.div>
+
+        {/* Add padding at bottom on mobile to account for floating nav */}
+        <div className="md:hidden h-20"></div>
       </div>
     </div>
   );

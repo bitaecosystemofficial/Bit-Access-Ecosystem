@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Facebook, Twitter, Youtube, Send, Github } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAccount } from 'wagmi';
@@ -9,6 +9,8 @@ const Footer = () => {
   const {
     isConnected
   } = useAccount();
+  const location = useLocation();
+  const isDashboard = location.pathname === '/dashboard';
   const socialLinks = [{
     icon: Facebook,
     href: '#',
@@ -57,11 +59,11 @@ const Footer = () => {
     label: 'Terms of Use'
   }];
 
-  // If connected, only show copyright
+  // If connected and on dashboard, hide footer on mobile
   if (isConnected) {
     return <footer className="bg-card border-t border-border mt-20">
         <div className="container mx-auto px-4 py-6">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 text-center md:text-left">
+          <div className={`flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 text-center md:text-left ${isDashboard ? 'hidden md:flex' : 'flex'}`}>
             <p className="text-sm text-muted-foreground">Copyright © 2024 - 2025. Bit Access Ecosystem. All Rights Reserved</p>
             <p className="text-sm text-muted-foreground">Powered by Binance Smart Chain Network</p>
           </div>

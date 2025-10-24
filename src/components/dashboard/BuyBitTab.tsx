@@ -69,11 +69,17 @@ const BuyBitTab = () => {
     query: { enabled: !!address && isBSCNetwork }
   });
 
-  // Fixed presale end date: 120 days from now
+  // Fixed presale end date - stored in localStorage to persist across refreshes
   const getPresaleEndDate = () => {
-    const today = new Date(); // Current actual date
+    const stored = localStorage.getItem('presaleEndDate');
+    if (stored) {
+      return new Date(stored);
+    }
+    // If not stored, create new end date 120 days from now
+    const today = new Date();
     const endDate = new Date(today);
-    endDate.setDate(endDate.getDate() + 120); // Add 120 days
+    endDate.setDate(endDate.getDate() + 120);
+    localStorage.setItem('presaleEndDate', endDate.toISOString());
     return endDate;
   };
 
@@ -351,7 +357,7 @@ const BuyBitTab = () => {
             Purchase BIT Tokens
           </CardTitle>
           <CardDescription className="text-base">
-            Enter the amount you want to invest in USD
+            Enter your desired amount in USD
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -419,7 +425,7 @@ const BuyBitTab = () => {
           {/* Amount Input */}
           <div className="space-y-3">
             <Label htmlFor="amount" className="text-base font-semibold">
-              Investment Amount ({paymentMethod})
+              Amount ({paymentMethod})
             </Label>
             <div className="relative">
               {paymentMethod === 'USDT' ? (

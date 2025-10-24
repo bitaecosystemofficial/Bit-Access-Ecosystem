@@ -210,24 +210,6 @@ const Overview = () => {
           </div>
         </motion.div>
 
-        {/* Video Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="text-center"
-        >
-          <h2 className="text-4xl font-bold mb-8">See It In Action</h2>
-          <Card className="bg-card border-border max-w-4xl mx-auto">
-            <CardContent className="p-4">
-              <div className="aspect-video bg-secondary rounded-lg flex items-center justify-center">
-                <p className="text-muted-foreground text-lg">Video Player Coming Soon</p>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
         {/* Security & Compliance */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
