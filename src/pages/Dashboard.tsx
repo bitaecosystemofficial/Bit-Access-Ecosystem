@@ -9,9 +9,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { ShoppingBag, TrendingUp, Menu } from 'lucide-react';
+import { ShoppingBag, TrendingUp, Menu, Users } from 'lucide-react';
 import BuyBitTab from '@/components/dashboard/BuyBitTab';
 import StakingTab from '@/components/dashboard/StakingTab';
+import CommunityTab from '@/components/dashboard/CommunityTab';
 
 const Dashboard = () => {
   const { isConnected } = useAccount();
@@ -31,6 +32,7 @@ const Dashboard = () => {
   const menuItems = [
     { value: 'buy', label: 'Buy BIT Token', icon: ShoppingBag },
     { value: 'staking', label: 'Staking', icon: TrendingUp },
+    { value: 'community', label: 'Community', icon: Users },
   ];
 
   return (
@@ -42,7 +44,7 @@ const Dashboard = () => {
         
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           {/* Desktop Tabs */}
-          <TabsList className="hidden md:grid w-full grid-cols-2 mb-8 bg-card/50 backdrop-blur-sm border border-border/50 p-1 h-auto">
+          <TabsList className="hidden md:grid w-full grid-cols-3 mb-8 bg-card/50 backdrop-blur-sm border border-border/50 p-1 h-auto">
             {menuItems.map((item) => (
               <TabsTrigger 
                 key={item.value} 
@@ -99,6 +101,10 @@ const Dashboard = () => {
 
           <TabsContent value="staking" className="mt-0">
             <StakingTab />
+          </TabsContent>
+
+          <TabsContent value="community" className="mt-0">
+            <CommunityTab />
           </TabsContent>
         </Tabs>
       </div>

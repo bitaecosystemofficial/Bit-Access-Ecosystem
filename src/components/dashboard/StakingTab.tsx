@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Lock, TrendingUp, Clock, Unlock, AlertTriangle, DollarSign, Wallet } from 'lucide-react';
+import { Lock, TrendingUp, Clock, Unlock, AlertTriangle, DollarSign, Wallet, Gift } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useBITBalance } from '@/contexts/BITBalanceContext';
 import bitLogo from '@/assets/bit-token-logo.png';
@@ -160,6 +160,24 @@ const StakingTab = () => {
     });
   };
 
+  const handleClaimAllRewards = () => {
+    if (totalRewards === 0) {
+      toast({
+        title: 'No Rewards Available',
+        description: 'You don\'t have any rewards to claim yet',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    addBalance(totalRewards);
+    
+    toast({
+      title: 'Rewards Claimed! 🎉',
+      description: `Successfully claimed ${totalRewards.toFixed(2)} BIT tokens!`,
+    });
+  };
+
   const totalStaked = stakedPositions.reduce((sum, pos) => sum + pos.amount, 0);
   const totalRewards = stakedPositions.reduce((sum, pos) => sum + parseFloat(calculateCurrentRewards(pos)), 0);
 
@@ -210,7 +228,7 @@ const StakingTab = () => {
 
         <Card className="bg-gradient-to-br from-green-500/20 to-green-500/5 border-green-500/30">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between mb-4">
               <div>
                 <p className="text-sm text-muted-foreground mb-1">Rewards Earned</p>
                 <div className="flex items-center gap-2">
@@ -223,6 +241,15 @@ const StakingTab = () => {
               </div>
               <TrendingUp className="w-12 h-12 text-green-500 opacity-50" />
             </div>
+            <Button 
+              onClick={handleClaimAllRewards}
+              disabled={totalRewards === 0}
+              className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold"
+              size="sm"
+            >
+              <Gift className="w-4 h-4 mr-2" />
+              Claim All Rewards
+            </Button>
           </CardContent>
         </Card>
 
