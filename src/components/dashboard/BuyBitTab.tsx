@@ -5,9 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { ShoppingBag, AlertCircle, Wallet } from 'lucide-react';
+import { ShoppingBag, AlertCircle, Wallet, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useBITBalance } from '@/contexts/BITBalanceContext';
+import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { parseUnits, formatUnits } from 'viem';
+import { CONTRACT_ADDRESSES, CONTRACT_ABIS } from '@/config/contracts';
 import usdtIcon from '@/assets/usdt-icon.png';
 import usdcIcon from '@/assets/usdc-icon.png';
 import bscIcon from '@/assets/bsc-icon.png';
@@ -20,8 +23,45 @@ const BuyBitTab = () => {
   const [amount, setAmount] = useState('');
   const [selectedNetwork, setSelectedNetwork] = useState('BSC');
   const [paymentMethod, setPaymentMethod] = useState<'USDT' | 'USDC'>('USDT');
+  const [isApproving, setIsApproving] = useState(false);
   const { toast } = useToast();
-  const { balance, addBalance, formatBalance } = useBITBalance();
+  const { address } = useAccount();
+  const { writeContract, data: hash, isPending: isPurchasing } = useWriteContract();
+  
+  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash });
+
+  // Read BIT token balance
+  const { data: bitBalance, refetch: refetchBitBalance } = useReadContract({
+    address: CONTRACT_ADDRESSES.BIT_TOKEN as `0x${string}`,
+    abi: CONTRACT_ABIS.BIT_PURCHASE,
+    functionName: 'balanceOf',
+    args: address ? [address as `0x${string}`] : undefined,
+    query: { enabled: !!address }
+  });
+
+  // Read contract price
+  const { data: contractPrice } = useReadContract({
+    address: CONTRACT_ADDRESSES.BIT_PURCHASE as `0x${string}`,
+    abi: CONTRACT_ABIS.BIT_PURCHASE,
+    functionName: 'pricePerBIT',
+  });
+
+  // Read minimum purchase
+  const { data: minPurchase } = useReadContract({
+    address: CONTRACT_ADDRESSES.BIT_PURCHASE as `0x${string}`,
+    abi: CONTRACT_ABIS.BIT_PURCHASE,
+    functionName: 'minimumPurchase',
+  });
+
+  // Read payment token allowance
+  const paymentTokenAddress = paymentMethod === 'USDT' ? CONTRACT_ADDRESSES.USDT_TOKEN : CONTRACT_ADDRESSES.USDC_TOKEN;
+  const { data: allowance, refetch: refetchAllowance } = useReadContract({
+    address: paymentTokenAddress as `0x${string}`,
+    abi: CONTRACT_ABIS.BIT_PURCHASE,
+    functionName: 'allowance',
+    args: address ? [address as `0x${string}`, CONTRACT_ADDRESSES.BIT_PURCHASE as `0x${string}`] : undefined,
+    query: { enabled: !!address }
+  });
 
   // Countdown timer: 120 days from now
   const [timeLeft, setTimeLeft] = useState({
@@ -56,8 +96,19 @@ const BuyBitTab = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const pricePerBit = 0.00108; // $0.00108 per BIT
-  const minimumPurchase = 100000; // Minimum 100,000 BIT
+  const pricePerBit = contractPrice ? Number(formatUnits(contractPrice as bigint, 18)) : 0.00108;
+  const minimumPurchase = minPurchase ? Number(formatUnits(minPurchase as bigint, 9)) : 100000;
+  
+  useEffect(() => {
+    if (isSuccess) {
+      refetchBitBalance();
+      toast({
+        title: 'Purchase Successful! 🎉',
+        description: `BIT tokens have been transferred to your wallet.`,
+      });
+      setAmount('');
+    }
+  }, [isSuccess]);
 
   const networks = [
     { name: 'BSC', active: true, color: 'from-yellow-500/20 to-yellow-500/5', icon: bscIcon },
@@ -72,8 +123,54 @@ const BuyBitTab = () => {
     return (amt / pricePerBit).toLocaleString('en-US', { maximumFractionDigits: 0 });
   };
 
-  const handleBuy = () => {
+  const handleApprove = async () => {
+    if (!address) {
+      toast({
+        title: 'Wallet Not Connected',
+        description: 'Please connect your wallet first',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setIsApproving(true);
+    try {
+      const amountToApprove = parseUnits(amount, 18); // USDT/USDC has 18 decimals
+      
+      await writeContract({
+        address: paymentTokenAddress as `0x${string}`,
+        abi: CONTRACT_ABIS.BIT_PURCHASE,
+        functionName: 'approve',
+        args: [CONTRACT_ADDRESSES.BIT_PURCHASE as `0x${string}`, amountToApprove],
+      } as any);
+
+      toast({
+        title: 'Approval Submitted',
+        description: 'Please wait for the transaction to confirm...',
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Approval Failed',
+        description: error?.message || 'Failed to approve token',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsApproving(false);
+      setTimeout(() => refetchAllowance(), 2000);
+    }
+  };
+
+  const handleBuy = async () => {
     const bitAmount = parseFloat(calculateBit(amount).replace(/,/g, ''));
+    
+    if (!address) {
+      toast({
+        title: 'Wallet Not Connected',
+        description: 'Please connect your wallet first',
+        variant: 'destructive',
+      });
+      return;
+    }
     
     if (!amount || parseFloat(amount) <= 0) {
       toast({
@@ -93,42 +190,44 @@ const BuyBitTab = () => {
       return;
     }
 
-    if (selectedNetwork === 'BSC') {
-      addBalance(bitAmount);
-      
-      // Create receipt message for WhatsApp
-      const receipt = `
-🎉 *BIT TOKEN PURCHASE RECEIPT* 🎉
-
-📊 *Transaction Details:*
-━━━━━━━━━━━━━━━━━━━━
-💰 Amount Paid: ${parseFloat(amount).toLocaleString()} ${paymentMethod}
-🪙 BIT Received: ${calculateBit(amount)} BIT
-💳 Payment Method: ${paymentMethod}-BEP20
-🌐 Network: ${selectedNetwork}
-💵 Price per BIT: $${pricePerBit}
-━━━━━━━━━━━━━━━━━━━━
-
-📅 Date: ${new Date().toLocaleString()}
-✅ Status: Successful
-
-Thank you for your purchase! 🚀
-      `.trim();
-
-      // Open WhatsApp with receipt (replace with your WhatsApp number)
-      const whatsappNumber = '1234567890'; // Replace with actual WhatsApp number
-      const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(receipt)}`;
-      window.open(whatsappUrl, '_blank');
-
-      toast({
-        title: 'Purchase Successful! 🎉',
-        description: `You received ${calculateBit(amount)} BIT tokens. Receipt sent to WhatsApp.`,
-      });
-      setAmount('');
-    } else {
+    if (selectedNetwork !== 'BSC') {
       toast({
         title: 'Network Coming Soon',
         description: `${selectedNetwork} network will be available soon`,
+      });
+      return;
+    }
+
+    try {
+      const usdAmount = parseUnits(amount, 18); // USDT/USDC has 18 decimals
+      
+      // Check if approval is needed
+      const currentAllowance = allowance as bigint || BigInt(0);
+      if (currentAllowance < usdAmount) {
+        toast({
+          title: 'Approval Required',
+          description: 'Please approve the token spend first',
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      await writeContract({
+        address: CONTRACT_ADDRESSES.BIT_PURCHASE as `0x${string}`,
+        abi: CONTRACT_ABIS.BIT_PURCHASE,
+        functionName: 'purchaseBIT',
+        args: [paymentTokenAddress as `0x${string}`, usdAmount],
+      } as any);
+
+      toast({
+        title: 'Purchase Submitted',
+        description: 'Please wait for the transaction to confirm...',
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Purchase Failed',
+        description: error?.message || 'Failed to purchase tokens',
+        variant: 'destructive',
       });
     }
   };
@@ -149,7 +248,9 @@ Thank you for your purchase! 🚀
               <div className="flex items-center gap-3">
                 <img src={bitLogo} alt="BIT Token" className="w-12 h-12" />
                 <div>
-                  <p className="text-4xl font-bold text-green-600 dark:text-green-400">{formatBalance(balance)}</p>
+                  <p className="text-4xl font-bold text-green-600 dark:text-green-400">
+                    {bitBalance ? Number(formatUnits(bitBalance as bigint, 9)).toLocaleString(undefined, { maximumFractionDigits: 2 }) : '0'}
+                  </p>
                   <p className="text-sm text-muted-foreground">BIT Tokens</p>
                 </div>
               </div>
@@ -329,15 +430,59 @@ Thank you for your purchase! 🚀
             </motion.div>
           )}
 
-          {/* Buy Button */}
-          <Button
-            onClick={handleBuy}
-            disabled={selectedNetwork !== 'BSC'}
-            className="w-full h-14 text-lg font-bold bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all"
-          >
-            <ShoppingBag className="w-5 h-5 mr-2" />
-            {selectedNetwork !== 'BSC' ? 'Network Coming Soon' : 'Buy BIT Tokens'}
-          </Button>
+          {/* Approve and Buy Buttons */}
+          <div className="space-y-3">
+            {amount && parseFloat(amount) > 0 && (
+              <>
+                {!allowance || (allowance as bigint) < parseUnits(amount, 18) ? (
+                  <Button
+                    onClick={handleApprove}
+                    disabled={!address || isApproving || selectedNetwork !== 'BSC'}
+                    className="w-full h-14 text-lg font-bold bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all"
+                  >
+                    {isApproving ? (
+                      <>
+                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                        Approving...
+                      </>
+                    ) : (
+                      <>
+                        <ShoppingBag className="w-5 h-5 mr-2" />
+                        Approve {paymentMethod}
+                      </>
+                    )}
+                  </Button>
+                ) : null}
+              </>
+            )}
+            
+            <Button
+              onClick={handleBuy}
+              disabled={
+                !address ||
+                isPurchasing ||
+                isConfirming ||
+                selectedNetwork !== 'BSC' ||
+                !amount ||
+                parseFloat(amount) <= 0 ||
+                !allowance ||
+                (allowance as bigint) < parseUnits(amount || '0', 18)
+              }
+              className="w-full h-14 text-lg font-bold bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all"
+            >
+              {isPurchasing || isConfirming ? (
+                <>
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  {isConfirming ? 'Confirming...' : 'Processing...'}
+                </>
+              ) : (
+                <>
+                  <ShoppingBag className="w-5 h-5 mr-2" />
+                  {selectedNetwork !== 'BSC' ? 'Network Coming Soon' : !address ? 'Connect Wallet' : 'Buy BIT Tokens'}
+                </>
+              )}
+            </Button>
+          </div>
 
           {/* Info */}
           <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
