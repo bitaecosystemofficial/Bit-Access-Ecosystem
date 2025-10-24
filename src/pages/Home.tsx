@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Gift, Rocket, Lock, RefreshCw, Store, Users, Zap, Coins, TrendingUp, Shield, BarChart3, Network, FileText } from "lucide-react";
+import { ArrowRight, Gift, Rocket, Lock, RefreshCw, Store, Users, Zap, Coins, TrendingUp, BarChart3, Network, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +10,12 @@ import bscLogo from "@/assets/bsc-logo.png";
 import polygonLogo from "@/assets/polygon-logo.png";
 import arbitrumLogo from "@/assets/arbitrum-logo.png";
 import baseLogo from "@/assets/base-logo.png";
+import partner1 from "@/assets/partner-1.png";
+import partner2 from "@/assets/partner-2.png";
+import partner3 from "@/assets/partner-3.png";
+import partner4 from "@/assets/partner-4.png";
+import partner5 from "@/assets/partner-5.png";
+import partner6 from "@/assets/partner-6.png";
 const Home = () => {
   const {
     open
@@ -88,41 +94,29 @@ const Home = () => {
     logo: arbitrumLogo
   }];
   const partners = [{
-    name: "Biit",
-    category: "Blockchain Technology Provider"
+    name: "Eagle Vision",
+    category: "Blockchain Technology Provider",
+    logo: partner1
   }, {
-    name: "Binexplorer",
-    category: "BSC Blockchain Explorer"
+    name: "Bunny Protocol",
+    category: "BSC Blockchain Explorer",
+    logo: partner2
   }, {
-    name: "DappRadar",
-    category: "DApp Analytics"
+    name: "Unicorn Exchange",
+    category: "DApp Analytics",
+    logo: partner3
   }, {
-    name: "GoPlus Security",
-    category: "Security Platform"
+    name: "Gecko Network",
+    category: "Security Platform",
+    logo: partner4
   }, {
-    name: "BscScan",
-    category: "BSC Explorer"
-  }, {
-    name: "Cyberscope",
-    category: "Smart Contract Audits"
+    name: "BiT",
+    category: "Blockchain Integrative Technology",
+    logo: partner5
   }, {
     name: "NewGen Web3",
-    category: "Web3 Community"
-  }, {
-    name: "DexScreener",
-    category: "DEX Analytics"
-  }, {
-    name: "PancakeSwap",
-    category: "BSC DEX"
-  }, {
-    name: "Uniswap",
-    category: "Decentralized Exchange"
-  }, {
-    name: "CoinMarketCap",
-    category: "Price Tracking"
-  }, {
-    name: "CoinGecko",
-    category: "Market Data"
+    category: "Blockchain Academy",
+    logo: partner6
   }];
   return <div className="min-h-screen">
       {/* Hero Section */}
@@ -310,7 +304,7 @@ const Home = () => {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {partners.map((partner, index) => <motion.div key={index} initial={{
             opacity: 0,
             scale: 0.9
@@ -325,8 +319,8 @@ const Home = () => {
           }}>
                 <Card className="bg-card/50 border-border hover:border-primary/50 hover:bg-card transition-all h-full group">
                   <CardContent className="p-6 text-center">
-                    <div className="mb-3 p-4 bg-primary/10 rounded-lg mx-auto w-fit group-hover:bg-primary/20 transition-colors">
-                      <Shield className="w-8 h-8 text-primary" />
+                    <div className="mb-4 flex items-center justify-center">
+                      <img src={partner.logo} alt={`${partner.name} logo`} className="w-20 h-20 object-contain" />
                     </div>
                     <h3 className="font-bold mb-1 text-base">{partner.name}</h3>
                     <p className="text-xs text-muted-foreground">{partner.category}</p>
