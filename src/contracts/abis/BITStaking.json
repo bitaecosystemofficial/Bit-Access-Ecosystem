@@ -83,7 +83,7 @@
     ],
     "name": "stakingPools",
     "outputs": [
-      { "internalType": "uint256", "name": "days", "type": "uint256" },
+      { "internalType": "uint256", "name": "lockDays", "type": "uint256" },
       { "internalType": "uint256", "name": "apy", "type": "uint256" },
       { "internalType": "uint256", "name": "minStake", "type": "uint256" },
       { "internalType": "uint256", "name": "totalStaked", "type": "uint256" },
@@ -172,7 +172,7 @@
   {
     "inputs": [
       { "internalType": "uint256", "name": "poolId", "type": "uint256" },
-      { "internalType": "uint256", "name": "days", "type": "uint256" },
+      { "internalType": "uint256", "name": "lockDays", "type": "uint256" },
       { "internalType": "uint256", "name": "apy", "type": "uint256" },
       { "internalType": "uint256", "name": "minStake", "type": "uint256" }
     ],

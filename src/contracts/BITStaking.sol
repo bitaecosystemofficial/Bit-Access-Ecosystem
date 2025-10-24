@@ -85,7 +85,7 @@ contract BITStaking is ReentrancyGuard, Ownable {
     uint256 public constant EARLY_UNSTAKE_FEE = 10; // 10% additional
     
     struct StakingPool {
-        uint256 days;
+        uint256 lockDays;
         uint256 apy;
         uint256 minStake;
         uint256 totalStaked;
@@ -135,7 +135,7 @@ contract BITStaking is ReentrancyGuard, Ownable {
         // Initialize staking pools (all values in 9 decimals)
         // Pool 0: 180 days, 12% APY, min 100,000 BIT
         stakingPools[0] = StakingPool({
-            days: 180,
+            lockDays: 180,
             apy: 12,
             minStake: 100000 * 10**9,
             totalStaked: 0,
@@ -144,7 +144,7 @@ contract BITStaking is ReentrancyGuard, Ownable {
         
         // Pool 1: 240 days, 18% APY, min 500,000,000 BIT
         stakingPools[1] = StakingPool({
-            days: 240,
+            lockDays: 240,
             apy: 18,
             minStake: 500000000 * 10**9,
             totalStaked: 0,
@@ -153,7 +153,7 @@ contract BITStaking is ReentrancyGuard, Ownable {
         
         // Pool 2: 365 days, 25% APY, min 1,000,000 BIT
         stakingPools[2] = StakingPool({
-            days: 365,
+            lockDays: 365,
             apy: 25,
             minStake: 1000000 * 10**9,
             totalStaked: 0,
@@ -181,7 +181,7 @@ contract BITStaking is ReentrancyGuard, Ownable {
             "Transfer failed"
         );
         
-        uint256 endTime = block.timestamp + (pool.days * 1 days);
+        uint256 endTime = block.timestamp + (pool.lockDays * 1 days);
         
         // Create stake
         userStakes[msg.sender].push(Stake({
@@ -281,13 +281,13 @@ contract BITStaking is ReentrancyGuard, Ownable {
     /**
      * @dev Add or update staking pool
      * @param poolId Pool ID (use poolCount for new pool)
-     * @param days Lock period in days
+     * @param lockDays Lock period in days
      * @param apy APY percentage
      * @param minStake Minimum stake amount
      */
     function setStakingPool(
         uint256 poolId,
-        uint256 days,
+        uint256 lockDays,
         uint256 apy,
         uint256 minStake
     ) external onlyOwner {
@@ -296,7 +296,7 @@ contract BITStaking is ReentrancyGuard, Ownable {
         }
         
         stakingPools[poolId] = StakingPool({
-            days: days,
+            lockDays: lockDays,
             apy: apy,
             minStake: minStake,
             totalStaked: stakingPools[poolId].totalStaked,
