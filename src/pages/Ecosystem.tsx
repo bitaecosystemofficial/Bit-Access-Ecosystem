@@ -42,6 +42,9 @@ const Ecosystem = () => {
     'Participate in platform governance',
     'Early access to new features and opportunities',
     'Referral rewards and community incentives',
+    'Token appreciation potential as ecosystem grows',
+    'Discounted transaction fees for BIT holders',
+    'Priority access to limited edition NFT drops',
   ];
 
   const merchantBenefits = [
@@ -72,6 +75,9 @@ const Ecosystem = () => {
     'Regular airdrops and promotional events',
     'Social-to-earn opportunities',
     'Growing ecosystem of partners and integrations',
+    'Community-driven development and governance',
+    'Educational resources and webinars',
+    'Active support channels and community forums',
   ];
 
   const techStack = [
@@ -154,57 +160,7 @@ const Ecosystem = () => {
             Value for every participant in our ecosystem
           </p>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto mb-8">
-            <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-border">
-              <CardContent className="p-8">
-                <div className="flex items-center gap-3 mb-6">
-                  <Store className="w-8 h-8 text-primary" />
-                  <h3 className="text-2xl font-bold text-primary">For Merchants</h3>
-                </div>
-                <ul className="space-y-3">
-                  {merchantBenefits.map((benefit, index) => (
-                    <motion.li
-                      key={index}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                      viewport={{ once: true }}
-                      className="flex items-start gap-3"
-                    >
-                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                      <span className="text-muted-foreground">{benefit}</span>
-                    </motion.li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gradient-to-br from-secondary/50 to-secondary/30 border-border">
-              <CardContent className="p-8">
-                <div className="flex items-center gap-3 mb-6">
-                  <Users className="w-8 h-8 text-primary" />
-                  <h3 className="text-2xl font-bold text-primary">For Customers</h3>
-                </div>
-                <ul className="space-y-3">
-                  {customerBenefits.map((benefit, index) => (
-                    <motion.li
-                      key={index}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                      viewport={{ once: true }}
-                      className="flex items-start gap-3"
-                    >
-                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                      <span className="text-muted-foreground">{benefit}</span>
-                    </motion.li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
             <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-border">
               <CardContent className="p-8">
                 <div className="flex items-center gap-3 mb-6">
@@ -237,6 +193,54 @@ const Ecosystem = () => {
                 </div>
                 <ul className="space-y-3">
                   {communityBenefits.map((benefit, index) => (
+                    <motion.li
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      viewport={{ once: true }}
+                      className="flex items-start gap-3"
+                    >
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground">{benefit}</span>
+                    </motion.li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-border">
+              <CardContent className="p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <Users className="w-8 h-8 text-primary" />
+                  <h3 className="text-2xl font-bold text-primary">For Customers</h3>
+                </div>
+                <ul className="space-y-3">
+                  {customerBenefits.map((benefit, index) => (
+                    <motion.li
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      viewport={{ once: true }}
+                      className="flex items-start gap-3"
+                    >
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground">{benefit}</span>
+                    </motion.li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-secondary/50 to-secondary/30 border-border">
+              <CardContent className="p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <Store className="w-8 h-8 text-primary" />
+                  <h3 className="text-2xl font-bold text-primary">For Merchants</h3>
+                </div>
+                <ul className="space-y-3">
+                  {merchantBenefits.map((benefit, index) => (
                     <motion.li
                       key={index}
                       initial={{ opacity: 0, x: -20 }}

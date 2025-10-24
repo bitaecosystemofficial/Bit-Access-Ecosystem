@@ -9,11 +9,12 @@ import { ShoppingBag, AlertCircle, Wallet } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useBITBalance } from '@/contexts/BITBalanceContext';
 import usdtLogo from '@/assets/usdt-logo.png';
+import usdcLogo from '@/assets/usdc-logo.png';
 
 const BuyBitTab = () => {
   const [amount, setAmount] = useState('');
   const [selectedNetwork, setSelectedNetwork] = useState('BSC');
-  const [paymentMethod, setPaymentMethod] = useState<'USD' | 'USDT'>('USD');
+  const [paymentMethod, setPaymentMethod] = useState<'USD' | 'USDT' | 'USDC'>('USD');
   const { toast } = useToast();
   const { balance, addBalance, formatBalance } = useBITBalance();
 
@@ -50,7 +51,7 @@ const BuyBitTab = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const pricePerBit = 0.01; // $0.01 per BIT
+  const pricePerBit = 0.00108; // $0.00108 per BIT
   const minimumPurchase = 100000; // Minimum 100,000 BIT
 
   const networks = [
@@ -166,7 +167,7 @@ const BuyBitTab = () => {
           {/* Payment Method Selection */}
           <div className="space-y-3">
             <Label className="text-base font-semibold">Payment Method</Label>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-3 gap-3">
               <Button
                 variant={paymentMethod === 'USD' ? 'default' : 'outline'}
                 onClick={() => setPaymentMethod('USD')}
@@ -193,6 +194,20 @@ const BuyBitTab = () => {
                 <div className="flex flex-col items-center gap-1">
                   <img src={usdtLogo} alt="USDT" className="w-6 h-6" />
                   <span className="text-xs">USDT-BEP20</span>
+                </div>
+              </Button>
+              <Button
+                variant={paymentMethod === 'USDC' ? 'default' : 'outline'}
+                onClick={() => setPaymentMethod('USDC')}
+                className={`h-16 font-semibold transition-all ${
+                  paymentMethod === 'USDC'
+                    ? 'bg-primary text-primary-foreground shadow-lg scale-105'
+                    : 'bg-card/50 hover:bg-secondary/50'
+                }`}
+              >
+                <div className="flex flex-col items-center gap-1">
+                  <img src={usdcLogo} alt="USDC" className="w-6 h-6" />
+                  <span className="text-xs">USDC-BEP20</span>
                 </div>
               </Button>
             </div>
@@ -229,8 +244,10 @@ const BuyBitTab = () => {
             <div className="relative">
               {paymentMethod === 'USD' ? (
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-bold text-lg">$</span>
-              ) : (
+              ) : paymentMethod === 'USDT' ? (
                 <img src={usdtLogo} alt="USDT" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" />
+              ) : (
+                <img src={usdcLogo} alt="USDC" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" />
               )}
               <Input
                 id="amount"
@@ -245,7 +262,7 @@ const BuyBitTab = () => {
             </div>
             <p className="text-sm text-muted-foreground flex items-center">
               <AlertCircle className="w-4 h-4 mr-1" />
-              Minimum purchase: {minimumPurchase.toLocaleString()} BIT ({paymentMethod === 'USD' ? '$' : ''}{(minimumPurchase * pricePerBit).toLocaleString()}{paymentMethod === 'USDT' ? ' USDT' : ''})
+              Minimum purchase: {minimumPurchase.toLocaleString()} BIT ({paymentMethod === 'USD' ? '$' : ''}{(minimumPurchase * pricePerBit).toLocaleString()}{paymentMethod !== 'USD' ? ` ${paymentMethod}` : ''})
             </p>
           </div>
 
@@ -262,7 +279,8 @@ const BuyBitTab = () => {
                   <span className="text-muted-foreground font-medium">You Pay:</span>
                   <div className="flex items-center gap-2">
                     {paymentMethod === 'USDT' && <img src={usdtLogo} alt="USDT" className="w-4 h-4" />}
-                    <span className="text-xl font-bold">{paymentMethod === 'USD' ? '$' : ''}{parseFloat(amount).toLocaleString()}{paymentMethod === 'USDT' ? ' USDT' : ''}</span>
+                    {paymentMethod === 'USDC' && <img src={usdcLogo} alt="USDC" className="w-4 h-4" />}
+                    <span className="text-xl font-bold">{paymentMethod === 'USD' ? '$' : ''}{parseFloat(amount).toLocaleString()}{paymentMethod !== 'USD' ? ` ${paymentMethod}` : ''}</span>
                   </div>
                 </div>
                 <div className="flex justify-between items-center">
@@ -273,7 +291,8 @@ const BuyBitTab = () => {
                   <span className="text-muted-foreground font-medium">Payment Method:</span>
                   <div className="flex items-center gap-1.5">
                     {paymentMethod === 'USDT' && <img src={usdtLogo} alt="USDT" className="w-4 h-4" />}
-                    <span className="font-semibold">{paymentMethod}{paymentMethod === 'USDT' ? '-BEP20' : ''}</span>
+                    {paymentMethod === 'USDC' && <img src={usdcLogo} alt="USDC" className="w-4 h-4" />}
+                    <span className="font-semibold">{paymentMethod}{paymentMethod !== 'USD' ? '-BEP20' : ''}</span>
                   </div>
                 </div>
                 <div className="border-t-2 border-border pt-3 mt-3">
@@ -303,7 +322,7 @@ const BuyBitTab = () => {
           {/* Info */}
           <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
             <p className="text-sm leading-relaxed">
-              <strong className="text-primary">Purchase Mechanics:</strong> Choose between USD or USDT-BEP20 as payment method. 
+              <strong className="text-primary">Purchase Mechanics:</strong> Choose between USD, USDT-BEP20, or USDC-BEP20 as payment method. 
               Enter your desired investment amount and you will receive BIT tokens at a fixed rate of ${pricePerBit} per token. 
               Minimum purchase requirement is {minimumPurchase.toLocaleString()} BIT tokens. 
               Tokens will be transferred to your connected wallet address on the selected network.
