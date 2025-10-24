@@ -21,19 +21,19 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": false, "internalType": "uint256", "name": "oldPrice", "type": "uint256" },
-      { "indexed": false, "internalType": "uint256", "name": "newPrice", "type": "uint256" }
+      { "indexed": true, "internalType": "address", "name": "oldWallet", "type": "address" },
+      { "indexed": true, "internalType": "address", "name": "newWallet", "type": "address" }
     ],
-    "name": "PriceUpdated",
+    "name": "ReceiverWalletUpdated",
     "type": "event"
   },
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": true, "internalType": "address", "name": "oldWallet", "type": "address" },
-      { "indexed": true, "internalType": "address", "name": "newWallet", "type": "address" }
+      { "indexed": false, "internalType": "uint256", "name": "oldPrice", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "newPrice", "type": "uint256" }
     ],
-    "name": "ReceiverWalletUpdated",
+    "name": "PriceUpdated",
     "type": "event"
   },
   {
@@ -50,26 +50,44 @@
   },
   {
     "inputs": [],
+    "name": "owner",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "receiverWallet",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "bitToken",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "uint256", "name": "usdAmount", "type": "uint256" }],
-    "name": "calculateBITAmount",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "inputs": [],
+    "name": "usdtToken",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "address", "name": "token", "type": "address" },
-      { "internalType": "uint256", "name": "amount", "type": "uint256" }
-    ],
-    "name": "emergencyWithdraw",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "inputs": [],
+    "name": "usdcToken",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pricePerBIT",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -81,22 +99,8 @@
   },
   {
     "inputs": [],
-    "name": "owner",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "paused",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "pricePerBIT",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -111,24 +115,15 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "receiverWallet",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "inputs": [{ "internalType": "uint256", "name": "usdAmount", "type": "uint256" }],
+    "name": "calculateBITAmount",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
-  { "inputs": [], "name": "renounceOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
-  { "inputs": [], "name": "togglePause", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
   {
-    "inputs": [{ "internalType": "address", "name": "newOwner", "type": "address" }],
-    "name": "transferOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [{ "internalType": "uint256", "name": "_newMinimum", "type": "uint256" }],
-    "name": "updateMinimumPurchase",
+    "inputs": [{ "internalType": "address", "name": "_newReceiver", "type": "address" }],
+    "name": "updateReceiverWallet",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -141,29 +136,46 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "_newReceiver", "type": "address" }],
-    "name": "updateReceiverWallet",
+    "inputs": [{ "internalType": "uint256", "name": "_newMinimum", "type": "uint256" }],
+    "name": "updateMinimumPurchase",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "usdcToken",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "usdtToken",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "stateMutability": "view",
+    "name": "togglePause",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [{ "internalType": "uint256", "name": "amount", "type": "uint256" }],
     "name": "withdrawBIT",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "token", "type": "address" },
+      { "internalType": "uint256", "name": "amount", "type": "uint256" }
+    ],
+    "name": "emergencyWithdraw",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "newOwner", "type": "address" }],
+    "name": "transferOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
