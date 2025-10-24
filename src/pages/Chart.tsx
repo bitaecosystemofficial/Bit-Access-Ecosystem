@@ -28,8 +28,8 @@ export default function Chart() {
     };
 
     loadTransactions();
-    // Refresh every 30 seconds
-    const interval = setInterval(loadTransactions, 30000);
+    // Refresh every 4 hours (14400000 ms)
+    const interval = setInterval(loadTransactions, 4 * 60 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);
 

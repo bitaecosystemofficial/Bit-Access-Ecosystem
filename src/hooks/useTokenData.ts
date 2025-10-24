@@ -55,7 +55,7 @@ export const useTokenData = () => {
     return () => clearInterval(holderInterval);
   }, []);
 
-  // Fetch transfer data every 30 seconds
+  // Fetch transfer data every 4 hours
   useEffect(() => {
     const loadTransferData = async () => {
       setLoading(true);
@@ -69,8 +69,8 @@ export const useTokenData = () => {
     };
 
     loadTransferData();
-    // Refresh every 30 seconds
-    const transferInterval = setInterval(loadTransferData, 30000);
+    // Refresh every 4 hours (14400000 ms)
+    const transferInterval = setInterval(loadTransferData, 4 * 60 * 60 * 1000);
     return () => clearInterval(transferInterval);
   }, []);
 
