@@ -16,6 +16,13 @@ import partner3 from "@/assets/partner-3.png";
 import partner4 from "@/assets/partner-4.png";
 import partner5 from "@/assets/partner-5.png";
 import partner6 from "@/assets/partner-6.png";
+import partner7 from "@/assets/partner-7.png";
+import partner8 from "@/assets/partner-8.png";
+import partner9 from "@/assets/partner-9.png";
+import partner10 from "@/assets/partner-10.png";
+import partner11 from "@/assets/partner-11.png";
+import partner12 from "@/assets/partner-12.png";
+import dexscreenerLogo from "@/assets/dexscreener-logo.png";
 const Home = () => {
   const {
     open
@@ -94,20 +101,20 @@ const Home = () => {
     logo: arbitrumLogo
   }];
   const partners = [{
-    name: "Eagle Vision",
-    category: "Blockchain Technology Provider",
-    logo: partner1
+    name: "DexScreener",
+    category: "DEX Analytics Platform",
+    logo: dexscreenerLogo
   }, {
     name: "Bunny Protocol",
-    category: "BSC Blockchain Explorer",
+    category: "DeFi Yield Optimizer",
     logo: partner2
   }, {
     name: "Unicorn Exchange",
-    category: "DApp Analytics",
+    category: "Decentralized Exchange",
     logo: partner3
   }, {
     name: "Gecko Network",
-    category: "Security Platform",
+    category: "Market Data Analytics",
     logo: partner4
   }, {
     name: "BiT",
@@ -117,6 +124,30 @@ const Home = () => {
     name: "NewGen Web3",
     category: "Blockchain Academy",
     logo: partner6
+  }, {
+    name: "CoinMarketCap",
+    category: "Price Tracking",
+    logo: partner7
+  }, {
+    name: "DappRadar",
+    category: "DApp Analytics",
+    logo: partner8
+  }, {
+    name: "GoPlus Security",
+    category: "Security Platform",
+    logo: partner9
+  }, {
+    name: "Binance",
+    category: "Cryptocurrency Exchange",
+    logo: partner10
+  }, {
+    name: "CoinGecko",
+    category: "Market Data",
+    logo: partner11
+  }, {
+    name: "Cyberscope",
+    category: "Smart Contract Audits",
+    logo: partner12
   }];
   return <div className="min-h-screen">
       {/* Hero Section */}
@@ -304,7 +335,7 @@ const Home = () => {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {partners.map((partner, index) => <motion.div key={index} initial={{
             opacity: 0,
             scale: 0.9
