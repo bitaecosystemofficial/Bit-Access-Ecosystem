@@ -143,7 +143,7 @@ const BuyBitTab = () => {
   const [totalSold, setTotalSold] = useState<number>(0);
   
   // Calculate based on contract balance (BIT token uses 9 decimals)
-  const INITIAL_CONTRACT_SUPPLY = 100000000000; // 100 billion BIT tokens initially added to contract
+  const INITIAL_CONTRACT_SUPPLY = 1000000000; // 1 billion BIT tokens for presale pool
   const contractBalance = contractBitBalance ? Number(formatUnits(contractBitBalance as bigint, 9)) : 0;
   const maxBITAllocation = contractBalance; // Maximum BIT available for purchase from contract
   const soldPercentage = INITIAL_CONTRACT_SUPPLY > 0 ? (totalSold / INITIAL_CONTRACT_SUPPLY) * 100 : 0;
