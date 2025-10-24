@@ -194,7 +194,8 @@ export default function Chart() {
                   <TableRow>
                     <TableHead>Rank</TableHead>
                     <TableHead>Address</TableHead>
-                    <TableHead className="text-right">Balance</TableHead>
+                    <TableHead className="text-right">Quantity</TableHead>
+                    <TableHead className="text-right">Percentage</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -204,31 +205,42 @@ export default function Chart() {
                         <TableCell><Skeleton className="h-6 w-8" /></TableCell>
                         <TableCell><Skeleton className="h-6 w-32" /></TableCell>
                         <TableCell><Skeleton className="h-6 w-24 ml-auto" /></TableCell>
+                        <TableCell><Skeleton className="h-6 w-20 ml-auto" /></TableCell>
                       </TableRow>
                     ))
                   ) : holders.length > 0 ? (
-                    holders.map((holder, index) => (
-                      <TableRow key={holder.TokenHolderAddress}>
-                        <TableCell className="font-medium">{index + 1}</TableCell>
-                        <TableCell>
-                          <a
-                            href={`https://bscscan.com/address/${holder.TokenHolderAddress}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-2 text-primary hover:underline"
-                          >
-                            {formatAddress(holder.TokenHolderAddress)}
-                            <ExternalLink className="w-3 h-3" />
-                          </a>
-                        </TableCell>
-                        <TableCell className="text-right font-mono">
-                          {formatTokenAmount(holder.TokenHolderQuantity, "9")}
-                        </TableCell>
-                      </TableRow>
-                    ))
+                    holders.map((holder, index) => {
+                      const isDeadAddress = holder.TokenHolderAddress.toLowerCase().includes('dead');
+                      const displayAddress = isDeadAddress 
+                        ? `Null: ${formatAddress(holder.TokenHolderAddress)}`
+                        : formatAddress(holder.TokenHolderAddress);
+                      
+                      return (
+                        <TableRow key={holder.TokenHolderAddress}>
+                          <TableCell className="font-medium">{index + 1}</TableCell>
+                          <TableCell>
+                            <a
+                              href={`https://bscscan.com/address/${holder.TokenHolderAddress}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-2 text-primary hover:underline"
+                            >
+                              {displayAddress}
+                              <ExternalLink className="w-3 h-3" />
+                            </a>
+                          </TableCell>
+                          <TableCell className="text-right font-mono">
+                            {formatTokenAmount(holder.TokenHolderQuantity, "9")}
+                          </TableCell>
+                          <TableCell className="text-right font-mono">
+                            {holder.percentage?.toFixed(4)}%
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={3} className="text-center text-muted-foreground">
+                      <TableCell colSpan={4} className="text-center text-muted-foreground">
                         No holder data available
                       </TableCell>
                     </TableRow>

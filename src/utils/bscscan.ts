@@ -5,6 +5,7 @@ const BIT_TOKEN_ADDRESS = "0xd3bDe17EbD27739cF5505Cd58Ecf31cB628E469c";
 export interface TokenHolder {
   TokenHolderAddress: string;
   TokenHolderQuantity: string;
+  percentage?: number;
 }
 
 export interface Transaction {
@@ -52,7 +53,11 @@ export const fetchTop10Holders = async (): Promise<TokenHolder[]> => {
     const data = await response.json();
 
     if (data.status === "1" && data.result) {
-      return data.result;
+      const totalSupply = 100000000000; // 100 billion
+      return data.result.map((holder: TokenHolder) => ({
+        ...holder,
+        percentage: (parseFloat(holder.TokenHolderQuantity) / (totalSupply * Math.pow(10, 9))) * 100
+      }));
     }
     return [];
   } catch (error) {
