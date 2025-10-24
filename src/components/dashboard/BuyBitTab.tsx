@@ -67,19 +67,11 @@ const BuyBitTab = () => {
   });
 
   // Read contract BIT balance
-  const { data: contractBitBalance } = useReadContract({
+  const { data: contractBitBalance, refetch: refetchContractBalance } = useReadContract({
     address: CONTRACT_ADDRESSES.BIT_TOKEN as `0x${string}`,
     abi: CONTRACT_ABIS.ERC20,
     functionName: "balanceOf",
     args: [CONTRACT_ADDRESSES.BIT_PURCHASE as `0x${string}`],
-    query: { enabled: isBSCNetwork },
-  });
-
-  // Read total purchases from contract
-  const { data: totalPurchasesData } = useReadContract({
-    address: CONTRACT_ADDRESSES.BIT_PURCHASE as `0x${string}`,
-    abi: CONTRACT_ABIS.BIT_PURCHASE,
-    functionName: 'totalPurchased',
     query: { enabled: isBSCNetwork },
   });
 
@@ -146,13 +138,16 @@ const BuyBitTab = () => {
   const pricePerBit = contractPrice ? Number(formatUnits(contractPrice as bigint, 18)) : 0.00108;
   const minimumPurchase = minPurchase ? Number(formatUnits(minPurchase as bigint, 9)) : 100000;
   
+  // Calculate based on contract balance
+  const INITIAL_CONTRACT_SUPPLY = 100000000000; // 100 billion BIT tokens initially added to contract
   const contractBalance = contractBitBalance ? Number(formatUnits(contractBitBalance as bigint, 9)) : 0;
-  const totalSold = totalPurchasesData ? Number(formatUnits(totalPurchasesData as bigint, 9)) : 0;
-  const soldPercentage = contractBalance > 0 ? (totalSold / (totalSold + contractBalance)) * 100 : 0;
+  const totalSold = INITIAL_CONTRACT_SUPPLY - contractBalance; // Total sold = Initial - Current Balance
+  const soldPercentage = INITIAL_CONTRACT_SUPPLY > 0 ? (totalSold / INITIAL_CONTRACT_SUPPLY) * 100 : 0;
 
   useEffect(() => {
     if (isSuccess) {
       refetchBitBalance();
+      refetchContractBalance();
       toast({
         title: "Purchase Successful! 🎉",
         description: `BIT tokens have been transferred to your wallet.`,
@@ -393,7 +388,7 @@ const BuyBitTab = () => {
             
             <div className="flex justify-between text-xs text-muted-foreground">
               <span>0 BIT</span>
-              <span>{(totalSold + contractBalance).toLocaleString()} BIT</span>
+              <span>{INITIAL_CONTRACT_SUPPLY.toLocaleString()} BIT</span>
             </div>
           </CardContent>
         </Card>
