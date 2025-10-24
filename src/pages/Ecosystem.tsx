@@ -44,6 +44,28 @@ const Ecosystem = () => {
     'Referral rewards and community incentives',
   ];
 
+  const merchantBenefits = [
+    'Accept BIT token payments with instant settlement',
+    'Lower transaction fees compared to traditional payment processors',
+    'Access to a growing customer base of crypto users',
+    'No chargebacks - irreversible blockchain transactions',
+    'Easy integration with existing systems via API',
+    'Real-time payment tracking and analytics dashboard',
+    'Multi-currency support with automatic conversion',
+    'Enhanced security through blockchain technology',
+  ];
+
+  const customerBenefits = [
+    'Pay with BIT tokens at participating merchants',
+    'Earn cashback rewards on every purchase',
+    'Instant payment confirmation with blockchain verification',
+    'Lower fees compared to traditional payment methods',
+    'Loyalty rewards and exclusive discounts',
+    'Privacy-focused transactions with wallet protection',
+    'Cross-border payments without currency conversion fees',
+    'Build transaction history for premium membership tiers',
+  ];
+
   const communityBenefits = [
     'Transparent and secure blockchain infrastructure',
     'Low transaction fees on BSC network',
@@ -132,10 +154,63 @@ const Ecosystem = () => {
             Value for every participant in our ecosystem
           </p>
 
+          <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto mb-8">
+            <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-border">
+              <CardContent className="p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <Store className="w-8 h-8 text-primary" />
+                  <h3 className="text-2xl font-bold text-primary">For Merchants</h3>
+                </div>
+                <ul className="space-y-3">
+                  {merchantBenefits.map((benefit, index) => (
+                    <motion.li
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      viewport={{ once: true }}
+                      className="flex items-start gap-3"
+                    >
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground">{benefit}</span>
+                    </motion.li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-secondary/50 to-secondary/30 border-border">
+              <CardContent className="p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <Users className="w-8 h-8 text-primary" />
+                  <h3 className="text-2xl font-bold text-primary">For Customers</h3>
+                </div>
+                <ul className="space-y-3">
+                  {customerBenefits.map((benefit, index) => (
+                    <motion.li
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      viewport={{ once: true }}
+                      className="flex items-start gap-3"
+                    >
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground">{benefit}</span>
+                    </motion.li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-border">
               <CardContent className="p-8">
-                <h3 className="text-2xl font-bold mb-6 text-primary">For Token Holders</h3>
+                <div className="flex items-center gap-3 mb-6">
+                  <Wallet className="w-8 h-8 text-primary" />
+                  <h3 className="text-2xl font-bold text-primary">For Token Holders</h3>
+                </div>
                 <ul className="space-y-3">
                   {tokenHolderBenefits.map((benefit, index) => (
                     <motion.li
@@ -156,7 +231,10 @@ const Ecosystem = () => {
 
             <Card className="bg-gradient-to-br from-secondary/50 to-secondary/30 border-border">
               <CardContent className="p-8">
-                <h3 className="text-2xl font-bold mb-6 text-primary">For the Community</h3>
+                <div className="flex items-center gap-3 mb-6">
+                  <Gift className="w-8 h-8 text-primary" />
+                  <h3 className="text-2xl font-bold text-primary">For the Community</h3>
+                </div>
                 <ul className="space-y-3">
                   {communityBenefits.map((benefit, index) => (
                     <motion.li
