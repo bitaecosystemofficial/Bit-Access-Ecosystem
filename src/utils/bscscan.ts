@@ -1,5 +1,5 @@
-const BSCSCAN_API_KEY = "2QY4ZBIQCD2GQT2MKC1IN1VPC1S2BEJ1UF";
-const BSCSCAN_API_URL = "https://api.bscscan.com/api";
+const ETHERSCAN_API_KEY = "2QY4ZBIQCD2GQT2MKC1IN1VPC1S2BEJ1UF";
+const ETHERSCAN_API_URL = "https://api.etherscan.io/v2/api";
 const BIT_TOKEN_ADDRESS = "0xd3bDe17EbD27739cF5505Cd58Ecf31cB628E469c";
 
 export interface TokenHolder {
@@ -29,19 +29,12 @@ export interface TokenInfo {
 export const fetchTokenHolders = async (): Promise<number> => {
   try {
     const response = await fetch(
-      `${BSCSCAN_API_URL}?module=stats&action=tokensupply&contractaddress=${BIT_TOKEN_ADDRESS}&apikey=${BSCSCAN_API_KEY}`,
+      `${ETHERSCAN_API_URL}?chainid=56&module=stats&action=tokensupply&contractaddress=${BIT_TOKEN_ADDRESS}&apikey=${ETHERSCAN_API_KEY}`
     );
     const data = await response.json();
 
-    // Get holder count from a different endpoint
-    const holderResponse = await fetch(
-      `${BSCSCAN_API_URL}?module=token&action=tokenholderlist&contractaddress=${BIT_TOKEN_ADDRESS}&page=1&offset=1&apikey=${BSCSCAN_API_KEY}`,
-    );
-    const holderData = await holderResponse.json();
-
-    // Note: BSCScan API doesn't directly provide total holder count in free tier
-    // We'll estimate based on available data
-    return holderData.status === "1" ? 1000 : 0; // Placeholder
+    // Token holder count endpoint is limited; we'll use a placeholder or fallback
+    return data.status === "1" ? 1000 : 0;
   } catch (error) {
     console.error("Error fetching token holders:", error);
     return 0;
@@ -51,7 +44,7 @@ export const fetchTokenHolders = async (): Promise<number> => {
 export const fetchTop20Holders = async (): Promise<TokenHolder[]> => {
   try {
     const response = await fetch(
-      `${BSCSCAN_API_URL}?module=token&action=tokenholderlist&contractaddress=${BIT_TOKEN_ADDRESS}&page=1&offset=20&apikey=${BSCSCAN_API_KEY}`,
+      `${ETHERSCAN_API_URL}?chainid=56&module=token&action=tokenholderlist&contractaddress=${BIT_TOKEN_ADDRESS}&page=1&offset=20&apikey=${ETHERSCAN_API_KEY}`
     );
     const data = await response.json();
 
@@ -68,7 +61,7 @@ export const fetchTop20Holders = async (): Promise<TokenHolder[]> => {
 export const fetchLatestTransactions = async (): Promise<Transaction[]> => {
   try {
     const response = await fetch(
-      `${BSCSCAN_API_URL}?module=account&action=tokentx&contractaddress=${BIT_TOKEN_ADDRESS}&page=1&offset=10&sort=desc&apikey=${BSCSCAN_API_KEY}`,
+      `${ETHERSCAN_API_URL}?chainid=56&module=account&action=tokentx&contractaddress=${BIT_TOKEN_ADDRESS}&page=1&offset=10&sort=desc&apikey=${ETHERSCAN_API_KEY}`
     );
     const data = await response.json();
 
@@ -85,7 +78,7 @@ export const fetchLatestTransactions = async (): Promise<Transaction[]> => {
 export const fetchTokenInfo = async (): Promise<TokenInfo | null> => {
   try {
     const response = await fetch(
-      `${BSCSCAN_API_URL}?module=token&action=tokeninfo&contractaddress=${BIT_TOKEN_ADDRESS}&apikey=${BSCSCAN_API_KEY}`,
+      `${ETHERSCAN_API_URL}?chainid=56&module=token&action=tokeninfo&contractaddress=${BIT_TOKEN_ADDRESS}&apikey=${ETHERSCAN_API_KEY}`
     );
     const data = await response.json();
 
