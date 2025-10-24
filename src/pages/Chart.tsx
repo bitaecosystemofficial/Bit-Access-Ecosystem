@@ -4,9 +4,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { motion } from "framer-motion";
 import { ExternalLink, TrendingUp, Users, ArrowUpDown } from "lucide-react";
 import {
-  fetchTop20Holders,
+  fetchTop10Holders,
   fetchLatestTransactions,
   fetchTokenInfo,
+  fetchTokenHolders,
+  fetchTotalTransfers,
+  fetch24HTransfers,
   formatAddress,
   formatTokenAmount,
   type TokenHolder,
@@ -19,19 +22,28 @@ export default function Chart() {
   const [holders, setHolders] = useState<TokenHolder[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [tokenInfo, setTokenInfo] = useState<TokenInfo | null>(null);
+  const [holderCount, setHolderCount] = useState<number>(0);
+  const [totalTransfers, setTotalTransfers] = useState<number>(0);
+  const [transfers24h, setTransfers24h] = useState<number>(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
-      const [holdersData, txData, infoData] = await Promise.all([
-        fetchTop20Holders(),
+      const [holdersData, txData, infoData, holderCountData, totalTransfersData, transfers24hData] = await Promise.all([
+        fetchTop10Holders(),
         fetchLatestTransactions(),
         fetchTokenInfo(),
+        fetchTokenHolders(),
+        fetchTotalTransfers(),
+        fetch24HTransfers(),
       ]);
       setHolders(holdersData);
       setTransactions(txData);
       setTokenInfo(infoData);
+      setHolderCount(holderCountData);
+      setTotalTransfers(totalTransfersData);
+      setTransfers24h(transfers24hData);
       setLoading(false);
     };
 
@@ -64,52 +76,82 @@ export default function Chart() {
           viewport={{ once: true }}
           className="mb-20"
         >
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <Card className="p-6 backdrop-blur-sm bg-card/50 border-primary/20">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <Card className="p-6 bg-card border-border">
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-primary/10 rounded-lg">
                   <TrendingUp className="w-6 h-6 text-primary" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Total Supply</p>
+                  <p className="text-sm text-muted-foreground">Max Total Supply</p>
                   {loading ? (
                     <Skeleton className="h-8 w-32" />
                   ) : (
-                    <p className="text-2xl font-bold">
-                      {tokenInfo ? formatTokenAmount(tokenInfo.totalSupply, tokenInfo.decimals) : "N/A"}
-                    </p>
+                    <p className="text-2xl font-bold">100,000,000,000 BIT</p>
                   )}
                 </div>
               </div>
             </Card>
 
-            <Card className="p-6 backdrop-blur-sm bg-card/50 border-primary/20">
+            <Card className="p-6 bg-card border-border">
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-primary/10 rounded-lg">
                   <Users className="w-6 h-6 text-primary" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Token Symbol</p>
+                  <p className="text-sm text-muted-foreground">Holders</p>
                   {loading ? (
                     <Skeleton className="h-8 w-20" />
                   ) : (
-                    <p className="text-2xl font-bold">{tokenInfo?.symbol || "BIT"}</p>
+                    <p className="text-2xl font-bold">{holderCount.toLocaleString()}</p>
                   )}
                 </div>
               </div>
             </Card>
 
-            <Card className="p-6 backdrop-blur-sm bg-card/50 border-primary/20">
+            <Card className="p-6 bg-card border-border">
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-primary/10 rounded-lg">
                   <ArrowUpDown className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Transfers (Total)</p>
+                  {loading ? (
+                    <Skeleton className="h-8 w-24" />
+                  ) : (
+                    <p className="text-2xl font-bold">{totalTransfers.toLocaleString()}</p>
+                  )}
+                </div>
+              </div>
+            </Card>
+
+            <Card className="p-6 bg-card border-border">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-primary/10 rounded-lg">
+                  <ArrowUpDown className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Transfers (24H)</p>
+                  {loading ? (
+                    <Skeleton className="h-8 w-16" />
+                  ) : (
+                    <p className="text-2xl font-bold">{transfers24h.toLocaleString()}</p>
+                  )}
+                </div>
+              </div>
+            </Card>
+
+            <Card className="p-6 bg-card border-border">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-primary/10 rounded-lg">
+                  <TrendingUp className="w-6 h-6 text-primary" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Decimals</p>
                   {loading ? (
                     <Skeleton className="h-8 w-16" />
                   ) : (
-                    <p className="text-2xl font-bold">{tokenInfo?.decimals || "18"}</p>
+                    <p className="text-2xl font-bold">9</p>
                   )}
                 </div>
               </div>
@@ -128,7 +170,7 @@ export default function Chart() {
           <Card className="p-6 mb-8 bg-card border-border">
             <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
               <Users className="w-6 h-6 text-primary" />
-              Top 20 Token Holders
+              Top 10 Holders
             </h2>
             <div className="overflow-x-auto">
               <Table>
@@ -164,7 +206,7 @@ export default function Chart() {
                           </a>
                         </TableCell>
                         <TableCell className="text-right font-mono">
-                          {formatTokenAmount(holder.TokenHolderQuantity, tokenInfo?.decimals || "18")}
+                          {formatTokenAmount(holder.TokenHolderQuantity, "9")}
                         </TableCell>
                       </TableRow>
                     ))
