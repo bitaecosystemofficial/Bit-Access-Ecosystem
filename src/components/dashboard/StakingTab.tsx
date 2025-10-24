@@ -479,7 +479,6 @@ const StakingTab = () => {
                 {totalStakedAllPools.toLocaleString()} BIT
               </p>
             </div>
-            <div className="text-5xl">🏦</div>
           </div>
           <div className="space-y-3">
             {stakingPools.map((pool) => (
