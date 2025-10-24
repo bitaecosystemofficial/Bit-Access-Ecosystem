@@ -60,72 +60,83 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
     },
   ];
 
-  // Token Usage
+  // Token Usage - Updated from Ecosystem
   const tokenUsage = [
     {
-      icon: Gift,
-      title: "Rewards System",
-      description: "Incentives for community participation and ecosystem engagement",
+      icon: Coins,
+      title: "Buy BIT",
+      description: "Purchase BIT tokens using USDT-BEP20 or USDC-BEP20 at a fixed price of $0.00108 per BIT. Available on BSC, Polygon, Arbitrum, and Base networks. Minimum purchase of 100,000 BIT tokens to get started.",
     },
     {
-      icon: Users,
-      title: "Community Engagement",
-      description: "Social-to-earn activities and community-driven initiatives",
+      icon: Gift,
+      title: "Collect BIT",
+      description: "Earn BIT tokens as rewards through multiple activities: daily login bonuses, referral programs, completing tasks, participating in community events, and engaging with our ecosystem partners.",
     },
     {
       icon: Lock,
-      title: "Staking & Rewards",
-      description: "Earn passive income through token staking programs",
+      title: "Stake & Grow BIT",
+      description: "Lock your BIT tokens in our staking platform to earn passive rewards. Choose from multiple staking tiers with competitive APY rates. The longer you stake, the higher your rewards potential.",
     },
     {
-      icon: Rocket,
-      title: "Platform Access",
-      description: "Access to premium features and exclusive opportunities",
+      icon: Repeat,
+      title: "Swap BIT",
+      description: "Seamlessly swap your BIT tokens with other cryptocurrencies through our integrated DEX. Trade with minimal fees, instant execution, and full transparency on the blockchain.",
     },
     {
       icon: TrendingUp,
-      title: "Ecosystem Growth",
-      description: "Support for platform development and expansion",
+      title: "Earn BIT",
+      description: "Generate BIT token rewards by staking, referring friends, shopping at partner merchants, participating in governance, and contributing to community growth. Multiple earning streams available.",
     },
     {
-      icon: Send,
-      title: "Cross-Border Payments",
-      description: "Enabling international transactions without traditional banking barriers",
+      icon: Rocket,
+      title: "Membership Benefits",
+      description: "Unlock exclusive perks with tiered membership levels. Higher tiers offer premium features, enhanced reward multipliers, priority support, and early access to new opportunities.",
     },
   ];
 
-  // Key Features
-  const keyFeatures = [
-    {
-      icon: Gift,
-      title: "Rewards System",
-      description: "Earn BIT tokens through community participation, staking, and ecosystem activities.",
-    },
-    {
-      icon: Vote,
-      title: "Community Governance",
-      description: "Token holders can vote on important ecosystem decisions and proposals.",
-    },
-    {
-      icon: GraduationCap,
-      title: "Educational Incentives",
-      description: "Learn about blockchain and earn rewards through our educational platform.",
-    },
-    {
-      icon: Network,
-      title: "Cross-Chain Compatibility",
-      description: "Utilize BIT tokens across multiple blockchain networks seamlessly.",
-    },
-    {
-      icon: Users,
-      title: "Community Engagement",
-      description: "Participate in community events, challenges and earn rewards.",
-    },
-    {
-      icon: Globe,
-      title: "Cross Border Payments",
-      description: "Send and receive payments globally with low fees and fast settlement times.",
-    },
+  // Ecosystem Benefits - Updated from Ecosystem
+  const tokenHolderBenefits = [
+    'Stake BIT tokens to earn competitive APY rewards passively',
+    'Access tiered membership benefits with exclusive perks and features',
+    'Participate in governance voting to shape ecosystem decisions',
+    'Receive enhanced reward multipliers for long-term holding',
+    'Earn bonus BIT rewards through referral program participation',
+    'Get priority access to new features and token sale events',
+    'Unlock premium support channels and dedicated account management',
+    'Build reputation score for increased rewards and special opportunities',
+  ];
+
+  const merchantBenefits = [
+    'Accept USDT/USDC payments on BSC, Polygon, Arbitrum, and Base networks',
+    'Receive instant settlement in stablecoins with zero chargeback risk',
+    'Earn BIT token rewards for every transaction processed',
+    'Access comprehensive analytics dashboard for sales and BIT earnings',
+    'Get BIT bonus rewards for achieving monthly transaction milestones',
+    'Benefit from lower transaction fees compared to traditional payment processors',
+    'Earn additional BIT rewards for referring new merchant partners',
+    'Integrate easily with existing POS systems and e-commerce platforms',
+  ];
+
+  const customerBenefits = [
+    'Pay merchants using USDT/USDC across 4 blockchain networks',
+    'Earn BIT token cashback rewards on every purchase made',
+    'Receive instant payment confirmation with blockchain transparency',
+    'Collect bonus BIT rewards for shopping frequency milestones',
+    'Access exclusive merchant discounts and promotional offers',
+    'Choose preferred network based on transaction fees and speed',
+    'Earn additional BIT tokens through customer referral programs',
+    'Progress through reward tiers to unlock enhanced cashback rates',
+  ];
+
+  const communityBenefits = [
+    'Earn BIT rewards for active participation in community events',
+    'Participate in regular airdrops and community reward distributions',
+    'Create educational content to earn BIT token incentives',
+    'Engage in governance proposals and voting for BIT rewards',
+    'Complete social media tasks and campaigns for BIT earnings',
+    'Contribute to forums and help other members for reward bonuses',
+    'Join ambassador programs to earn consistent BIT incentives',
+    'Access exclusive community-only features and early announcements',
   ];
 
   // Tokenomics Data
@@ -265,112 +276,47 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
   ];
   const roadmapPhases = [
     {
-      phase: "Q4 2024",
-      title: "Foundation & Launch",
+      phase: "Phase 1: Foundation",
+      title: "Foundation",
       status: "completed",
       items: [
-        "Smart contract development and deployment",
-        "Website and platform launch",
-        "Initial community building",
-        "Security audit completion",
-        "Whitepaper release",
+        "Token launch and initial distribution",
+        "Smart contract deployment across networks",
+        "Launch staking platform with multiple tiers",
+        "Onboard first merchant partners",
       ],
     },
     {
-      phase: "Q1 2025",
-      title: "Ecosystem Expansion",
-      status: "completed",
-      items: [
-        "Airdrop campaign launch",
-        "Staking platform activation",
-        "Community governance implementation",
-        "Partnership announcements",
-        "Marketing campaign rollout",
-      ],
-    },
-    {
-      phase: "Q2 2025",
-      title: "Platform Enhancement",
-      status: "completed",
-      items: [
-        "Mobile app development",
-        "Enhanced wallet integration",
-        "Referral program launch",
-        "Community rewards system",
-        "Trading volume milestones",
-      ],
-    },
-    {
-      phase: "Q3 2025",
-      title: "Growth & Integration",
-      status: "completed",
-      items: [
-        "Cross-chain bridge development",
-        "Strategic partnerships expansion",
-        "NFT marketplace integration",
-        "Advanced analytics dashboard",
-        "Community voting mechanisms",
-      ],
-    },
-    {
-      phase: "Q4 2025",
-      title: "Pre-Exchange Preparation",
+      phase: "Phase 2: Expansion",
+      title: "Expansion",
       status: "current",
-      progress: "Currently finalizing DEX listing requirements and expanding market maker network",
       items: [
-        "DEX listing preparations and documentation",
-        "Enhanced liquidity pool management",
-        "Advanced security audits",
-        "Market maker partnerships",
-        "Global marketing campaign intensification",
+        "DEX integration for token swaps",
+        "Mobile wallet app development",
+        "Expand merchant network globally",
+        "Implement tiered membership system",
       ],
     },
     {
-      phase: "Q1 2026",
-      title: "DEX Exchange Launch 🚀",
+      phase: "Phase 3: Ecosystem Growth",
+      title: "Ecosystem Growth",
       status: "upcoming",
       items: [
-        "Official DEX listing on major platforms",
-        "PancakeSwap and Uniswap integration",
-        "Liquidity provision programs",
-        "Trading competitions and incentives",
-        "Mass adoption marketing campaign",
+        "Launch governance platform for voting",
+        "Cross-chain bridge implementation",
+        "Advanced analytics dashboard release",
+        "Partnership with major e-commerce platforms",
       ],
     },
     {
-      phase: "Q2 2026",
-      title: "Post-DEX Growth",
+      phase: "Phase 4: Mass Adoption",
+      title: "Mass Adoption",
       status: "upcoming",
       items: [
-        "Additional DEX listings",
-        "Enhanced trading features",
-        "Institutional partnerships",
-        "Advanced DeFi integrations",
-        "Community expansion initiatives",
-      ],
-    },
-    {
-      phase: "Q3 2026",
-      title: "CEX Exchange Launch 🎯",
-      status: "upcoming",
-      items: [
-        "Centralized exchange listings (Binance, KuCoin, etc.)",
-        "Fiat on-ramp integrations",
-        "Global payment partnerships",
-        "Enterprise solutions launch",
-        "Mainstream media coverage",
-      ],
-    },
-    {
-      phase: "Q4 2026",
-      title: "Ecosystem Maturity",
-      status: "upcoming",
-      items: [
-        "Multi-chain expansion",
-        "Advanced governance features",
-        "Enterprise API launch",
-        "Global merchant adoption",
-        "Sustainable growth initiatives",
+        "Global payment processor integration",
+        "Enterprise merchant solutions",
+        "DeFi yield farming opportunities",
+        "Worldwide community expansion",
       ],
     },
   ];
@@ -1159,24 +1105,85 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                         </div>
                       </div>
 
-                      {/* Key Features */}
+                      {/* Ecosystem Benefits */}
                       <div>
-                        <h3 className="text-2xl font-bold mb-4 text-primary">Key Features</h3>
-                        <div className="grid md:grid-cols-2 gap-4">
-                          {keyFeatures.map((item, index) => (
-                            <Card
-                              key={index}
-                              className="bg-secondary/30 border-border hover:border-primary/50 transition-colors"
-                            >
-                              <CardContent className="p-4 flex gap-3">
-                                <item.icon className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
-                                <div>
-                                  <h4 className="font-bold mb-1">{item.title}</h4>
-                                  <p className="text-sm text-muted-foreground">{item.description}</p>
-                                </div>
-                              </CardContent>
-                            </Card>
-                          ))}
+                        <h3 className="text-2xl font-bold mb-4 text-primary">BIT Rewards Ecosystem</h3>
+                        <p className="text-muted-foreground mb-6">
+                          Earn BIT tokens as rewards - Payments processed via USDT/USDC on 4 networks
+                        </p>
+                        
+                        <div className="grid md:grid-cols-2 gap-6">
+                          {/* Token Holders */}
+                          <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-border">
+                            <CardContent className="p-6">
+                              <h4 className="text-xl font-bold mb-4 text-primary flex items-center gap-2">
+                                <Users className="w-6 h-6" />
+                                For Token Holders
+                              </h4>
+                              <ul className="space-y-2">
+                                {tokenHolderBenefits.map((benefit, idx) => (
+                                  <li key={idx} className="flex items-start gap-2 text-sm">
+                                    <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                                    <span className="text-muted-foreground">{benefit}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </CardContent>
+                          </Card>
+
+                          {/* Community */}
+                          <Card className="bg-gradient-to-br from-secondary/50 to-secondary/30 border-border">
+                            <CardContent className="p-6">
+                              <h4 className="text-xl font-bold mb-4 text-primary flex items-center gap-2">
+                                <Gift className="w-6 h-6" />
+                                For the Community
+                              </h4>
+                              <ul className="space-y-2">
+                                {communityBenefits.map((benefit, idx) => (
+                                  <li key={idx} className="flex items-start gap-2 text-sm">
+                                    <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                                    <span className="text-muted-foreground">{benefit}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </CardContent>
+                          </Card>
+
+                          {/* Customers */}
+                          <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-border">
+                            <CardContent className="p-6">
+                              <h4 className="text-xl font-bold mb-4 text-primary flex items-center gap-2">
+                                <Users className="w-6 h-6" />
+                                For Customers
+                              </h4>
+                              <ul className="space-y-2">
+                                {customerBenefits.map((benefit, idx) => (
+                                  <li key={idx} className="flex items-start gap-2 text-sm">
+                                    <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                                    <span className="text-muted-foreground">{benefit}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </CardContent>
+                          </Card>
+
+                          {/* Merchants */}
+                          <Card className="bg-gradient-to-br from-secondary/50 to-secondary/30 border-border">
+                            <CardContent className="p-6">
+                              <h4 className="text-xl font-bold mb-4 text-primary flex items-center gap-2">
+                                <Coins className="w-6 h-6" />
+                                For Merchants
+                              </h4>
+                              <ul className="space-y-2">
+                                {merchantBenefits.map((benefit, idx) => (
+                                  <li key={idx} className="flex items-start gap-2 text-sm">
+                                    <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                                    <span className="text-muted-foreground">{benefit}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </CardContent>
+                          </Card>
                         </div>
                       </div>
 
@@ -1452,12 +1459,6 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                                     </span>
                                   )}
                                 </div>
-                                {phase.progress && (
-                                  <div className="mb-3 p-3 bg-primary/10 border border-primary/30 rounded-lg">
-                                    <p className="text-sm font-semibold text-primary">Current Progress</p>
-                                    <p className="text-sm text-muted-foreground mt-1">{phase.progress}</p>
-                                  </div>
-                                )}
                                 <ul className="space-y-2 mt-4">
                                   {phase.items.map((item, idx) => (
                                     <li key={idx} className="flex items-start">
