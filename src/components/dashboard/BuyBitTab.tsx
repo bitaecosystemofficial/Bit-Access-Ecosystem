@@ -95,9 +95,34 @@ const BuyBitTab = () => {
 
     if (selectedNetwork === 'BSC') {
       addBalance(bitAmount);
+      
+      // Create receipt message for WhatsApp
+      const receipt = `
+🎉 *BIT TOKEN PURCHASE RECEIPT* 🎉
+
+📊 *Transaction Details:*
+━━━━━━━━━━━━━━━━━━━━
+💰 Amount Paid: ${parseFloat(amount).toLocaleString()} ${paymentMethod}
+🪙 BIT Received: ${calculateBit(amount)} BIT
+💳 Payment Method: ${paymentMethod}-BEP20
+🌐 Network: ${selectedNetwork}
+💵 Price per BIT: $${pricePerBit}
+━━━━━━━━━━━━━━━━━━━━
+
+📅 Date: ${new Date().toLocaleString()}
+✅ Status: Successful
+
+Thank you for your purchase! 🚀
+      `.trim();
+
+      // Open WhatsApp with receipt (replace with your WhatsApp number)
+      const whatsappNumber = '1234567890'; // Replace with actual WhatsApp number
+      const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(receipt)}`;
+      window.open(whatsappUrl, '_blank');
+
       toast({
         title: 'Purchase Successful! 🎉',
-        description: `You received ${calculateBit(amount)} BIT tokens. New balance: ${formatBalance(balance + bitAmount)} BIT`,
+        description: `You received ${calculateBit(amount)} BIT tokens. Receipt sent to WhatsApp.`,
       });
       setAmount('');
     } else {
