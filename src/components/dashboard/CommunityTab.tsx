@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useBITBalance } from '@/contexts/BITBalanceContext';
+import { useCountdown } from '@/hooks/useCountdown';
 import bitLogo from '@/assets/bit-token-logo.png';
 
 interface Task {
@@ -37,6 +38,8 @@ interface Task {
   requiresInvites?: boolean;
   inviteReward?: number;
   inviteCount?: string;
+  activationDate?: number; // Timestamp for when link becomes active
+  linkVisited?: boolean; // Track if link was visited
 }
 
 const CommunityTab = () => {
@@ -110,6 +113,8 @@ const CommunityTab = () => {
       icon: PartyPopper,
       color: 'from-purple-500/20 to-purple-500/5',
       link: 'https://meet.google.com',
+      activationDate: Date.now() + (7 * 24 * 60 * 60 * 1000), // 7 days from now
+      linkVisited: false,
     },
     {
       id: 'daily-zoom',
@@ -121,6 +126,8 @@ const CommunityTab = () => {
       icon: Video,
       color: 'from-green-500/20 to-green-500/5',
       link: 'https://zoom.us',
+      activationDate: Date.now() + (3 * 24 * 60 * 60 * 1000), // 3 days from now
+      linkVisited: false,
     },
     {
       id: 'webinar-invite',
@@ -136,14 +143,16 @@ const CommunityTab = () => {
     },
     {
       id: 'forum-attend',
-      title: 'Attend Daily Forum at IT Park Ayala Cebu',
-      description: 'Join our daily forum session at IT Park Ayala Cebu',
+      title: 'Attend Daily Forum',
+      description: 'Join our daily forum session',
       reward: 2000,
       completed: false,
       category: 'forum',
       icon: MessageSquare,
       color: 'from-orange-500/20 to-orange-500/5',
       link: 'https://maps.google.com',
+      activationDate: Date.now() + (1 * 24 * 60 * 60 * 1000), // 1 day from now
+      linkVisited: false,
     },
     {
       id: 'forum-invite',
@@ -163,9 +172,30 @@ const CommunityTab = () => {
     const task = tasks.find(t => t.id === taskId);
     if (!task || task.completed) return;
 
-    // If task has a link, open it in new tab
+    // Check if task has activation date and if it's active
+    if (task.activationDate && Date.now() < task.activationDate) {
+      toast({
+        title: 'Link Not Active Yet',
+        description: 'This link will be available soon. Please check the timer.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // If task has a link, open it in new tab and mark as visited
     if (task.link) {
       window.open(task.link, '_blank');
+      
+      // Mark link as visited
+      setTasks(tasks.map(t => 
+        t.id === taskId ? { ...t, linkVisited: true } : t
+      ));
+
+      // Auto-complete after visiting the link
+      setTimeout(() => {
+        completeTask(taskId);
+      }, 2000); // Give user 2 seconds to see the external link opened
+      
       return;
     }
 
@@ -241,7 +271,7 @@ const CommunityTab = () => {
       icon: MessageSquare,
       color: 'text-orange-500',
       bgColor: 'bg-orange-500/10 border-orange-500/30',
-      description: 'IT Park Ayala Cebu daily forums'
+      description: 'Daily forums and discussions'
     },
   ];
 
@@ -322,6 +352,9 @@ const CommunityTab = () => {
             <CardContent className="space-y-4">
               {categoryTasks.map((task) => {
                 const TaskIcon = task.icon;
+                const isLinkActive = !task.activationDate || Date.now() >= task.activationDate;
+                const timeLeft = task.activationDate ? useCountdown(task.activationDate) : null;
+                
                 return (
                   <motion.div
                     key={task.id}
@@ -348,6 +381,18 @@ const CommunityTab = () => {
                                 {task.inviteCount} invites needed
                               </Badge>
                             )}
+                            {!isLinkActive && timeLeft && (
+                              <Badge variant="outline" className="text-xs bg-orange-500/10">
+                                <Clock className="w-3 h-3 mr-1" />
+                                {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
+                              </Badge>
+                            )}
+                            {task.linkVisited && !task.completed && (
+                              <Badge variant="outline" className="text-xs bg-blue-500/10">
+                                <Check className="w-3 h-3 mr-1" />
+                                Link Visited
+                              </Badge>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -363,19 +408,25 @@ const CommunityTab = () => {
                               onClick={() => handleTaskAction(task.id)}
                               size="sm"
                               className="bg-primary hover:bg-primary/90 whitespace-nowrap"
+                              disabled={!isLinkActive}
                             >
-                              <ExternalLink className="w-3 h-3 mr-1" />
-                              Visit Link
+                              {isLinkActive ? (
+                                <>
+                                  <ExternalLink className="w-3 h-3 mr-1" />
+                                  Visit Link
+                                </>
+                              ) : (
+                                <>
+                                  <Clock className="w-3 h-3 mr-1" />
+                                  Locked
+                                </>
+                              )}
                             </Button>
-                            <Button
-                              onClick={() => completeTask(task.id)}
-                              size="sm"
-                              variant="outline"
-                              className="whitespace-nowrap"
-                            >
-                              <Check className="w-3 h-3 mr-1" />
-                              Mark Done
-                            </Button>
+                            {task.linkVisited && (
+                              <Badge className="bg-blue-500 text-white whitespace-nowrap text-xs">
+                                Auto-completing...
+                              </Badge>
+                            )}
                           </>
                         ) : (
                           <Button
