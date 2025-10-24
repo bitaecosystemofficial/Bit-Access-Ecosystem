@@ -1,25 +1,91 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+/**
+ * @dev Interface of the ERC20 standard as defined in the EIP.
+ */
 interface IERC20 {
-    function transfer(address recipient, uint256 amount) external returns (bool);
-    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+    function totalSupply() external view returns (uint256);
     function balanceOf(address account) external view returns (uint256);
+    function transfer(address recipient, uint256 amount) external returns (bool);
+    function allowance(address owner, address spender) external view returns (uint256);
+    function approve(address spender, uint256 amount) external returns (bool);
+    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+    function decimals() external view returns (uint8);
+    
+    event Transfer(address indexed from, address indexed to, uint256 value);
+    event Approval(address indexed owner, address indexed spender, uint256 value);
+}
+
+/**
+ * @dev Contract module that helps prevent reentrant calls to a function.
+ */
+abstract contract ReentrancyGuard {
+    uint256 private constant _NOT_ENTERED = 1;
+    uint256 private constant _ENTERED = 2;
+    uint256 private _status;
+
+    constructor() {
+        _status = _NOT_ENTERED;
+    }
+
+    modifier nonReentrant() {
+        require(_status != _ENTERED, "ReentrancyGuard: reentrant call");
+        _status = _ENTERED;
+        _;
+        _status = _NOT_ENTERED;
+    }
+}
+
+/**
+ * @dev Contract module which provides a basic access control mechanism.
+ */
+abstract contract Ownable {
+    address private _owner;
+
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+    constructor() {
+        _transferOwnership(msg.sender);
+    }
+
+    function owner() public view virtual returns (address) {
+        return _owner;
+    }
+
+    modifier onlyOwner() {
+        require(owner() == msg.sender, "Ownable: caller is not the owner");
+        _;
+    }
+
+    function renounceOwnership() public virtual onlyOwner {
+        _transferOwnership(address(0));
+    }
+
+    function transferOwnership(address newOwner) public virtual onlyOwner {
+        require(newOwner != address(0), "Ownable: new owner is the zero address");
+        _transferOwnership(newOwner);
+    }
+
+    function _transferOwnership(address newOwner) internal virtual {
+        address oldOwner = _owner;
+        _owner = newOwner;
+        emit OwnershipTransferred(oldOwner, newOwner);
+    }
 }
 
 /**
  * @title BITTokenPurchase
  * @dev Smart contract for purchasing BIT tokens with USDT/USDC
  */
-contract BITTokenPurchase {
-    address public owner;
+contract BITTokenPurchase is ReentrancyGuard, Ownable {
     address public receiverWallet;
     address public bitToken;
     address public usdtToken;
     address public usdcToken;
     
-    uint256 public pricePerBIT = 1080000000000000; // $0.00108 in wei (18 decimals)
-    uint256 public minimumPurchase = 100000 * 10**18; // 100,000 BIT minimum
+    uint256 public pricePerBIT = 1080000; // $0.00108 in USDT/USDC (6 decimals) per BIT (9 decimals)
+    uint256 public minimumPurchase = 100000 * 10**9; // 100,000 BIT minimum (9 decimals)
     
     bool public paused;
     
@@ -34,11 +100,6 @@ contract BITTokenPurchase {
     event ReceiverWalletUpdated(address indexed oldWallet, address indexed newWallet);
     event PriceUpdated(uint256 oldPrice, uint256 newPrice);
     
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Only owner can call this function");
-        _;
-    }
-    
     modifier whenNotPaused() {
         require(!paused, "Contract is paused");
         _;
@@ -50,7 +111,6 @@ contract BITTokenPurchase {
         address _usdcToken,
         address _receiverWallet
     ) {
-        owner = msg.sender;
         bitToken = _bitToken;
         usdtToken = _usdtToken;
         usdcToken = _usdcToken;
@@ -60,9 +120,9 @@ contract BITTokenPurchase {
     /**
      * @dev Purchase BIT tokens with USDT or USDC
      * @param paymentToken Address of payment token (USDT or USDC)
-     * @param usdAmount Amount of USD to pay (in token decimals)
+     * @param usdAmount Amount of USD to pay (in token decimals - 6 for USDT/USDC)
      */
-    function purchaseBIT(address paymentToken, uint256 usdAmount) external whenNotPaused {
+    function purchaseBIT(address paymentToken, uint256 usdAmount) external nonReentrant whenNotPaused {
         require(
             paymentToken == usdtToken || paymentToken == usdcToken,
             "Invalid payment token"
@@ -70,7 +130,10 @@ contract BITTokenPurchase {
         require(usdAmount > 0, "Amount must be greater than 0");
         
         // Calculate BIT tokens to receive
-        uint256 bitAmount = (usdAmount * 10**18) / pricePerBIT;
+        // usdAmount is in 6 decimals (USDT/USDC)
+        // pricePerBIT is in 6 decimals per BIT
+        // Result needs to be in 9 decimals (BIT decimals)
+        uint256 bitAmount = (usdAmount * 10**9) / pricePerBIT;
         
         require(bitAmount >= minimumPurchase, "Amount below minimum purchase");
         require(
@@ -95,11 +158,11 @@ contract BITTokenPurchase {
     
     /**
      * @dev Calculate BIT tokens for given USD amount
-     * @param usdAmount Amount in USD (with token decimals)
-     * @return Amount of BIT tokens
+     * @param usdAmount Amount in USD (with 6 decimals for USDT/USDC)
+     * @return Amount of BIT tokens (with 9 decimals)
      */
     function calculateBITAmount(uint256 usdAmount) external view returns (uint256) {
-        return (usdAmount * 10**18) / pricePerBIT;
+        return (usdAmount * 10**9) / pricePerBIT;
     }
     
     /**

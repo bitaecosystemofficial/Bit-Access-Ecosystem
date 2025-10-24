@@ -1,18 +1,84 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+/**
+ * @dev Interface of the ERC20 standard as defined in the EIP.
+ */
 interface IERC20 {
-    function transfer(address recipient, uint256 amount) external returns (bool);
-    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+    function totalSupply() external view returns (uint256);
     function balanceOf(address account) external view returns (uint256);
+    function transfer(address recipient, uint256 amount) external returns (bool);
+    function allowance(address owner, address spender) external view returns (uint256);
+    function approve(address spender, uint256 amount) external returns (bool);
+    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+    function decimals() external view returns (uint8);
+    
+    event Transfer(address indexed from, address indexed to, uint256 value);
+    event Approval(address indexed owner, address indexed spender, uint256 value);
+}
+
+/**
+ * @dev Contract module that helps prevent reentrant calls to a function.
+ */
+abstract contract ReentrancyGuard {
+    uint256 private constant _NOT_ENTERED = 1;
+    uint256 private constant _ENTERED = 2;
+    uint256 private _status;
+
+    constructor() {
+        _status = _NOT_ENTERED;
+    }
+
+    modifier nonReentrant() {
+        require(_status != _ENTERED, "ReentrancyGuard: reentrant call");
+        _status = _ENTERED;
+        _;
+        _status = _NOT_ENTERED;
+    }
+}
+
+/**
+ * @dev Contract module which provides a basic access control mechanism.
+ */
+abstract contract Ownable {
+    address private _owner;
+
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+    constructor() {
+        _transferOwnership(msg.sender);
+    }
+
+    function owner() public view virtual returns (address) {
+        return _owner;
+    }
+
+    modifier onlyOwner() {
+        require(owner() == msg.sender, "Ownable: caller is not the owner");
+        _;
+    }
+
+    function renounceOwnership() public virtual onlyOwner {
+        _transferOwnership(address(0));
+    }
+
+    function transferOwnership(address newOwner) public virtual onlyOwner {
+        require(newOwner != address(0), "Ownable: new owner is the zero address");
+        _transferOwnership(newOwner);
+    }
+
+    function _transferOwnership(address newOwner) internal virtual {
+        address oldOwner = _owner;
+        _owner = newOwner;
+        emit OwnershipTransferred(oldOwner, newOwner);
+    }
 }
 
 /**
  * @title BITStaking
  * @dev Smart contract for staking BIT tokens with multiple pool options
  */
-contract BITStaking {
-    address public owner;
+contract BITStaking is ReentrancyGuard, Ownable {
     address public bitToken;
     
     uint256 public constant UNSTAKE_FEE = 2; // 2%
@@ -63,21 +129,15 @@ contract BITStaking {
         uint256 amount
     );
     
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Only owner");
-        _;
-    }
-    
     constructor(address _bitToken) {
-        owner = msg.sender;
         bitToken = _bitToken;
         
-        // Initialize staking pools
+        // Initialize staking pools (all values in 9 decimals)
         // Pool 0: 180 days, 12% APY, min 100,000 BIT
         stakingPools[0] = StakingPool({
             days: 180,
             apy: 12,
-            minStake: 100000 * 10**18,
+            minStake: 100000 * 10**9,
             totalStaked: 0,
             active: true
         });
@@ -86,7 +146,7 @@ contract BITStaking {
         stakingPools[1] = StakingPool({
             days: 240,
             apy: 18,
-            minStake: 500000000 * 10**18,
+            minStake: 500000000 * 10**9,
             totalStaked: 0,
             active: true
         });
@@ -95,7 +155,7 @@ contract BITStaking {
         stakingPools[2] = StakingPool({
             days: 365,
             apy: 25,
-            minStake: 1000000 * 10**18,
+            minStake: 1000000 * 10**9,
             totalStaked: 0,
             active: true
         });
@@ -106,9 +166,9 @@ contract BITStaking {
     /**
      * @dev Stake BIT tokens in a pool
      * @param poolId Pool ID to stake in
-     * @param amount Amount to stake
+     * @param amount Amount to stake (9 decimals)
      */
-    function stake(uint256 poolId, uint256 amount) external {
+    function stake(uint256 poolId, uint256 amount) external nonReentrant {
         require(poolId < poolCount, "Invalid pool");
         require(stakingPools[poolId].active, "Pool not active");
         require(amount >= stakingPools[poolId].minStake, "Below minimum stake");
@@ -143,7 +203,7 @@ contract BITStaking {
      * @dev Unstake tokens from a stake
      * @param stakeId Index of stake in user's stakes array
      */
-    function unstake(uint256 stakeId) external {
+    function unstake(uint256 stakeId) external nonReentrant {
         require(stakeId < userStakes[msg.sender].length, "Invalid stake ID");
         Stake storage userStake = userStakes[msg.sender][stakeId];
         require(userStake.active, "Stake not active");
