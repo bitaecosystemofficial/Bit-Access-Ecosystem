@@ -136,12 +136,12 @@ const BuyBitTab = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const pricePerBit = contractPrice ? Number(formatUnits(contractPrice as bigint, 9)) : 0.00108;
+  const pricePerBit = contractPrice ? Number(formatUnits(contractPrice as bigint, 9)) : 0.000108;
   const minimumPurchase = minPurchase ? Number(formatUnits(minPurchase as bigint, 9)) : 100000;
-  
+
   // State for total BIT sold from BSCScan
   const [totalSold, setTotalSold] = useState<number>(0);
-  
+
   // Calculate based on contract balance (BIT token uses 9 decimals)
   const INITIAL_CONTRACT_SUPPLY = 1000000000; // 1 billion BIT tokens for presale pool
   const contractBalance = contractBitBalance ? Number(formatUnits(contractBitBalance as bigint, 9)) : 0;
@@ -156,7 +156,7 @@ const BuyBitTab = () => {
       setTotalSold(sold);
     };
     loadTotalSold();
-    
+
     // Refresh every 30 seconds
     const interval = setInterval(loadTotalSold, 30000);
     return () => clearInterval(interval);
@@ -166,10 +166,10 @@ const BuyBitTab = () => {
     if (isSuccess) {
       refetchBitBalance();
       refetchContractBalance();
-      
+
       // Refresh total sold data
       fetchTotalBITSold().then(setTotalSold);
-      
+
       toast({
         title: "Purchase Successful! 🎉",
         description: `BIT tokens have been transferred to your wallet.`,
@@ -403,12 +403,10 @@ const BuyBitTab = () => {
               </div>
               <div className="text-right">
                 <p className="text-xs md:text-sm text-muted-foreground mb-1">Progress</p>
-                <p className="text-2xl md:text-3xl font-bold text-accent">
-                  {soldPercentage.toFixed(2)}%
-                </p>
+                <p className="text-2xl md:text-3xl font-bold text-accent">{soldPercentage.toFixed(2)}%</p>
               </div>
             </div>
-            
+
             {/* Progress Bar */}
             <div className="w-full bg-secondary/50 rounded-full h-3 md:h-4 overflow-hidden border border-accent/30">
               <motion.div
@@ -420,7 +418,7 @@ const BuyBitTab = () => {
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse" />
               </motion.div>
             </div>
-            
+
             <div className="flex justify-between text-xs text-muted-foreground">
               <span>0 BIT</span>
               <span>{INITIAL_CONTRACT_SUPPLY.toLocaleString()} BIT</span>
