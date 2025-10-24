@@ -116,6 +116,12 @@ const Footer = () => {
                 </a>)}
             </div>
             
+            {/* Office Location */}
+            <div className="mb-6">
+              <h4 className="text-sm font-semibold text-foreground mb-2">Office Location</h4>
+              <p className="text-sm text-muted-foreground">To be announced on official FB Page</p>
+            </div>
+            
             {/* Wallet Support */}
             <div className="mt-6 pt-6 border-t border-border">
               <p className="text-sm text-muted-foreground mb-4 font-semibold">Supported Wallets</p>

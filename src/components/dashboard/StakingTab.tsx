@@ -35,7 +35,7 @@ const StakingTab = () => {
     {
       days: 180,
       apy: 12,
-      minStake: 1000,
+      minStake: 100000,
       totalStaked: '1.2M BIT',
       color: 'from-blue-500/20 to-blue-500/5',
       borderColor: 'border-blue-500/30',
@@ -43,7 +43,7 @@ const StakingTab = () => {
     {
       days: 240,
       apy: 18,
-      minStake: 5000,
+      minStake: 500000000,
       totalStaked: '3.5M BIT',
       color: 'from-purple-500/20 to-purple-500/5',
       borderColor: 'border-purple-500/30',
@@ -52,7 +52,7 @@ const StakingTab = () => {
     {
       days: 365,
       apy: 25,
-      minStake: 10000,
+      minStake: 1000000,
       totalStaked: '8.9M BIT',
       color: 'from-primary/20 to-primary/5',
       borderColor: 'border-primary/30',
