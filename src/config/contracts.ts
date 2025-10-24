@@ -7,7 +7,7 @@ import ERC20ABI from '@/contracts/abis/ERC20.json';
 // Smart Contract Addresses on BSC Network
 export const CONTRACT_ADDRESSES = {
   // BIT Token Purchase Contract
-  BIT_PURCHASE: '0x0000000000000000000000000000000000000000' as `0x${string}`, // Replace with deployed address
+  BIT_PURCHASE: '0xaa4763b736eD739694b44C2A718Dbe936EFe28Fa' as `0x${string}`, // Replace with deployed address
   
   // BIT Staking Contract
   BIT_STAKING: '0x0000000000000000000000000000000000000000' as `0x${string}`, // Replace with deployed address
@@ -16,12 +16,12 @@ export const CONTRACT_ADDRESSES = {
   BIT_COMMUNITY_TASKS: '0x0000000000000000000000000000000000000000' as `0x${string}`, // Replace with deployed address
   
   // Token Addresses on BSC
-  BIT_TOKEN: '0x0000000000000000000000000000000000000000' as `0x${string}`, // Replace with BIT token address
+  BIT_TOKEN: '0xd3bDe17EbD27739cF5505Cd58Ecf31cB628E469c' as `0x${string}`, // Replace with BIT token address
   USDT_TOKEN: '0x55d398326f99059fF775485246999027B3197955' as `0x${string}`, // USDT on BSC
   USDC_TOKEN: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d' as `0x${string}`, // USDC on BSC
   
   // Receiver Wallet for USDT/USDC payments
-  RECEIVER_WALLET: '0x0000000000000000000000000000000000000000' as `0x${string}`, // Replace with your receiver wallet
+  RECEIVER_WALLET: '0x2cCbfa0E1B41b121F86F70b991531F7Bbf6Ac908' as `0x${string}`, // Replace with your receiver wallet
 };
 
 export const CONTRACT_ABIS = {
