@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { useAccount, useDisconnect } from 'wagmi';
+import bitAccessLogo from '@/assets/bit-access-logo.png';
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -54,9 +55,12 @@ const Navigation = () => {
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center space-x-2">
-            <span className="text-2xl font-bold text-primary">Bit Access</span>
-            <span className="text-sm text-muted-foreground">(BIT)</span>
+          <Link to="/" className="flex items-center space-x-3">
+            <img src={bitAccessLogo} alt="Bit Access Logo" className="w-10 h-10" />
+            <div className="flex items-center space-x-2">
+              <span className="text-2xl font-bold text-primary">Bit Access</span>
+              <span className="text-sm text-muted-foreground">(BIT)</span>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}

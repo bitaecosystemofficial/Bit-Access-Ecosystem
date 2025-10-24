@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Facebook, Twitter, Youtube, Send, Github } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAccount } from 'wagmi';
+import bitAccessLogo from '@/assets/bit-access-logo.png';
 import metamaskLogo from "@/assets/metamask-logo.png";
 import trustWalletLogo from "@/assets/trust-wallet-logo.png";
 const Footer = () => {
@@ -74,9 +75,12 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo & Description */}
           <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <span className="text-2xl font-bold text-primary">Bit Access</span>
-              <span className="text-sm text-muted-foreground">(BIT)</span>
+            <div className="flex items-center space-x-3">
+              <img src={bitAccessLogo} alt="Bit Access Logo" className="w-10 h-10" />
+              <div className="flex items-center space-x-2">
+                <span className="text-2xl font-bold text-primary">Bit Access</span>
+                <span className="text-sm text-muted-foreground">(BIT)</span>
+              </div>
             </div>
             <p className="text-sm text-muted-foreground">
               Revolutionizing daily life through Web3. Empowering users and merchants worldwide.
