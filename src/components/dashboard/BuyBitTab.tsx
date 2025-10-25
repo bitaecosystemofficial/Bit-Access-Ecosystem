@@ -78,6 +78,19 @@ const BuyBitTab = () => {
     query: { enabled: isBSCNetwork },
   });
 
+  // Read initial presale allocation (total BIT in contract at deployment)
+  const { data: totalPresaleAllocation } = useReadContract({
+    address: CONTRACT_ADDRESSES.BIT_TOKEN as `0x${string}`,
+    abi: CONTRACT_ABIS.ERC20,
+    functionName: "balanceOf",
+    args: [CONTRACT_ADDRESSES.BIT_PURCHASE as `0x${string}`],
+    query: { 
+      enabled: isBSCNetwork,
+      // Cache for 5 minutes as this rarely changes
+      staleTime: 5 * 60 * 1000,
+    },
+  });
+
   // Read payment token allowance
   const paymentTokenAddress = paymentMethod === "USDT" ? CONTRACT_ADDRESSES.USDT_TOKEN : CONTRACT_ADDRESSES.USDC_TOKEN;
   const { data: allowance, refetch: refetchAllowance } = useReadContract({
@@ -145,25 +158,33 @@ const BuyBitTab = () => {
   // Convert minimum BIT to USD
   const minimumPurchaseUSD = minimumPurchaseBIT * pricePerBit;
 
-  // State for total BIT sold from BSCScan
-  const [totalSold, setTotalSold] = useState<number>(0);
 
-  // Calculate based on contract balance (BIT token uses 9 decimals)
-  const INITIAL_CONTRACT_SUPPLY = 1000000000; // 1 billion BIT tokens for presale pool
+  // State for total BIT sold from blockchain events
+  const [totalSold, setTotalSold] = useState<number>(0);
+  const [isLoadingTotalSold, setIsLoadingTotalSold] = useState(true);
+
+  // Calculate allocation dynamically from contract balance
   const contractBalance = contractBitBalance ? Number(formatUnits(contractBitBalance as bigint, 9)) : 0;
-  const maxBITAllocation = contractBalance; // Maximum BIT available for purchase from contract
-  const soldPercentage = INITIAL_CONTRACT_SUPPLY > 0 ? (totalSold / INITIAL_CONTRACT_SUPPLY) * 100 : 0;
+  const maxBITAllocation = contractBalance; // Real-time available BIT from contract
+  
+  // Calculate initial allocation from first load
+  const initialAllocation = totalPresaleAllocation ? Number(formatUnits(totalPresaleAllocation as bigint, 9)) : 1000000000;
+  
+  // Calculate sold percentage based on real blockchain data
+  const soldPercentage = initialAllocation > 0 ? (totalSold / initialAllocation) * 100 : 0;
   const remainingPercentage = 100 - soldPercentage;
 
-  // Fetch total BIT sold from blockchain
+  // Fetch total BIT sold from blockchain events (real-time)
   useEffect(() => {
     const loadTotalSold = async () => {
+      setIsLoadingTotalSold(true);
       const sold = await fetchTotalBITSold();
       setTotalSold(sold);
+      setIsLoadingTotalSold(false);
     };
     loadTotalSold();
 
-    // Refresh every 30 seconds
+    // Refresh every 30 seconds to get latest blockchain data
     const interval = setInterval(loadTotalSold, 30000);
     return () => clearInterval(interval);
   }, []);
@@ -409,22 +430,31 @@ const BuyBitTab = () => {
           </CardContent>
         </Card>
 
-        {/* Total BIT Sold */}
+        {/* Total BIT Sold - Real-time Blockchain Data */}
         <Card className="bg-gradient-to-br from-accent/20 via-accent/10 to-background border-accent/30">
           <CardHeader className="pb-3 md:pb-4">
             <CardTitle className="text-xl md:text-2xl font-bold">Total BIT Sold</CardTitle>
+            <CardDescription className="text-xs">
+              Live data from contract: {CONTRACT_ADDRESSES.BIT_PURCHASE.slice(0, 6)}...{CONTRACT_ADDRESSES.BIT_PURCHASE.slice(-4)}
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3 md:space-y-4">
             <div className="flex items-end justify-between">
               <div>
                 <p className="text-xs md:text-sm text-muted-foreground mb-1">Sold</p>
                 <p className="text-2xl md:text-3xl font-bold text-accent">
-                  {totalSold.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                  {isLoadingTotalSold ? (
+                    <Loader2 className="w-8 h-8 animate-spin inline-block" />
+                  ) : (
+                    totalSold.toLocaleString(undefined, { maximumFractionDigits: 0 })
+                  )}
                 </p>
               </div>
               <div className="text-right">
                 <p className="text-xs md:text-sm text-muted-foreground mb-1">Progress</p>
-                <p className="text-2xl md:text-3xl font-bold text-accent">{soldPercentage.toFixed(2)}%</p>
+                <p className="text-2xl md:text-3xl font-bold text-accent">
+                  {isLoadingTotalSold ? "..." : `${soldPercentage.toFixed(2)}%`}
+                </p>
               </div>
             </div>
 
@@ -442,7 +472,7 @@ const BuyBitTab = () => {
 
             <div className="flex justify-between text-xs text-muted-foreground">
               <span>0 BIT</span>
-              <span>{INITIAL_CONTRACT_SUPPLY.toLocaleString()} BIT</span>
+              <span>{initialAllocation.toLocaleString()} BIT</span>
             </div>
           </CardContent>
         </Card>
@@ -619,7 +649,10 @@ const BuyBitTab = () => {
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-muted-foreground font-medium">Price per BIT:</span>
-                  <span className="font-semibold">${pricePerBit}</span>
+                  <span className="font-semibold">
+                    ${pricePerBit.toFixed(6)} 
+                    <span className="text-xs text-muted-foreground ml-1">(from contract)</span>
+                  </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-muted-foreground font-medium">Payment Method:</span>
