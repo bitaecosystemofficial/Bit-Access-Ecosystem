@@ -138,9 +138,9 @@ const BuyBitTab = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const pricePerBit = contractPrice ? Number(formatUnits(contractPrice as bigint, 18)) : 0.00108;
+  const pricePerBit = contractPrice ? Number(formatUnits(contractPrice as bigint, 18)) : 0.000108;
   const minimumPurchase = minPurchase ? Number(formatUnits(minPurchase as bigint, 9)) : 100000;
-  
+
   const contractBalance = contractBitBalance ? Number(formatUnits(contractBitBalance as bigint, 9)) : 0;
   const totalSold = INITIAL_CONTRACT_SUPPLY - contractBalance;
   const soldPercentage = (totalSold / INITIAL_CONTRACT_SUPPLY) * 100;
@@ -389,7 +389,7 @@ const BuyBitTab = () => {
               </p>
             </div>
           </div>
-          
+
           {/* Progress Bar */}
           <div className="w-full bg-secondary/50 rounded-full h-4 md:h-6 overflow-hidden border border-purple-500/30">
             <motion.div
@@ -401,7 +401,7 @@ const BuyBitTab = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse" />
             </motion.div>
           </div>
-          
+
           <div className="flex justify-between text-xs text-muted-foreground">
             <span>0 BIT</span>
             <span>{INITIAL_CONTRACT_SUPPLY.toLocaleString()} BIT</span>
