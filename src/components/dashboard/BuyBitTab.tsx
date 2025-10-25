@@ -5,7 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingBag, AlertCircle, Wallet, Loader2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { ShoppingBag, AlertCircle, Wallet, Loader2, XCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useBITBalance } from "@/contexts/BITBalanceContext";
 import {
@@ -32,6 +39,7 @@ const BuyBitTab = () => {
   const [selectedNetwork, setSelectedNetwork] = useState("BSC");
   const [paymentMethod, setPaymentMethod] = useState<"USDT" | "USDC">("USDT");
   const [isApproving, setIsApproving] = useState(false);
+  const [showMaxBalanceDialog, setShowMaxBalanceDialog] = useState(false);
   const { toast } = useToast();
   const { address } = useAccount();
   const chainId = useChainId();
@@ -145,6 +153,18 @@ const BuyBitTab = () => {
   const contractBalance = contractBitBalance ? Number(formatUnits(contractBitBalance as bigint, 9)) : 0;
   const totalSold = INITIAL_CONTRACT_SUPPLY - contractBalance;
   const soldPercentage = (totalSold / INITIAL_CONTRACT_SUPPLY) * 100;
+
+  // Maximum BIT balance allowed (5 Million)
+  const MAX_BIT_BALANCE = 5000000;
+  const userBitBalance = bitBalance ? Number(formatUnits(bitBalance as bigint, 9)) : 0;
+  const hasMaxBalance = userBitBalance >= MAX_BIT_BALANCE;
+
+  // Check and show dialog when max balance is reached
+  useEffect(() => {
+    if (hasMaxBalance && address) {
+      setShowMaxBalanceDialog(true);
+    }
+  }, [hasMaxBalance, address]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -596,8 +616,8 @@ const BuyBitTab = () => {
                 {!allowance || (allowance as bigint) < parseUnits(amount, 18) ? (
                   <Button
                     onClick={handleApprove}
-                    disabled={!address || isApproving || selectedNetwork !== "BSC"}
-                    className="w-full h-14 text-lg font-bold bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all"
+                    disabled={!address || isApproving || selectedNetwork !== "BSC" || hasMaxBalance}
+                    className="w-full h-14 text-lg font-bold bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isApproving ? (
                       <>
@@ -625,9 +645,10 @@ const BuyBitTab = () => {
                 !amount ||
                 parseFloat(amount) <= 0 ||
                 !allowance ||
-                (allowance as bigint) < parseUnits(amount || "0", 18)
+                (allowance as bigint) < parseUnits(amount || "0", 18) ||
+                hasMaxBalance
               }
-              className="w-full h-14 text-lg font-bold bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all"
+              className="w-full h-14 text-lg font-bold bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isPurchasing || isConfirming ? (
                 <>
@@ -655,6 +676,43 @@ const BuyBitTab = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Maximum Balance Dialog */}
+      <Dialog open={showMaxBalanceDialog} onOpenChange={setShowMaxBalanceDialog}>
+        <DialogContent className="sm:max-w-md mx-4 sm:mx-auto">
+          <DialogHeader className="space-y-4">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
+              <XCircle className="h-10 w-10 text-destructive" />
+            </div>
+            <DialogTitle className="text-center text-xl sm:text-2xl font-bold">
+              Maximum BIT Balance Reached
+            </DialogTitle>
+            <DialogDescription className="text-center text-base leading-relaxed">
+              You currently hold{" "}
+              <span className="font-bold text-foreground">
+                {userBitBalance.toLocaleString()} BIT
+              </span>{" "}
+              in your wallet, which has reached the maximum allowed balance of{" "}
+              <span className="font-bold text-foreground">
+                {MAX_BIT_BALANCE.toLocaleString()} BIT
+              </span>
+              .
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-4 rounded-lg border border-destructive/30 bg-destructive/5 p-4">
+            <p className="text-sm text-center text-muted-foreground leading-relaxed">
+              To protect the integrity of our token distribution, we have implemented a maximum holding limit. 
+              You will not be able to purchase additional BIT tokens until your balance falls below this threshold.
+            </p>
+          </div>
+          <Button
+            onClick={() => setShowMaxBalanceDialog(false)}
+            className="w-full mt-4 h-12 text-base font-semibold"
+          >
+            I Understand
+          </Button>
+        </DialogContent>
+      </Dialog>
     </motion.div>
   );
 };
