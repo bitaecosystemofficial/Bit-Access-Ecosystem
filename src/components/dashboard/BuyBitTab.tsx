@@ -94,9 +94,10 @@ const BuyBitTab = () => {
     if (stored) {
       return new Date(stored);
     }
-    // If not stored, create new end date 120 days from now
-    const today = new Date();
-    const endDate = new Date(today);
+    // If not stored, create new end date 120 days from YESTERDAY
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const endDate = new Date(yesterday);
     endDate.setDate(endDate.getDate() + 120);
     localStorage.setItem("presaleEndDate", endDate.toISOString());
     return endDate;
@@ -372,70 +373,76 @@ const BuyBitTab = () => {
         </Card>
       </div>
 
-      {/* Total Sold and Progress Bar */}
-      <Card className="bg-gradient-to-br from-purple-500/20 via-purple-500/10 to-background border-purple-500/30">
-        <CardContent className="p-4 md:p-6 space-y-4">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-            <div>
-              <p className="text-xs md:text-sm text-muted-foreground">Total BIT Sold</p>
-              <p className="text-2xl md:text-3xl font-bold text-purple-600 dark:text-purple-400">
-                {totalSold.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-              </p>
-            </div>
-            <div className="text-left md:text-right">
-              <p className="text-xs md:text-sm text-muted-foreground">Progress</p>
-              <p className="text-2xl md:text-3xl font-bold text-purple-600 dark:text-purple-400">
-                {soldPercentage.toFixed(2)}%
-              </p>
-            </div>
-          </div>
-
-          {/* Progress Bar */}
-          <div className="w-full bg-secondary/50 rounded-full h-4 md:h-6 overflow-hidden border border-purple-500/30">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${soldPercentage}%` }}
-              transition={{ duration: 1, ease: "easeOut" }}
-              className="h-full bg-gradient-to-r from-purple-600 to-purple-400 rounded-full relative"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse" />
-            </motion.div>
-          </div>
-
-          <div className="flex justify-between text-xs text-muted-foreground">
-            <span>0 BIT</span>
-            <span>{INITIAL_CONTRACT_SUPPLY.toLocaleString()} BIT</span>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Countdown Timer */}
-      <Card className="bg-gradient-to-br from-primary/10 via-primary/5 to-background border-primary/20 shadow-xl">
-        <CardHeader className="text-center pb-4">
-          <CardTitle className="text-2xl md:text-3xl font-bold">Token Sale Ends In</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-4 gap-2 md:gap-4">
-            {[
-              { label: "Days", value: timeLeft.days },
-              { label: "Hours", value: timeLeft.hours },
-              { label: "Minutes", value: timeLeft.minutes },
-              { label: "Seconds", value: timeLeft.seconds },
-            ].map((item, index) => (
-              <div key={index} className="flex flex-col items-center">
-                <div className="bg-card border-2 border-primary/30 rounded-lg p-3 md:p-6 w-full shadow-lg">
-                  <div className="text-2xl md:text-5xl font-bold text-primary text-center tabular-nums">
-                    {String(item.value).padStart(2, "0")}
-                  </div>
-                </div>
-                <p className="text-xs md:text-sm font-semibold text-muted-foreground mt-2 uppercase tracking-wide">
-                  {item.label}
+      {/* Two Column Layout: Total BIT Sold & Token Sale Timer */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+        {/* Total BIT Sold */}
+        <Card className="bg-gradient-to-br from-purple-500/20 via-purple-500/10 to-background border-purple-500/30">
+          <CardHeader className="pb-3 md:pb-4">
+            <CardTitle className="text-lg md:text-xl font-bold">Total BIT Sold</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3 md:space-y-4">
+            <div className="flex items-end justify-between">
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">Sold</p>
+                <p className="text-xl md:text-2xl font-bold text-purple-600 dark:text-purple-400">
+                  {totalSold.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                 </p>
               </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+              <div className="text-right">
+                <p className="text-xs text-muted-foreground mb-1">Progress</p>
+                <p className="text-xl md:text-2xl font-bold text-purple-600 dark:text-purple-400">
+                  {soldPercentage.toFixed(2)}%
+                </p>
+              </div>
+            </div>
+
+            {/* Progress Bar */}
+            <div className="w-full bg-secondary/50 rounded-full h-3 md:h-4 overflow-hidden border border-purple-500/30">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${soldPercentage}%` }}
+                transition={{ duration: 1, ease: "easeOut" }}
+                className="h-full bg-gradient-to-r from-purple-600 to-purple-400 rounded-full relative"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse" />
+              </motion.div>
+            </div>
+
+            <div className="flex justify-between text-[10px] md:text-xs text-muted-foreground">
+              <span>0 BIT</span>
+              <span>{INITIAL_CONTRACT_SUPPLY.toLocaleString()} BIT</span>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Token Sale Timer */}
+        <Card className="bg-gradient-to-br from-primary/20 via-primary/10 to-background border-primary/30">
+          <CardHeader className="text-center pb-3 md:pb-4">
+            <CardTitle className="text-lg md:text-xl font-bold">Token Sale Ends In</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-4 gap-2 md:gap-3">
+              {[
+                { label: "Days", value: timeLeft.days },
+                { label: "Hours", value: timeLeft.hours },
+                { label: "Min", value: timeLeft.minutes },
+                { label: "Sec", value: timeLeft.seconds },
+              ].map((item, index) => (
+                <div key={index} className="flex flex-col items-center">
+                  <div className="bg-card border-2 border-primary/30 rounded-lg p-2 md:p-4 w-full">
+                    <div className="text-xl md:text-3xl font-bold text-primary text-center tabular-nums">
+                      {String(item.value).padStart(2, "0")}
+                    </div>
+                  </div>
+                  <p className="text-[10px] md:text-xs font-semibold text-muted-foreground mt-1 md:mt-2 uppercase">
+                    {item.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Purchase Form */}
       <Card className="bg-card/50 backdrop-blur-sm border-border/50 shadow-xl">
