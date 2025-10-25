@@ -53,7 +53,7 @@ const BuyBitTab = () => {
     query: { enabled: !!address && isBSCNetwork },
   });
 
-  // Read contract price (in USD per BIT with 9 decimals)
+  // Read contract price (pricePerBIT is in 18 decimals representing USD per BIT with 9 decimals)
   const { data: contractPrice } = useReadContract({
     address: CONTRACT_ADDRESSES.BIT_PURCHASE as `0x${string}`,
     abi: CONTRACT_ABIS.BIT_PURCHASE,
@@ -61,7 +61,7 @@ const BuyBitTab = () => {
     query: { enabled: isBSCNetwork },
   });
 
-  // Read minimum purchase (in USD with 9 decimals)
+  // Read minimum purchase (in BIT with 9 decimals)
   const { data: minPurchase } = useReadContract({
     address: CONTRACT_ADDRESSES.BIT_PURCHASE as `0x${string}`,
     abi: CONTRACT_ABIS.BIT_PURCHASE,
@@ -138,10 +138,12 @@ const BuyBitTab = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Price per BIT in USD (contract stores with 9 decimals, default to 0.000108 USD per BIT)
-  const pricePerBit = contractPrice ? Number(formatUnits(contractPrice as bigint, 9)) : 0.000108;
-  // Minimum purchase in USD (contract stores with 9 decimals, default to $10)
-  const minimumPurchase = minPurchase ? Number(formatUnits(minPurchase as bigint, 9)) : 10;
+  // Price per BIT in USD (contract: 108000000000000 = 0.000108 USD with 18 decimals)
+  const pricePerBit = contractPrice ? Number(formatUnits(contractPrice as bigint, 18)) : 0.000108;
+  // Minimum purchase in BIT (contract: 100000 * 10^9 = 100,000 BIT with 9 decimals)
+  const minimumPurchaseBIT = minPurchase ? Number(formatUnits(minPurchase as bigint, 9)) : 100000;
+  // Convert minimum BIT to USD
+  const minimumPurchaseUSD = minimumPurchaseBIT * pricePerBit;
 
   // State for total BIT sold from BSCScan
   const [totalSold, setTotalSold] = useState<number>(0);
@@ -304,18 +306,18 @@ const BuyBitTab = () => {
       return;
     }
 
-    // Check minimum purchase in USD
-    if (usdAmountValue < minimumPurchase) {
+    const bitAmount = parseFloat(calculateBit(amount).replace(/,/g, ""));
+    
+    // Check minimum purchase in BIT
+    if (bitAmount < minimumPurchaseBIT) {
       toast({
         title: "Minimum Purchase Required",
-        description: `Minimum purchase is $${minimumPurchase.toLocaleString()} USD`,
+        description: `Minimum purchase is ${minimumPurchaseBIT.toLocaleString()} BIT ($${minimumPurchaseUSD.toFixed(2)} USD)`,
         variant: "destructive",
       });
       return;
     }
 
-    const bitAmount = parseFloat(calculateBit(amount).replace(/,/g, ""));
-    
     // Check against maximum BIT allocation from contract balance
     if (bitAmount > maxBITAllocation) {
       toast({
@@ -592,8 +594,8 @@ const BuyBitTab = () => {
             </div>
             <p className="text-sm text-muted-foreground flex items-center">
               <AlertCircle className="w-4 h-4 mr-1" />
-              Minimum purchase: {minimumPurchase.toLocaleString()} BIT (
-              {(minimumPurchase * pricePerBit).toLocaleString()} {paymentMethod})
+              Minimum purchase: {minimumPurchaseBIT.toLocaleString()} BIT ($
+              {minimumPurchaseUSD.toFixed(2)} {paymentMethod})
             </p>
           </div>
 
@@ -699,7 +701,7 @@ const BuyBitTab = () => {
             <p className="text-sm leading-relaxed">
               <strong className="text-primary">Purchase Mechanics:</strong> Choose between USDT-BEP20 or USDC-BEP20 as
               payment method. Enter your desired amount and you will receive BIT tokens at a fixed rate of $
-              {pricePerBit} per token. Minimum purchase requirement is {minimumPurchase.toLocaleString()} BIT tokens.
+              {pricePerBit} per token. Minimum purchase requirement is {minimumPurchaseBIT.toLocaleString()} BIT tokens.
               Tokens will be transferred to your connected wallet address on the selected network (BSC, Polygon,
               Arbitrum, or Base).
             </p>
