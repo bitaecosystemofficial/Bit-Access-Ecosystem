@@ -30,7 +30,7 @@ export interface TokenInfo {
 export const fetchTokenHolders = async (): Promise<number> => {
   try {
     const response = await fetch(
-      `${BINPLORER_API_URL}?module=token&action=tokenholderlist&contractaddress=${BIT_TOKEN_ADDRESS}&page=1&offset=1&apikey=${BINPLORER_API_KEY}`
+      `${BINPLORER_API_URL}?module=token&action=tokenholderlist&contractaddress=${BIT_TOKEN_ADDRESS}&page=1&offset=1&apikey=${BINPLORER_API_KEY}`,
     );
     const data = await response.json();
 
@@ -50,7 +50,7 @@ export const fetchTokenHolders = async (): Promise<number> => {
 export const fetchTop10Holders = async (): Promise<TokenHolder[]> => {
   try {
     const response = await fetch(
-      `${BINPLORER_API_URL}?module=token&action=tokenholderlist&contractaddress=${BIT_TOKEN_ADDRESS}&page=1&offset=10&apikey=${BINPLORER_API_KEY}`
+      `${BINPLORER_API_URL}?module=token&action=tokenholderlist&contractaddress=${BIT_TOKEN_ADDRESS}&page=1&offset=10&apikey=${BINPLORER_API_KEY}`,
     );
     const data = await response.json();
 
@@ -60,7 +60,7 @@ export const fetchTop10Holders = async (): Promise<TokenHolder[]> => {
       const totalSupply = 100000000000; // 100 billion
       return data.result.map((holder: TokenHolder) => ({
         ...holder,
-        percentage: (parseFloat(holder.TokenHolderQuantity) / (totalSupply * Math.pow(10, 9))) * 100
+        percentage: (parseFloat(holder.TokenHolderQuantity) / (totalSupply * Math.pow(10, 9))) * 100,
       }));
     }
     return [];
@@ -73,7 +73,7 @@ export const fetchTop10Holders = async (): Promise<TokenHolder[]> => {
 export const fetchLatestTransactions = async (): Promise<Transaction[]> => {
   try {
     const response = await fetch(
-      `${BINPLORER_API_URL}?module=account&action=tokentx&contractaddress=${BIT_TOKEN_ADDRESS}&page=1&offset=10&sort=desc&apikey=${BINPLORER_API_KEY}`
+      `${BINPLORER_API_URL}?module=account&action=tokentx&contractaddress=${BIT_TOKEN_ADDRESS}&page=1&offset=10&sort=desc&apikey=${BINPLORER_API_KEY}`,
     );
     const data = await response.json();
 
@@ -92,7 +92,7 @@ export const fetchLatestTransactions = async (): Promise<Transaction[]> => {
 export const fetchTokenInfo = async (): Promise<TokenInfo | null> => {
   try {
     const response = await fetch(
-      `${BINPLORER_API_URL}?module=token&action=tokeninfo&contractaddress=${BIT_TOKEN_ADDRESS}&apikey=${BINPLORER_API_KEY}`
+      `${BINPLORER_API_URL}?module=token&action=tokeninfo&contractaddress=${BIT_TOKEN_ADDRESS}&apikey=${BINPLORER_API_KEY}`,
     );
     const data = await response.json();
 
@@ -115,7 +115,7 @@ export const formatAddress = (address: string): string => {
 export const fetchTotalTransfers = async (): Promise<number> => {
   try {
     const response = await fetch(
-      `${BINPLORER_API_URL}?module=account&action=tokentx&contractaddress=${BIT_TOKEN_ADDRESS}&page=1&offset=1&sort=desc&apikey=${BINPLORER_API_KEY}`
+      `${BINPLORER_API_URL}?module=account&action=tokentx&contractaddress=${BIT_TOKEN_ADDRESS}&page=1&offset=1&sort=desc&apikey=${BINPLORER_API_KEY}`,
     );
     const data = await response.json();
 
@@ -133,7 +133,7 @@ export const fetch24HTransfers = async (): Promise<number> => {
   try {
     const oneDayAgo = Math.floor(Date.now() / 1000) - 86400;
     const response = await fetch(
-      `${BINPLORER_API_URL}?module=account&action=tokentx&contractaddress=${BIT_TOKEN_ADDRESS}&startblock=0&endblock=999999999&page=1&offset=100&sort=desc&apikey=${BINPLORER_API_KEY}`
+      `${BINPLORER_API_URL}?module=account&action=tokentx&contractaddress=${BIT_TOKEN_ADDRESS}&startblock=0&endblock=999999999&page=1&offset=100&sort=desc&apikey=${BINPLORER_API_KEY}`,
     );
     const data = await response.json();
 
