@@ -98,7 +98,7 @@ const BuyBitTab = () => {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     const endDate = new Date(yesterday);
-    endDate.setDate(endDate.getDate() + 120);
+    endDate.setDate(endDate.getDate() + 200);
     localStorage.setItem("presaleEndDate", endDate.toISOString());
     return endDate;
   };
