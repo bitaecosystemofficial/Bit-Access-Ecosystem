@@ -142,7 +142,7 @@ contract BITStaking is ReentrancyGuard, Ownable {
             active: true
         });
         
-        // Pool 1: 240 days, 18% APY, min 500,000 BIT
+        // Pool 1: 240 days, 18% APY, min 500,000,000 BIT
         stakingPools[1] = StakingPool({
             lockDays: 240,
             apy: 18,

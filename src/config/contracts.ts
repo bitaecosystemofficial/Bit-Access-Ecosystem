@@ -7,10 +7,10 @@ import ERC20ABI from "@/contracts/abis/ERC20.json";
 // Smart Contract Addresses on BSC Network
 export const CONTRACT_ADDRESSES = {
   // BIT Token Purchase Contract
-  BIT_PURCHASE: "0xaa4763b736eD739694b44C2A718Dbe936EFe28Fa" as `0x${string}`,
+  BIT_PURCHASE: "0xaa4763b736eD739694b44C2A718Dbe936EFe28Fa" as `0x${string}`, // Replace with deployed address
 
   // BIT Staking Contract
-  BIT_STAKING: "0x1D361114074ED04e4BdC763AbF5c6218aB0e178F" as `0x${string}`, // Replace with deployed address
+  BIT_STAKING: "0x2650d46021B2eA4B3E789140623338467582cE45" as `0x${string}`, // Replace with deployed address
 
   // BIT Community Tasks Contract
   BIT_COMMUNITY_TASKS: "0xB1f710ddA249a0DbFBD342A3a6f416651B04D511" as `0x${string}`, // DEPLOY THIS CONTRACT AND UPDATE ADDRESS
