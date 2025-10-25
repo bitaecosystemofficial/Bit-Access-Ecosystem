@@ -5,20 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingBag, AlertCircle, Wallet, Loader2 } from "lucide-react";
+import { ShoppingBag, AlertCircle, Wallet, Loader2, TrendingUp, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useBITBalance } from "@/contexts/BITBalanceContext";
-import {
-  useAccount,
-  useReadContract,
-  useWriteContract,
-  useWaitForTransactionReceipt,
-  useChainId,
-  useSwitchChain,
-} from "wagmi";
+import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt, useChainId, useSwitchChain } from "wagmi";
 import { parseUnits, formatUnits } from "viem";
-import { bsc, bscTestnet } from "wagmi/chains";
-import { fetchTotalBITSold } from "@/utils/bscscan";
+import { bsc } from "wagmi/chains";
 import { CONTRACT_ADDRESSES, CONTRACT_ABIS } from "@/config/contracts";
 import usdtIcon from "@/assets/usdt-icon.png";
 import usdcIcon from "@/assets/usdc-icon.png";
@@ -27,6 +18,8 @@ import polygonIcon from "@/assets/polygon-icon.png";
 import arbitrumIcon from "@/assets/arbitrum-icon.png";
 import baseIcon from "@/assets/base-icon.png";
 import bitLogo from "@/assets/bit-token-logo.png";
+
+const TOTAL_PRESALE_ALLOCATION = 1_000_000_000; // 1 billion BIT tokens
 
 const BuyBitTab = () => {
   const [amount, setAmount] = useState("");
@@ -38,13 +31,12 @@ const BuyBitTab = () => {
   const chainId = useChainId();
   const { switchChain } = useSwitchChain();
   const { writeContract, data: hash, isPending: isPurchasing } = useWriteContract();
-
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash });
 
-  // Determine if we're on BSC network (mainnet or testnet)
-  const isBSCNetwork = chainId === bsc.id || chainId === bscTestnet.id;
+  const isBSCNetwork = chainId === bsc.id;
+  const paymentTokenAddress = paymentMethod === "USDT" ? CONTRACT_ADDRESSES.USDT_TOKEN : CONTRACT_ADDRESSES.USDC_TOKEN;
 
-  // Read BIT token balance
+  // Contract reads
   const { data: bitBalance, refetch: refetchBitBalance } = useReadContract({
     address: CONTRACT_ADDRESSES.BIT_TOKEN as `0x${string}`,
     abi: CONTRACT_ABIS.ERC20,
@@ -53,7 +45,6 @@ const BuyBitTab = () => {
     query: { enabled: !!address && isBSCNetwork },
   });
 
-  // Read contract price (pricePerBIT is in 18 decimals representing USD per BIT with 9 decimals)
   const { data: contractPrice } = useReadContract({
     address: CONTRACT_ADDRESSES.BIT_PURCHASE as `0x${string}`,
     abi: CONTRACT_ABIS.BIT_PURCHASE,
@@ -61,7 +52,6 @@ const BuyBitTab = () => {
     query: { enabled: isBSCNetwork },
   });
 
-  // Read minimum purchase (in BIT with 9 decimals)
   const { data: minPurchase } = useReadContract({
     address: CONTRACT_ADDRESSES.BIT_PURCHASE as `0x${string}`,
     abi: CONTRACT_ABIS.BIT_PURCHASE,
@@ -69,7 +59,6 @@ const BuyBitTab = () => {
     query: { enabled: isBSCNetwork },
   });
 
-  // Read contract BIT balance
   const { data: contractBitBalance, refetch: refetchContractBalance } = useReadContract({
     address: CONTRACT_ADDRESSES.BIT_TOKEN as `0x${string}`,
     abi: CONTRACT_ABIS.ERC20,
@@ -78,21 +67,6 @@ const BuyBitTab = () => {
     query: { enabled: isBSCNetwork },
   });
 
-  // Read initial presale allocation (total BIT in contract at deployment)
-  const { data: totalPresaleAllocation } = useReadContract({
-    address: CONTRACT_ADDRESSES.BIT_TOKEN as `0x${string}`,
-    abi: CONTRACT_ABIS.ERC20,
-    functionName: "balanceOf",
-    args: [CONTRACT_ADDRESSES.BIT_PURCHASE as `0x${string}`],
-    query: { 
-      enabled: isBSCNetwork,
-      // Cache for 5 minutes as this rarely changes
-      staleTime: 5 * 60 * 1000,
-    },
-  });
-
-  // Read payment token allowance
-  const paymentTokenAddress = paymentMethod === "USDT" ? CONTRACT_ADDRESSES.USDT_TOKEN : CONTRACT_ADDRESSES.USDC_TOKEN;
   const { data: allowance, refetch: refetchAllowance } = useReadContract({
     address: paymentTokenAddress as `0x${string}`,
     abi: CONTRACT_ABIS.ERC20,
@@ -101,39 +75,25 @@ const BuyBitTab = () => {
     query: { enabled: !!address && isBSCNetwork },
   });
 
-  // Fixed presale end date - stored in localStorage to persist across refreshes
+  // Presale countdown
   const getPresaleEndDate = () => {
     const stored = localStorage.getItem("presaleEndDate");
-    if (stored) {
-      return new Date(stored);
-    }
-    // If not stored, create new end date 120 days from now
-    const today = new Date();
-    const endDate = new Date(today);
+    if (stored) return new Date(stored);
+    const endDate = new Date();
     endDate.setDate(endDate.getDate() + 120);
     localStorage.setItem("presaleEndDate", endDate.toISOString());
     return endDate;
   };
 
-  const PRESALE_END_DATE = getPresaleEndDate();
-
-  const [timeLeft, setTimeLeft] = useState({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
     const calculateTimeLeft = () => {
-      const now = new Date().getTime();
-      const distance = PRESALE_END_DATE.getTime() - now;
-
+      const distance = getPresaleEndDate().getTime() - new Date().getTime();
       if (distance < 0) {
         setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
         return;
       }
-
       setTimeLeft({
         days: Math.floor(distance / (1000 * 60 * 60 * 24)),
         hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
@@ -142,146 +102,83 @@ const BuyBitTab = () => {
       });
     };
 
-    // Calculate immediately
     calculateTimeLeft();
-
-    // Then update every second
     const timer = setInterval(calculateTimeLeft, 1000);
-
     return () => clearInterval(timer);
   }, []);
 
-  // Price per BIT in USD (contract: 108000000000000 = 0.000108 USD with 18 decimals)
+  // Calculated values
   const pricePerBit = contractPrice ? Number(formatUnits(contractPrice as bigint, 18)) : 0.000108;
-  // Minimum purchase in BIT (contract: 100000 * 10^9 = 100,000 BIT with 9 decimals)
-  const minimumPurchaseBIT = minPurchase ? Number(formatUnits(minPurchase as bigint, 9)) : 100000;
-  // Convert minimum BIT to USD
-  const minimumPurchaseUSD = minimumPurchaseBIT * pricePerBit;
-
-
-  // State for total BIT sold from blockchain events
-  const [totalSold, setTotalSold] = useState<number>(0);
-  const [isLoadingTotalSold, setIsLoadingTotalSold] = useState(true);
-
-  // Calculate allocation dynamically from contract balance
+  const minimumPurchase = minPurchase ? Number(formatUnits(minPurchase as bigint, 9)) : 100_000;
   const contractBalance = contractBitBalance ? Number(formatUnits(contractBitBalance as bigint, 9)) : 0;
-  const maxBITAllocation = contractBalance; // Real-time available BIT from contract
-  
-  // Calculate initial allocation from first load
-  const initialAllocation = totalPresaleAllocation ? Number(formatUnits(totalPresaleAllocation as bigint, 9)) : 1000000000;
-  
-  // Calculate sold percentage based on real blockchain data
-  const soldPercentage = initialAllocation > 0 ? (totalSold / initialAllocation) * 100 : 0;
-  const remainingPercentage = 100 - soldPercentage;
+  const totalSold = TOTAL_PRESALE_ALLOCATION - contractBalance;
+  const soldPercentage = TOTAL_PRESALE_ALLOCATION > 0 ? (totalSold / TOTAL_PRESALE_ALLOCATION) * 100 : 0;
 
-  // Fetch total BIT sold from blockchain events (real-time)
-  useEffect(() => {
-    const loadTotalSold = async () => {
-      setIsLoadingTotalSold(true);
-      const sold = await fetchTotalBITSold();
-      setTotalSold(sold);
-      setIsLoadingTotalSold(false);
-    };
-    loadTotalSold();
+  const calculateBitAmount = (usdAmount: string): number => {
+    const amt = parseFloat(usdAmount);
+    if (isNaN(amt) || amt <= 0) return 0;
+    const bitAmount = amt / pricePerBit;
+    return Math.min(bitAmount, contractBalance);
+  };
 
-    // Refresh every 30 seconds to get latest blockchain data
-    const interval = setInterval(loadTotalSold, 30000);
-    return () => clearInterval(interval);
-  }, []);
+  const formatBitAmount = (usdAmount: string): string => {
+    return calculateBitAmount(usdAmount).toLocaleString("en-US", { 
+      maximumFractionDigits: 2,
+      minimumFractionDigits: 2 
+    });
+  };
 
   useEffect(() => {
     if (isSuccess) {
       refetchBitBalance();
       refetchContractBalance();
-
-      // Refresh total sold data
-      fetchTotalBITSold().then(setTotalSold);
-
       toast({
         title: "Purchase Successful! 🎉",
-        description: `BIT tokens have been transferred to your wallet.`,
+        description: "BIT tokens have been transferred to your wallet.",
       });
       setAmount("");
     }
-  }, [isSuccess, refetchBitBalance, toast]);
+  }, [isSuccess, refetchBitBalance, refetchContractBalance, toast]);
 
   const networks = [
-    { name: "BSC", active: true, color: "from-yellow-500/20 to-yellow-500/5", icon: bscIcon },
-    { name: "Polygon", active: false, color: "from-purple-500/20 to-purple-500/5", icon: polygonIcon },
-    { name: "Arbitrum", active: false, color: "from-blue-500/20 to-blue-500/5", icon: arbitrumIcon },
-    { name: "Base", active: false, color: "from-blue-400/20 to-blue-400/5", icon: baseIcon },
+    { name: "BSC", active: true, icon: bscIcon },
+    { name: "Polygon", active: false, icon: polygonIcon },
+    { name: "Arbitrum", active: false, icon: arbitrumIcon },
+    { name: "Base", active: false, icon: baseIcon },
   ];
-
-  const calculateBit = (usdAmount: string): string => {
-    const amt = parseFloat(usdAmount);
-    if (isNaN(amt) || amt <= 0) return "0";
-    // At 0.000108 USD per BIT, 1 USD = 9,259.26 BIT
-    const bitAmount = amt / pricePerBit;
-    // Cap at maximum allocation from contract balance
-    const cappedAmount = Math.min(bitAmount, maxBITAllocation);
-    return cappedAmount.toLocaleString("en-US", { maximumFractionDigits: 2 });
-  };
 
   const handleApprove = async () => {
     if (!address) {
-      toast({
-        title: "Wallet Not Connected",
-        description: "Please connect your wallet first",
-        variant: "destructive",
-      });
+      toast({ title: "Wallet Not Connected", description: "Please connect your wallet first", variant: "destructive" });
       return;
     }
 
     if (!amount || parseFloat(amount) <= 0) {
-      toast({
-        title: "Invalid Amount",
-        description: "Please enter a valid amount",
-        variant: "destructive",
-      });
+      toast({ title: "Invalid Amount", description: "Please enter a valid amount", variant: "destructive" });
       return;
     }
 
-    // Check if on BSC network
     if (!isBSCNetwork) {
-      const targetChain = bsc.id;
-      toast({
-        title: "Wrong Network",
-        description: "Switching to BSC Mainnet...",
-      });
+      toast({ title: "Wrong Network", description: "Switching to BSC Mainnet..." });
       try {
-        await switchChain({ chainId: targetChain });
-      } catch (error) {
-        toast({
-          title: "Network Switch Failed",
-          description: "Please switch to BSC Mainnet manually",
-          variant: "destructive",
-        });
+        await switchChain({ chainId: bsc.id });
+      } catch {
+        toast({ title: "Network Switch Failed", description: "Please switch to BSC Mainnet manually", variant: "destructive" });
         return;
       }
     }
 
     setIsApproving(true);
     try {
-      // USDT/USDC has 18 decimals on BSC
-      const amountToApprove = parseUnits(amount, 18);
-
       await writeContract({
         address: paymentTokenAddress as `0x${string}`,
         abi: CONTRACT_ABIS.ERC20,
         functionName: "approve",
-        args: [CONTRACT_ADDRESSES.BIT_PURCHASE as `0x${string}`, amountToApprove],
+        args: [CONTRACT_ADDRESSES.BIT_PURCHASE as `0x${string}`, parseUnits(amount, 18)],
       } as any);
-
-      toast({
-        title: "Approval Submitted",
-        description: `Approving ${paymentMethod} spend...`,
-      });
+      toast({ title: "Approval Submitted", description: `Approving ${paymentMethod} spend...` });
     } catch (error: any) {
-      toast({
-        title: "Approval Failed",
-        description: error?.shortMessage || error?.message || "Failed to approve token",
-        variant: "destructive",
-      });
+      toast({ title: "Approval Failed", description: error?.shortMessage || "Failed to approve token", variant: "destructive" });
     } finally {
       setIsApproving(false);
       setTimeout(() => refetchAllowance(), 3000);
@@ -290,108 +187,75 @@ const BuyBitTab = () => {
 
   const handleBuy = async () => {
     if (!address) {
-      toast({
-        title: "Wallet Not Connected",
-        description: "Please connect your wallet first",
-        variant: "destructive",
-      });
+      toast({ title: "Wallet Not Connected", description: "Please connect your wallet first", variant: "destructive" });
       return;
     }
 
-    // Check if on BSC network
     if (!isBSCNetwork) {
-      const targetChain = bsc.id;
-      toast({
-        title: "Wrong Network",
-        description: "Switching to BSC Mainnet...",
-      });
+      toast({ title: "Wrong Network", description: "Switching to BSC Mainnet..." });
       try {
-        await switchChain({ chainId: targetChain });
-      } catch (error) {
-        toast({
-          title: "Network Switch Failed",
-          description: "Please switch to BSC Mainnet manually",
-          variant: "destructive",
-        });
+        await switchChain({ chainId: bsc.id });
+      } catch {
+        toast({ title: "Network Switch Failed", description: "Please switch to BSC Mainnet manually", variant: "destructive" });
         return;
       }
     }
 
     const usdAmountValue = parseFloat(amount);
     if (!amount || usdAmountValue <= 0) {
-      toast({
-        title: "Invalid Amount",
-        description: "Please enter a valid USD amount",
-        variant: "destructive",
-      });
+      toast({ title: "Invalid Amount", description: "Please enter a valid USD amount", variant: "destructive" });
       return;
     }
 
-    const bitAmount = parseFloat(calculateBit(amount).replace(/,/g, ""));
-    
-    // Check minimum purchase in BIT
-    if (bitAmount < minimumPurchaseBIT) {
+    const bitAmount = calculateBitAmount(amount);
+    const minimumBitAmount = minimumPurchase;
+
+    if (bitAmount < minimumBitAmount) {
       toast({
         title: "Minimum Purchase Required",
-        description: `Minimum purchase is ${minimumPurchaseBIT.toLocaleString()} BIT ($${minimumPurchaseUSD.toFixed(2)} USD)`,
+        description: `Minimum purchase is ${minimumBitAmount.toLocaleString()} BIT tokens`,
         variant: "destructive",
       });
       return;
     }
 
-    // Check against maximum BIT allocation from contract balance
-    if (bitAmount > maxBITAllocation) {
+    if (bitAmount > contractBalance) {
       toast({
         title: "Exceeds Available Allocation",
-        description: `Maximum available BIT in presale: ${maxBITAllocation.toLocaleString()}`,
+        description: `Maximum available BIT: ${contractBalance.toLocaleString()}`,
         variant: "destructive",
       });
       return;
     }
 
     if (selectedNetwork !== "BSC") {
-      toast({
-        title: "Network Coming Soon",
-        description: `${selectedNetwork} network will be available soon`,
-      });
+      toast({ title: "Network Coming Soon", description: `${selectedNetwork} network will be available soon` });
       return;
     }
 
     try {
-      // USDT/USDC has 18 decimals on BSC
       const usdAmount = parseUnits(amount, 18);
-
-      // Check if approval is needed
       const currentAllowance = (allowance as bigint) || BigInt(0);
+      
       if (currentAllowance < usdAmount) {
-        toast({
-          title: "Approval Required",
-          description: `Please approve ${paymentMethod} spend first`,
-          variant: "destructive",
-        });
+        toast({ title: "Approval Required", description: `Please approve ${paymentMethod} spend first`, variant: "destructive" });
         return;
       }
 
-      // Call purchaseBIT(address paymentToken, uint256 usdAmount)
       await writeContract({
         address: CONTRACT_ADDRESSES.BIT_PURCHASE as `0x${string}`,
         abi: CONTRACT_ABIS.BIT_PURCHASE,
         functionName: "purchaseBIT",
         args: [paymentTokenAddress as `0x${string}`, usdAmount],
       } as any);
-
-      toast({
-        title: "Purchase Submitted",
-        description: `Buying ${bitAmount.toLocaleString()} BIT tokens...`,
-      });
+      
+      toast({ title: "Purchase Submitted", description: `Buying ${formatBitAmount(amount)} BIT tokens...` });
     } catch (error: any) {
-      toast({
-        title: "Purchase Failed",
-        description: error?.shortMessage || error?.message || "Transaction failed",
-        variant: "destructive",
-      });
+      toast({ title: "Purchase Failed", description: error?.shortMessage || "Transaction failed", variant: "destructive" });
     }
   };
+
+  const isApprovalNeeded = !allowance || (allowance as bigint) < parseUnits(amount || "0", 18);
 
   return (
     <motion.div
@@ -400,28 +264,32 @@ const BuyBitTab = () => {
       transition={{ duration: 0.5 }}
       className="space-y-6"
     >
-      {/* Two Column Layout: Timer and Total BIT Sold */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Presale Timer */}
-        <Card className="bg-gradient-to-br from-primary/20 via-primary/10 to-background border-primary/30">
-          <CardHeader className="text-center pb-3 md:pb-4">
-            <CardTitle className="text-xl md:text-2xl font-bold">Presale Ends In</CardTitle>
+        <Card className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-background border-primary/20">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent" />
+          <CardHeader className="relative">
+            <div className="flex items-center gap-2">
+              <Clock className="w-5 h-5 text-primary" />
+              <CardTitle className="text-xl">Presale Ends In</CardTitle>
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-4 gap-2 md:gap-3">
+          <CardContent className="relative">
+            <div className="grid grid-cols-4 gap-2">
               {[
                 { label: "Days", value: timeLeft.days },
                 { label: "Hours", value: timeLeft.hours },
                 { label: "Min", value: timeLeft.minutes },
                 { label: "Sec", value: timeLeft.seconds },
-              ].map((item, index) => (
-                <div key={index} className="flex flex-col items-center">
-                  <div className="bg-card border-2 border-primary/30 rounded-lg p-2 md:p-4 w-full">
-                    <div className="text-xl md:text-4xl font-bold text-primary text-center tabular-nums">
+              ].map((item) => (
+                <div key={item.label} className="flex flex-col items-center">
+                  <div className="bg-card/80 backdrop-blur-sm border-2 border-primary/20 rounded-lg p-3 w-full">
+                    <div className="text-3xl font-bold text-primary text-center tabular-nums">
                       {String(item.value).padStart(2, "0")}
                     </div>
                   </div>
-                  <p className="text-xs md:text-sm font-semibold text-muted-foreground mt-1 md:mt-2 uppercase">
+                  <p className="text-xs font-medium text-muted-foreground mt-2 uppercase tracking-wide">
                     {item.label}
                   </p>
                 </div>
@@ -430,145 +298,118 @@ const BuyBitTab = () => {
           </CardContent>
         </Card>
 
-        {/* Total BIT Sold - Real-time Blockchain Data */}
-        <Card className="bg-gradient-to-br from-accent/20 via-accent/10 to-background border-accent/30">
-          <CardHeader className="pb-3 md:pb-4">
-            <CardTitle className="text-xl md:text-2xl font-bold">Total BIT Sold</CardTitle>
-            <CardDescription className="text-xs">
-              Live data from contract: {CONTRACT_ADDRESSES.BIT_PURCHASE.slice(0, 6)}...{CONTRACT_ADDRESSES.BIT_PURCHASE.slice(-4)}
-            </CardDescription>
+        {/* Total Sold */}
+        <Card className="relative overflow-hidden bg-gradient-to-br from-accent/10 via-background to-background border-accent/20">
+          <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent" />
+          <CardHeader className="relative">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-accent" />
+              <CardTitle className="text-xl">Total BIT Sold</CardTitle>
+            </div>
           </CardHeader>
-          <CardContent className="space-y-3 md:space-y-4">
+          <CardContent className="relative space-y-4">
             <div className="flex items-end justify-between">
               <div>
-                <p className="text-xs md:text-sm text-muted-foreground mb-1">Sold</p>
-                <p className="text-2xl md:text-3xl font-bold text-accent">
-                  {isLoadingTotalSold ? (
-                    <Loader2 className="w-8 h-8 animate-spin inline-block" />
-                  ) : (
-                    totalSold.toLocaleString(undefined, { maximumFractionDigits: 0 })
-                  )}
+                <p className="text-sm text-muted-foreground mb-1">Tokens Sold</p>
+                <p className="text-3xl font-bold text-accent">
+                  {totalSold.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                 </p>
               </div>
               <div className="text-right">
-                <p className="text-xs md:text-sm text-muted-foreground mb-1">Progress</p>
-                <p className="text-2xl md:text-3xl font-bold text-accent">
-                  {isLoadingTotalSold ? "..." : `${soldPercentage.toFixed(2)}%`}
-                </p>
+                <p className="text-sm text-muted-foreground mb-1">Progress</p>
+                <p className="text-3xl font-bold text-accent">{soldPercentage.toFixed(2)}%</p>
               </div>
             </div>
 
-            {/* Progress Bar */}
-            <div className="w-full bg-secondary/50 rounded-full h-3 md:h-4 overflow-hidden border border-accent/30">
+            <div className="w-full bg-secondary/30 rounded-full h-3 overflow-hidden border border-accent/30">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${soldPercentage}%` }}
-                transition={{ duration: 1, ease: "easeOut" }}
-                className="h-full bg-gradient-to-r from-primary via-accent to-primary rounded-full relative"
+                transition={{ duration: 1.5, ease: "easeOut" }}
+                className="h-full bg-gradient-to-r from-primary via-accent to-primary relative"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse" />
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse" />
               </motion.div>
             </div>
-
             <div className="flex justify-between text-xs text-muted-foreground">
               <span>0 BIT</span>
-              <span>{initialAllocation.toLocaleString()} BIT</span>
+              <span>{TOTAL_PRESALE_ALLOCATION.toLocaleString()} BIT</span>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Balance Display - Grid Layout */}
+      {/* Balance Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card className="bg-gradient-to-br from-primary/10 via-primary/5 to-background border-primary/20">
-          <CardContent className="p-4 md:p-6">
+        <Card className="relative overflow-hidden bg-gradient-to-br from-primary/5 to-background border-primary/20">
+          <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex-1">
-                <p className="text-xs md:text-sm text-muted-foreground mb-1">Your BIT Balance</p>
-                <div className="flex items-center gap-2 md:gap-3">
-                  <img src={bitLogo} alt="BIT Token" className="w-8 h-8 md:w-12 md:h-12" />
+                <p className="text-sm text-muted-foreground mb-2">Your BIT Balance</p>
+                <div className="flex items-center gap-3">
+                  <img src={bitLogo} alt="BIT" className="w-10 h-10" />
                   <div>
-                    <p className="text-2xl md:text-4xl font-bold text-primary">
-                      {bitBalance
-                        ? Number(formatUnits(bitBalance as bigint, 9)).toLocaleString(undefined, {
-                            maximumFractionDigits: 2,
-                          })
-                        : "0"}
+                    <p className="text-3xl font-bold text-primary">
+                      {bitBalance ? Number(formatUnits(bitBalance as bigint, 9)).toLocaleString(undefined, { maximumFractionDigits: 2 }) : "0"}
                     </p>
-                    <p className="text-xs md:text-sm text-muted-foreground">BIT Tokens</p>
+                    <p className="text-xs text-muted-foreground">BIT Tokens</p>
                   </div>
                 </div>
               </div>
-              <Wallet className="w-12 h-12 md:w-16 md:h-16 text-primary/30" />
+              <Wallet className="w-14 h-14 text-primary/20" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-accent/10 via-accent/5 to-background border-accent/20">
-          <CardContent className="p-4 md:p-6">
+        <Card className="relative overflow-hidden bg-gradient-to-br from-accent/5 to-background border-accent/20">
+          <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex-1">
-                <p className="text-xs md:text-sm text-muted-foreground mb-1">Contract Balance</p>
-                <div className="flex items-center gap-2 md:gap-3">
-                  <img src={bitLogo} alt="BIT Token" className="w-8 h-8 md:w-12 md:h-12" />
+                <p className="text-sm text-muted-foreground mb-2">Available in Contract</p>
+                <div className="flex items-center gap-3">
+                  <img src={bitLogo} alt="BIT" className="w-10 h-10" />
                   <div>
-                    <p className="text-2xl md:text-4xl font-bold text-accent">
-                      {contractBalance.toLocaleString(undefined, {
-                        maximumFractionDigits: 0,
-                      })}
+                    <p className="text-3xl font-bold text-accent">
+                      {contractBalance.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                     </p>
-                    <p className="text-xs md:text-sm text-muted-foreground">Remaining</p>
+                    <p className="text-xs text-muted-foreground">Remaining</p>
                   </div>
                 </div>
               </div>
-              <ShoppingBag className="w-12 h-12 md:w-16 md:h-16 text-accent/30" />
+              <ShoppingBag className="w-14 h-14 text-accent/20" />
             </div>
           </CardContent>
         </Card>
       </div>
 
       {/* Purchase Form */}
-      <Card className="bg-card/50 backdrop-blur-sm border-border/50 shadow-xl">
-        <CardHeader>
-          <CardTitle className="text-2xl md:text-3xl flex items-center">
-            <ShoppingBag className="w-7 h-7 mr-3 text-primary" />
+      <Card className="relative overflow-hidden bg-card/50 backdrop-blur-sm border-border/50">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
+        <CardHeader className="relative">
+          <CardTitle className="text-2xl flex items-center gap-2">
+            <ShoppingBag className="w-6 h-6 text-primary" />
             Purchase BIT Tokens
           </CardTitle>
-          <CardDescription className="text-base">Enter your desired amount in USD</CardDescription>
+          <CardDescription>Secure your BIT tokens at presale price</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Payment Method Selection */}
+        <CardContent className="relative space-y-6">
+          {/* Payment Method */}
           <div className="space-y-3">
             <Label className="text-base font-semibold">Payment Method</Label>
             <div className="grid grid-cols-2 gap-3">
-              <Button
-                variant={paymentMethod === "USDT" ? "default" : "outline"}
-                onClick={() => setPaymentMethod("USDT")}
-                className={`h-16 font-semibold transition-all ${
-                  paymentMethod === "USDT"
-                    ? "bg-primary text-primary-foreground shadow-lg scale-105"
-                    : "bg-card/50 hover:bg-secondary/50"
-                }`}
-              >
-                <div className="flex flex-col items-center gap-1">
-                  <img src={usdtIcon} alt="USDT" className="w-6 h-6" />
-                  <span className="text-xs">USDT-BEP20</span>
-                </div>
-              </Button>
-              <Button
-                variant={paymentMethod === "USDC" ? "default" : "outline"}
-                onClick={() => setPaymentMethod("USDC")}
-                className={`h-16 font-semibold transition-all ${
-                  paymentMethod === "USDC"
-                    ? "bg-primary text-primary-foreground shadow-lg scale-105"
-                    : "bg-card/50 hover:bg-secondary/50"
-                }`}
-              >
-                <div className="flex flex-col items-center gap-1">
-                  <img src={usdcIcon} alt="USDC" className="w-6 h-6" />
-                  <span className="text-xs">USDC-BEP20</span>
-                </div>
-              </Button>
+              {["USDT", "USDC"].map((method) => (
+                <Button
+                  key={method}
+                  variant={paymentMethod === method ? "default" : "outline"}
+                  onClick={() => setPaymentMethod(method as "USDT" | "USDC")}
+                  className="h-16 transition-all"
+                >
+                  <div className="flex flex-col items-center gap-1">
+                    <img src={method === "USDT" ? usdtIcon : usdcIcon} alt={method} className="w-6 h-6" />
+                    <span className="text-xs font-medium">{method}-BEP20</span>
+                  </div>
+                </Button>
+              ))}
             </div>
           </div>
 
@@ -582,17 +423,15 @@ const BuyBitTab = () => {
                   variant={selectedNetwork === network.name ? "default" : "outline"}
                   onClick={() => setSelectedNetwork(network.name)}
                   disabled={!network.active}
-                  className={`h-16 font-semibold transition-all ${
-                    selectedNetwork === network.name
-                      ? "bg-primary text-primary-foreground shadow-lg scale-105"
-                      : "bg-card/50 hover:bg-secondary/50"
-                  } ${!network.active && "opacity-50 cursor-not-allowed"}`}
+                  className="h-16 transition-all relative"
                 >
                   <div className="flex flex-col items-center gap-1">
                     <img src={network.icon} alt={network.name} className="w-6 h-6" />
-                    <span className="text-xs">{network.name}</span>
+                    <span className="text-xs font-medium">{network.name}</span>
                     {network.active && (
-                      <Badge className="mt-0.5 bg-green-500 text-white text-[10px] px-1 py-0">Active</Badge>
+                      <Badge className="absolute -top-1 -right-1 bg-green-500 text-white text-[10px] px-1.5 py-0">
+                        Active
+                      </Badge>
                     )}
                   </div>
                 </Button>
@@ -606,26 +445,25 @@ const BuyBitTab = () => {
               Amount ({paymentMethod})
             </Label>
             <div className="relative">
-              {paymentMethod === "USDT" ? (
-                <img src={usdtIcon} alt="USDT" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" />
-              ) : (
-                <img src={usdcIcon} alt="USDC" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" />
-              )}
+              <img
+                src={paymentMethod === "USDT" ? usdtIcon : usdcIcon}
+                alt={paymentMethod}
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5"
+              />
               <Input
                 id="amount"
                 type="number"
                 placeholder="0.00"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="text-xl h-14 pl-12 font-semibold bg-background border-2 focus:border-primary"
+                className="text-xl h-14 pl-12 font-semibold bg-background/80 border-2 focus:border-primary"
                 min="0"
                 step="0.01"
               />
             </div>
-            <p className="text-sm text-muted-foreground flex items-center">
-              <AlertCircle className="w-4 h-4 mr-1" />
-              Minimum purchase: {minimumPurchaseBIT.toLocaleString()} BIT ($
-              {minimumPurchaseUSD.toFixed(2)} {paymentMethod})
+            <p className="text-sm text-muted-foreground flex items-center gap-1">
+              <AlertCircle className="w-4 h-4" />
+              Minimum: {minimumPurchase.toLocaleString()} BIT (≈ ${(minimumPurchase * pricePerBit).toFixed(2)} USD)
             </p>
           </div>
 
@@ -634,12 +472,12 @@ const BuyBitTab = () => {
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
-              className="bg-secondary/30 border-2 border-primary/20 p-6 rounded-xl space-y-3"
+              className="bg-gradient-to-br from-primary/10 to-accent/10 border-2 border-primary/20 p-6 rounded-xl space-y-3"
             >
-              <h3 className="font-bold text-lg mb-4">Purchase Summary</h3>
+              <h3 className="font-bold text-lg">Purchase Summary</h3>
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground font-medium">You Pay:</span>
+                  <span className="text-muted-foreground">You Pay:</span>
                   <div className="flex items-center gap-2">
                     <img src={paymentMethod === "USDT" ? usdtIcon : usdcIcon} alt={paymentMethod} className="w-4 h-4" />
                     <span className="text-xl font-bold">
@@ -648,59 +486,38 @@ const BuyBitTab = () => {
                   </div>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground font-medium">Price per BIT:</span>
-                  <span className="font-semibold">
-                    ${pricePerBit.toFixed(6)} 
-                    <span className="text-xs text-muted-foreground ml-1">(from contract)</span>
-                  </span>
+                  <span className="text-muted-foreground">Price per BIT:</span>
+                  <span className="font-semibold">${pricePerBit.toFixed(6)}</span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground font-medium">Payment Method:</span>
-                  <div className="flex items-center gap-1.5">
-                    <img src={paymentMethod === "USDT" ? usdtIcon : usdcIcon} alt={paymentMethod} className="w-4 h-4" />
-                    <span className="font-semibold">{paymentMethod}-BEP20</span>
-                  </div>
-                </div>
-                <div className="border-t-2 border-border pt-3 mt-3">
+                <div className="border-t-2 border-border/50 pt-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground font-medium">You Receive:</span>
-                    <span className="text-2xl font-bold text-primary">{calculateBit(amount)} BIT</span>
+                    <span className="text-muted-foreground">You Receive:</span>
+                    <span className="text-2xl font-bold text-primary">{formatBitAmount(amount)} BIT</span>
                   </div>
-                </div>
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-muted-foreground">Network:</span>
-                  <span className="font-semibold">{selectedNetwork}</span>
                 </div>
               </div>
             </motion.div>
           )}
 
-          {/* Approve and Buy Buttons */}
+          {/* Action Buttons */}
           <div className="space-y-3">
-            {amount && parseFloat(amount) > 0 && (
-              <>
-                {!allowance || (allowance as bigint) < parseUnits(amount, 18) ? (
-                  <Button
-                    onClick={handleApprove}
-                    disabled={!address || isApproving || selectedNetwork !== "BSC"}
-                    className="w-full h-14 text-lg font-bold bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all"
-                  >
-                    {isApproving ? (
-                      <>
-                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                        Approving...
-                      </>
-                    ) : (
-                      <>
-                        <ShoppingBag className="w-5 h-5 mr-2" />
-                        Approve {paymentMethod}
-                      </>
-                    )}
-                  </Button>
-                ) : null}
-              </>
+            {amount && parseFloat(amount) > 0 && isApprovalNeeded && (
+              <Button
+                onClick={handleApprove}
+                disabled={!address || isApproving || selectedNetwork !== "BSC"}
+                className="w-full h-14 text-lg font-bold"
+                variant="secondary"
+              >
+                {isApproving ? (
+                  <>
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    Approving...
+                  </>
+                ) : (
+                  `Approve ${paymentMethod}`
+                )}
+              </Button>
             )}
-
             <Button
               onClick={handleBuy}
               disabled={
@@ -710,10 +527,9 @@ const BuyBitTab = () => {
                 selectedNetwork !== "BSC" ||
                 !amount ||
                 parseFloat(amount) <= 0 ||
-                !allowance ||
-                (allowance as bigint) < parseUnits(amount || "0", 18)
+                isApprovalNeeded
               }
-              className="w-full h-14 text-lg font-bold bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all"
+              className="w-full h-14 text-lg font-bold"
             >
               {isPurchasing || isConfirming ? (
                 <>
@@ -729,14 +545,10 @@ const BuyBitTab = () => {
             </Button>
           </div>
 
-          {/* Info */}
-          <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
-            <p className="text-sm leading-relaxed">
-              <strong className="text-primary">Purchase Mechanics:</strong> Choose between USDT-BEP20 or USDC-BEP20 as
-              payment method. Enter your desired amount and you will receive BIT tokens at a fixed rate of $
-              {pricePerBit} per token. Minimum purchase requirement is {minimumPurchaseBIT.toLocaleString()} BIT tokens.
-              Tokens will be transferred to your connected wallet address on the selected network (BSC, Polygon,
-              Arbitrum, or Base).
+          {/* Info Card */}
+          <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              <strong className="text-foreground">How it works:</strong> Choose USDT-BEP20 or USDC-BEP20, enter your amount, and receive BIT tokens at ${pricePerBit.toFixed(6)} per token. Minimum purchase: {minimumPurchase.toLocaleString()} BIT. Tokens transfer instantly to your wallet on BSC network.
             </p>
           </div>
         </CardContent>
