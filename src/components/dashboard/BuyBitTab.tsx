@@ -76,7 +76,7 @@ const BuyBitTab = () => {
   });
 
   // Read total BIT sold (we'll calculate from initial supply minus current contract balance)
-  const INITIAL_CONTRACT_SUPPLY = 1500000000; // 1.50 Billion BIT tokens (adjust as needed)
+  const INITIAL_CONTRACT_SUPPLY = 2000900000; // 2.09 Billion BIT tokens (adjust as needed)
 
   // Read payment token allowance
   const paymentTokenAddress = paymentMethod === "USDT" ? CONTRACT_ADDRESSES.USDT_TOKEN : CONTRACT_ADDRESSES.USDC_TOKEN;
