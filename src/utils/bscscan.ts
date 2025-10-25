@@ -1,6 +1,5 @@
-const ETHERSCAN_API_KEY = "2QY4ZBIQCD2GQT2MKC1IN1VPC1S2BEJ1UF";
-const ETHERSCAN_API_URL = "https://api.etherscan.io/v2/api";
-const CHAIN_ID = "56"; // BSC Mainnet
+const BINPLORER_API_KEY = "EK-tLJmD-TV5Qqjd-hQhSS";
+const BINPLORER_API_URL = "https://api.binplorer.com/api";
 const BIT_TOKEN_ADDRESS = "0xd3bDe17EbD27739cF5505Cd58Ecf31cB628E469c";
 
 export interface TokenHolder {
@@ -31,7 +30,7 @@ export interface TokenInfo {
 export const fetchTokenHolders = async (): Promise<number> => {
   try {
     const response = await fetch(
-      `${ETHERSCAN_API_URL}?chainid=${CHAIN_ID}&module=token&action=tokenholderlist&contractaddress=${BIT_TOKEN_ADDRESS}&page=1&offset=1&apikey=${ETHERSCAN_API_KEY}`
+      `${BINPLORER_API_URL}?module=token&action=tokenholderlist&contractaddress=${BIT_TOKEN_ADDRESS}&page=1&offset=1&apikey=${BINPLORER_API_KEY}`
     );
     const data = await response.json();
 
@@ -51,7 +50,7 @@ export const fetchTokenHolders = async (): Promise<number> => {
 export const fetchTop10Holders = async (): Promise<TokenHolder[]> => {
   try {
     const response = await fetch(
-      `${ETHERSCAN_API_URL}?chainid=${CHAIN_ID}&module=token&action=tokenholderlist&contractaddress=${BIT_TOKEN_ADDRESS}&page=1&offset=10&apikey=${ETHERSCAN_API_KEY}`
+      `${BINPLORER_API_URL}?module=token&action=tokenholderlist&contractaddress=${BIT_TOKEN_ADDRESS}&page=1&offset=10&apikey=${BINPLORER_API_KEY}`
     );
     const data = await response.json();
 
@@ -74,7 +73,7 @@ export const fetchTop10Holders = async (): Promise<TokenHolder[]> => {
 export const fetchLatestTransactions = async (): Promise<Transaction[]> => {
   try {
     const response = await fetch(
-      `${ETHERSCAN_API_URL}?chainid=${CHAIN_ID}&module=account&action=tokentx&contractaddress=${BIT_TOKEN_ADDRESS}&page=1&offset=10&sort=desc&apikey=${ETHERSCAN_API_KEY}`
+      `${BINPLORER_API_URL}?module=account&action=tokentx&contractaddress=${BIT_TOKEN_ADDRESS}&page=1&offset=10&sort=desc&apikey=${BINPLORER_API_KEY}`
     );
     const data = await response.json();
 
@@ -93,7 +92,7 @@ export const fetchLatestTransactions = async (): Promise<Transaction[]> => {
 export const fetchTokenInfo = async (): Promise<TokenInfo | null> => {
   try {
     const response = await fetch(
-      `${ETHERSCAN_API_URL}?chainid=${CHAIN_ID}&module=token&action=tokeninfo&contractaddress=${BIT_TOKEN_ADDRESS}&apikey=${ETHERSCAN_API_KEY}`
+      `${BINPLORER_API_URL}?module=token&action=tokeninfo&contractaddress=${BIT_TOKEN_ADDRESS}&apikey=${BINPLORER_API_KEY}`
     );
     const data = await response.json();
 
@@ -116,7 +115,7 @@ export const formatAddress = (address: string): string => {
 export const fetchTotalTransfers = async (): Promise<number> => {
   try {
     const response = await fetch(
-      `${ETHERSCAN_API_URL}?chainid=${CHAIN_ID}&module=account&action=tokentx&contractaddress=${BIT_TOKEN_ADDRESS}&page=1&offset=1&sort=desc&apikey=${ETHERSCAN_API_KEY}`
+      `${BINPLORER_API_URL}?module=account&action=tokentx&contractaddress=${BIT_TOKEN_ADDRESS}&page=1&offset=1&sort=desc&apikey=${BINPLORER_API_KEY}`
     );
     const data = await response.json();
 
@@ -134,7 +133,7 @@ export const fetch24HTransfers = async (): Promise<number> => {
   try {
     const oneDayAgo = Math.floor(Date.now() / 1000) - 86400;
     const response = await fetch(
-      `${ETHERSCAN_API_URL}?chainid=${CHAIN_ID}&module=account&action=tokentx&contractaddress=${BIT_TOKEN_ADDRESS}&startblock=0&endblock=999999999&page=1&offset=100&sort=desc&apikey=${ETHERSCAN_API_KEY}`
+      `${BINPLORER_API_URL}?module=account&action=tokentx&contractaddress=${BIT_TOKEN_ADDRESS}&startblock=0&endblock=999999999&page=1&offset=100&sort=desc&apikey=${BINPLORER_API_KEY}`
     );
     const data = await response.json();
 
