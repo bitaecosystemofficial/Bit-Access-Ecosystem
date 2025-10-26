@@ -40,9 +40,9 @@ const Navigation = () => {
     { path: '/', label: 'Home' },
     { path: '/overview', label: 'Overview' },
     { path: '/ecosystem', label: 'Ecosystem' },
-    { path: '/integrators', label: 'Integrators' },
-    { path: '/chart', label: 'Chart' },
+    { path: '/tokenomics', label: 'Tokenomics' },
     { path: '/helpdesk', label: 'Helpdesk' },
+    { path: '/contact', label: 'Contact Us' },
   ];
 
   const formatAddress = (addr: string) => {

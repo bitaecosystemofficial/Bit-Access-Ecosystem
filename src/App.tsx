@@ -11,9 +11,9 @@ import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import Overview from "./pages/Overview";
 import Ecosystem from "./pages/Ecosystem";
-import Integrators from "./pages/Integrators";
-import Chart from "./pages/Chart";
+import Tokenomics from "./pages/Tokenomics";
 import Helpdesk from "./pages/Helpdesk";
+import ContactUs from "./pages/ContactUs";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 
@@ -51,9 +51,9 @@ const App = () => (
             <Route path="/" element={<Home />} />
             <Route path="/overview" element={<Overview />} />
             <Route path="/ecosystem" element={<Ecosystem />} />
-            <Route path="/integrators" element={<Integrators />} />
-            <Route path="/chart" element={<Chart />} />
+            <Route path="/tokenomics" element={<Tokenomics />} />
             <Route path="/helpdesk" element={<Helpdesk />} />
+            <Route path="/contact" element={<ContactUs />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="*" element={<NotFound />} />
               </Routes>
