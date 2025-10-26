@@ -1,478 +1,295 @@
 import { motion } from "framer-motion";
-import {
-  Book,
-  HelpCircle,
-  Shield,
-  FileText,
-  Cookie,
-  PieChart as PieChartIcon,
-  TrendingUp,
-  Target,
-  Map,
-  Gift,
-  Users,
-  Coins,
-  Lock,
-  Rocket,
-  Globe,
-  Vote,
-  GraduationCap,
-  Network,
-  Send,
-  CheckCircle,
-  Circle,
-  Clock,
-  FileCheck2,
-  Download,
-  AlertTriangle,
-  CheckCircle2,
-  XCircle,
-  Repeat,
-  Mail,
-  Facebook,
-  Twitter,
-  MessageCircle,
-  Github,
-} from "lucide-react";
+import { Book, HelpCircle, Shield, FileText, Cookie, PieChart as PieChartIcon, TrendingUp, Target, Map, Gift, Users, Coins, Lock, Rocket, Globe, Vote, GraduationCap, Network, Send, CheckCircle, Circle, Clock, FileCheck2, Download, AlertTriangle, CheckCircle2, XCircle, Repeat, Mail, Facebook, Twitter, MessageCircle, Github } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
 const Helpdesk = () => {
-  const whitepaperSections = [
-    {
-      title: "The Evolution of Blockchain and the Rise of BIT Access",
-      content: `As the blockchain ecosystem continued to evolve, so did the vision of BIT Access. The project set out to bridge the gap between traditional industries and blockchain technology, exploring the advantages of using cryptocurrencies and decentralized applications (DApps) in areas such as:
+  const whitepaperSections = [{
+    title: "The Evolution of Blockchain and the Rise of BIT Access",
+    content: `As the blockchain ecosystem continued to evolve, so did the vision of BIT Access. The project set out to bridge the gap between traditional industries and blockchain technology, exploring the advantages of using cryptocurrencies and decentralized applications (DApps) in areas such as:
 
 • E-commerce: Revolutionizing online shopping by offering new payment methods, loyalty rewards, and rebate systems based on cryptocurrency.
 • Business: Providing businesses with more efficient, secure, and transparent systems for transactions, supply chain management, and customer engagement.
 • Education: Enabling educators and learners to interact in decentralized environments, tokenize learning content, and offer incentive-driven rewards using BIT tokens.
 • Merchant Services: Empowering merchants to adopt decentralized payment systems, gain access to global markets, and benefit from lower transaction fees.
 
-With the introduction of BIT Access, Dr. Duaso sought to create an ecosystem that provided individuals and businesses with the access and tools needed to thrive in an ever-changing digital landscape.`,
-    },
-    {
-      title: "The Road Ahead: BIT Access as a Leading Digital Asset",
-      content: `The concept of BIT Access goes beyond just cryptocurrency—it represents a shift in how digital assets and blockchain technologies will shape the future. By offering access to information, rewarding participants with tokens, and providing tools to foster innovation, BIT Access is positioned to become a leading force in the cryptocurrency and blockchain space.
+With the introduction of BIT Access, Dr. Duaso sought to create an ecosystem that provided individuals and businesses with the access and tools needed to thrive in an ever-changing digital landscape.`
+  }, {
+    title: "The Road Ahead: BIT Access as a Leading Digital Asset",
+    content: `The concept of BIT Access goes beyond just cryptocurrency—it represents a shift in how digital assets and blockchain technologies will shape the future. By offering access to information, rewarding participants with tokens, and providing tools to foster innovation, BIT Access is positioned to become a leading force in the cryptocurrency and blockchain space.
 
-BIT Access is not just about the future of decentralized finance (DeFi); it is about a larger vision of the future of digital assets in the next generation. Dr. Duaso and the team at BIT Access believe that BIT tokens will one day be recognized as one of the top digital assets in the cryptocurrency world.`,
-    },
-  ];
+BIT Access is not just about the future of decentralized finance (DeFi); it is about a larger vision of the future of digital assets in the next generation. Dr. Duaso and the team at BIT Access believe that BIT tokens will one day be recognized as one of the top digital assets in the cryptocurrency world.`
+  }];
 
   // Token Usage - Updated from Ecosystem
-  const tokenUsage = [
-    {
-      icon: Coins,
-      title: "Buy BIT",
-      description: "Purchase BIT tokens using USDT-BEP20 or USDC-BEP20 at a fixed price of $0.00108 per BIT. Available on BSC, Polygon, Arbitrum, and Base networks. Minimum purchase of 100,000 BIT tokens to get started.",
-    },
-    {
-      icon: Gift,
-      title: "Collect BIT",
-      description: "Earn BIT tokens as rewards through multiple activities: daily login bonuses, referral programs, completing tasks, participating in community events, and engaging with our ecosystem partners.",
-    },
-    {
-      icon: Lock,
-      title: "Stake & Grow BIT",
-      description: "Lock your BIT tokens in our staking platform to earn passive rewards. Choose from multiple staking tiers with competitive APY rates. The longer you stake, the higher your rewards potential.",
-    },
-    {
-      icon: Repeat,
-      title: "Swap BIT",
-      description: "Seamlessly swap your BIT tokens with other cryptocurrencies through our integrated DEX. Trade with minimal fees, instant execution, and full transparency on the blockchain.",
-    },
-    {
-      icon: TrendingUp,
-      title: "Earn BIT",
-      description: "Generate BIT token rewards by staking, referring friends, shopping at partner merchants, participating in governance, and contributing to community growth. Multiple earning streams available.",
-    },
-    {
-      icon: Rocket,
-      title: "Membership Benefits",
-      description: "Unlock exclusive perks with tiered membership levels. Higher tiers offer premium features, enhanced reward multipliers, priority support, and early access to new opportunities.",
-    },
-  ];
+  const tokenUsage = [{
+    icon: Coins,
+    title: "Buy BIT",
+    description: "Purchase BIT tokens using USDT-BEP20 or USDC-BEP20 at a fixed price of $0.00108 per BIT. Available on BSC, Polygon, Arbitrum, and Base networks. Minimum purchase of 100,000 BIT tokens to get started."
+  }, {
+    icon: Gift,
+    title: "Collect BIT",
+    description: "Earn BIT tokens as rewards through multiple activities: daily login bonuses, referral programs, completing tasks, participating in community events, and engaging with our ecosystem partners."
+  }, {
+    icon: Lock,
+    title: "Stake & Grow BIT",
+    description: "Lock your BIT tokens in our staking platform to earn passive rewards. Choose from multiple staking tiers with competitive APY rates. The longer you stake, the higher your rewards potential."
+  }, {
+    icon: Repeat,
+    title: "Swap BIT",
+    description: "Seamlessly swap your BIT tokens with other cryptocurrencies through our integrated DEX. Trade with minimal fees, instant execution, and full transparency on the blockchain."
+  }, {
+    icon: TrendingUp,
+    title: "Earn BIT",
+    description: "Generate BIT token rewards by staking, referring friends, shopping at partner merchants, participating in governance, and contributing to community growth. Multiple earning streams available."
+  }, {
+    icon: Rocket,
+    title: "Membership Benefits",
+    description: "Unlock exclusive perks with tiered membership levels. Higher tiers offer premium features, enhanced reward multipliers, priority support, and early access to new opportunities."
+  }];
 
   // Ecosystem Benefits - Updated from Ecosystem
-  const tokenHolderBenefits = [
-    'Stake BIT tokens to earn competitive APY rewards passively',
-    'Access tiered membership benefits with exclusive perks and features',
-    'Participate in governance voting to shape ecosystem decisions',
-    'Receive enhanced reward multipliers for long-term holding',
-    'Earn bonus BIT rewards through referral program participation',
-    'Get priority access to new features and token sale events',
-    'Unlock premium support channels and dedicated account management',
-    'Build reputation score for increased rewards and special opportunities',
-  ];
-
-  const merchantBenefits = [
-    'Accept USDT/USDC payments on BSC, Polygon, Arbitrum, and Base networks',
-    'Receive instant settlement in stablecoins with zero chargeback risk',
-    'Earn BIT token rewards for every transaction processed',
-    'Access comprehensive analytics dashboard for sales and BIT earnings',
-    'Get BIT bonus rewards for achieving monthly transaction milestones',
-    'Benefit from lower transaction fees compared to traditional payment processors',
-    'Earn additional BIT rewards for referring new merchant partners',
-    'Integrate easily with existing POS systems and e-commerce platforms',
-  ];
-
-  const customerBenefits = [
-    'Pay merchants using USDT/USDC across 4 blockchain networks',
-    'Earn BIT token cashback rewards on every purchase made',
-    'Receive instant payment confirmation with blockchain transparency',
-    'Collect bonus BIT rewards for shopping frequency milestones',
-    'Access exclusive merchant discounts and promotional offers',
-    'Choose preferred network based on transaction fees and speed',
-    'Earn additional BIT tokens through customer referral programs',
-    'Progress through reward tiers to unlock enhanced cashback rates',
-  ];
-
-  const communityBenefits = [
-    'Earn BIT rewards for active participation in community events',
-    'Participate in regular airdrops and community reward distributions',
-    'Create educational content to earn BIT token incentives',
-    'Engage in governance proposals and voting for BIT rewards',
-    'Complete social media tasks and campaigns for BIT earnings',
-    'Contribute to forums and help other members for reward bonuses',
-    'Join ambassador programs to earn consistent BIT incentives',
-    'Access exclusive community-only features and early announcements',
-  ];
+  const tokenHolderBenefits = ['Stake BIT tokens to earn competitive APY rewards passively', 'Access tiered membership benefits with exclusive perks and features', 'Participate in governance voting to shape ecosystem decisions', 'Receive enhanced reward multipliers for long-term holding', 'Earn bonus BIT rewards through referral program participation', 'Get priority access to new features and token sale events', 'Unlock premium support channels and dedicated account management', 'Build reputation score for increased rewards and special opportunities'];
+  const merchantBenefits = ['Accept USDT/USDC payments on BSC, Polygon, Arbitrum, and Base networks', 'Receive instant settlement in stablecoins with zero chargeback risk', 'Earn BIT token rewards for every transaction processed', 'Access comprehensive analytics dashboard for sales and BIT earnings', 'Get BIT bonus rewards for achieving monthly transaction milestones', 'Benefit from lower transaction fees compared to traditional payment processors', 'Earn additional BIT rewards for referring new merchant partners', 'Integrate easily with existing POS systems and e-commerce platforms'];
+  const customerBenefits = ['Pay merchants using USDT/USDC across 4 blockchain networks', 'Earn BIT token cashback rewards on every purchase made', 'Receive instant payment confirmation with blockchain transparency', 'Collect bonus BIT rewards for shopping frequency milestones', 'Access exclusive merchant discounts and promotional offers', 'Choose preferred network based on transaction fees and speed', 'Earn additional BIT tokens through customer referral programs', 'Progress through reward tiers to unlock enhanced cashback rates'];
+  const communityBenefits = ['Earn BIT rewards for active participation in community events', 'Participate in regular airdrops and community reward distributions', 'Create educational content to earn BIT token incentives', 'Engage in governance proposals and voting for BIT rewards', 'Complete social media tasks and campaigns for BIT earnings', 'Contribute to forums and help other members for reward bonuses', 'Join ambassador programs to earn consistent BIT incentives', 'Access exclusive community-only features and early announcements'];
 
   // Tokenomics Data
-  const tokenAllocationData = [
-    {
-      name: "Project Development",
-      value: 35.0,
-      color: "#FFD700",
-    },
-    {
-      name: "Company Reserved",
-      value: 5.0,
-      color: "#FFA500",
-    },
-    {
-      name: "Token Burned",
-      value: 10.0,
-      color: "#FF4500",
-    },
-    {
-      name: "P2P",
-      value: 10.0,
-      color: "#FF8C00",
-    },
-    {
-      name: "Marketing",
-      value: 10.0,
-      color: "#FF7F50",
-    },
-    {
-      name: "Liquidity CEX",
-      value: 10.0,
-      color: "#FF6347",
-    },
-    {
-      name: "Presale",
-      value: 5.0,
-      color: "#FFB347",
-    },
-    {
-      name: "Liquidity DEX",
-      value: 5.0,
-      color: "#FFA07A",
-    },
-    {
-      name: "Management Team",
-      value: 3.0,
-      color: "#FA8072",
-    },
-    {
-      name: "Foundation",
-      value: 2.0,
-      color: "#E9967A",
-    },
-    {
-      name: "Emergency Fund",
-      value: 2.0,
-      color: "#F08080",
-    },
-    {
-      name: "Staking",
-      value: 1.0,
-      color: "#CD5C5C",
-    },
-    {
-      name: "Airdrops, Rewards & Bounty",
-      value: 1.0,
-      color: "#DC143C",
-    },
-    {
-      name: "Creator Dev",
-      value: 1.0,
-      color: "#B22222",
-    },
-  ];
-  const fundAllocationData = [
-    {
-      name: "Product Development",
-      value: 17,
-      color: "#FFD700",
-    },
-    {
-      name: "Marketing",
-      value: 14,
-      color: "#FFA500",
-    },
-    {
-      name: "Company Funds",
-      value: 10,
-      color: "#FF8C00",
-    },
-    {
-      name: "Team",
-      value: 9,
-      color: "#FF7F50",
-    },
-    {
-      name: "Business Operations",
-      value: 9,
-      color: "#FF6347",
-    },
-    {
-      name: "Community Rewards",
-      value: 8,
-      color: "#FFB347",
-    },
-    {
-      name: "Legal & Regulation",
-      value: 6,
-      color: "#FFA07A",
-    },
-    {
-      name: "Taxes",
-      value: 5,
-      color: "#FA8072",
-    },
-    {
-      name: "Contingency",
-      value: 5,
-      color: "#E9967A",
-    },
-    {
-      name: "Sponsors & Partnerships",
-      value: 5,
-      color: "#F08080",
-    },
-    {
-      name: "Advisors",
-      value: 4,
-      color: "#CD5C5C",
-    },
-    {
-      name: "Charity Works",
-      value: 4,
-      color: "#DC143C",
-    },
-  ];
-  const roadmapPhases = [
-    {
-      phase: "Phase 1: Foundation",
-      title: "Foundation",
-      status: "completed",
-      items: [
-        "Token launch and initial distribution",
-        "Smart contract deployment across networks",
-        "Launch staking platform with multiple tiers",
-        "Onboard first merchant partners",
-      ],
-    },
-    {
-      phase: "Phase 2: Expansion",
-      title: "Expansion",
-      status: "current",
-      items: [
-        "DEX integration for token swaps",
-        "Mobile wallet app development",
-        "Expand merchant network globally",
-        "Implement tiered membership system",
-      ],
-    },
-    {
-      phase: "Phase 3: Ecosystem Growth",
-      title: "Ecosystem Growth",
-      status: "upcoming",
-      items: [
-        "Launch governance platform for voting",
-        "Cross-chain bridge implementation",
-        "Advanced analytics dashboard release",
-        "Partnership with major e-commerce platforms",
-      ],
-    },
-    {
-      phase: "Phase 4: Mass Adoption",
-      title: "Mass Adoption",
-      status: "upcoming",
-      items: [
-        "Global payment processor integration",
-        "Enterprise merchant solutions",
-        "DeFi yield farming opportunities",
-        "Worldwide community expansion",
-      ],
-    },
-  ];
+  const tokenAllocationData = [{
+    name: "Project Development",
+    value: 35.0,
+    color: "#FFD700"
+  }, {
+    name: "Company Reserved",
+    value: 5.0,
+    color: "#FFA500"
+  }, {
+    name: "Token Burned",
+    value: 10.0,
+    color: "#FF4500"
+  }, {
+    name: "P2P",
+    value: 10.0,
+    color: "#FF8C00"
+  }, {
+    name: "Marketing",
+    value: 10.0,
+    color: "#FF7F50"
+  }, {
+    name: "Liquidity CEX",
+    value: 10.0,
+    color: "#FF6347"
+  }, {
+    name: "Presale",
+    value: 5.0,
+    color: "#FFB347"
+  }, {
+    name: "Liquidity DEX",
+    value: 5.0,
+    color: "#FFA07A"
+  }, {
+    name: "Management Team",
+    value: 3.0,
+    color: "#FA8072"
+  }, {
+    name: "Foundation",
+    value: 2.0,
+    color: "#E9967A"
+  }, {
+    name: "Emergency Fund",
+    value: 2.0,
+    color: "#F08080"
+  }, {
+    name: "Staking",
+    value: 1.0,
+    color: "#CD5C5C"
+  }, {
+    name: "Airdrops, Rewards & Bounty",
+    value: 1.0,
+    color: "#DC143C"
+  }, {
+    name: "Creator Dev",
+    value: 1.0,
+    color: "#B22222"
+  }];
+  const fundAllocationData = [{
+    name: "Product Development",
+    value: 17,
+    color: "#FFD700"
+  }, {
+    name: "Marketing",
+    value: 14,
+    color: "#FFA500"
+  }, {
+    name: "Company Funds",
+    value: 10,
+    color: "#FF8C00"
+  }, {
+    name: "Team",
+    value: 9,
+    color: "#FF7F50"
+  }, {
+    name: "Business Operations",
+    value: 9,
+    color: "#FF6347"
+  }, {
+    name: "Community Rewards",
+    value: 8,
+    color: "#FFB347"
+  }, {
+    name: "Legal & Regulation",
+    value: 6,
+    color: "#FFA07A"
+  }, {
+    name: "Taxes",
+    value: 5,
+    color: "#FA8072"
+  }, {
+    name: "Contingency",
+    value: 5,
+    color: "#E9967A"
+  }, {
+    name: "Sponsors & Partnerships",
+    value: 5,
+    color: "#F08080"
+  }, {
+    name: "Advisors",
+    value: 4,
+    color: "#CD5C5C"
+  }, {
+    name: "Charity Works",
+    value: 4,
+    color: "#DC143C"
+  }];
+  const roadmapPhases = [{
+    phase: "Phase 1: Foundation",
+    title: "Foundation",
+    status: "completed",
+    items: ["Token launch and initial distribution", "Smart contract deployment across networks", "Launch staking platform with multiple tiers", "Onboard first merchant partners"]
+  }, {
+    phase: "Phase 2: Expansion",
+    title: "Expansion",
+    status: "current",
+    items: ["DEX integration for token swaps", "Mobile wallet app development", "Expand merchant network globally", "Implement tiered membership system"]
+  }, {
+    phase: "Phase 3: Ecosystem Growth",
+    title: "Ecosystem Growth",
+    status: "upcoming",
+    items: ["Launch governance platform for voting", "Cross-chain bridge implementation", "Advanced analytics dashboard release", "Partnership with major e-commerce platforms"]
+  }, {
+    phase: "Phase 4: Mass Adoption",
+    title: "Mass Adoption",
+    status: "upcoming",
+    items: ["Global payment processor integration", "Enterprise merchant solutions", "DeFi yield farming opportunities", "Worldwide community expansion"]
+  }];
   const longTermVision = {
-    technology: [
-      "Layer 2 scaling solutions",
-      "AI-powered trading tools",
-      "Quantum-resistant security",
-      "Advanced DeFi protocols",
-    ],
-    globalExpansion: [
-      "Worldwide merchant network",
-      "Regional payment systems",
-      "International partnerships",
-      "Multi-language platform support",
-    ],
+    technology: ["Layer 2 scaling solutions", "AI-powered trading tools", "Quantum-resistant security", "Advanced DeFi protocols"],
+    globalExpansion: ["Worldwide merchant network", "Regional payment systems", "International partnerships", "Multi-language platform support"]
   };
-  const faqs = [
-    {
-      question: "What is BIT Access?",
-      answer: "BIT Access is a Web3 rewards platform that bridges traditional commerce with blockchain technology. Merchants accept USDT/USDC stablecoins for payments, and customers automatically earn BIT tokens as rewards for their purchases."
-    },
-    {
-      question: "How do I connect my wallet?",
-      answer: 'Click the "Connect Wallet" button in the navigation bar and select your preferred wallet provider (MetaMask, Coinbase Wallet, WalletConnect, etc.). Follow the prompts to authorize the connection. Once connected, you\'ll be redirected to the dashboard.'
-    },
-    {
-      question: "What wallets are supported?",
-      answer: "We support all major Web3 wallets including MetaMask, Coinbase Wallet, Trust Wallet, WalletConnect, and more through our Web3Modal integration. Any wallet compatible with BNB Chain can be used."
-    },
-    {
-      question: "How do I earn BIT tokens?",
-      answer: "You earn BIT tokens automatically when you pay with USDT/USDC at participating merchants. Additionally, you can purchase BIT directly through DEX/CEX exchanges, participate in airdrops, join staking programs, or engage in community activities and bounty campaigns."
-    },
-    {
-      question: "What payment methods do merchants accept?",
-      answer: "Merchants accept USDT and USDC stablecoins on BSC (BNB Chain). Support for Polygon, Base, and Arbitrum networks is planned for Q2 2026. Customers receive BIT tokens as rewards for their purchases."
-    },
-    {
-      question: "How does staking work?",
-      answer: "You can lock your BIT tokens in one of three staking pools: 180 days (12% APY), 240 days (18% APY), or 365 days (25% APY). Rewards are calculated daily and distributed at maturity. The minimum staking amount is 1,000 BIT tokens."
-    },
-    {
-      question: "How do I become a merchant partner?",
-      answer: "Visit the Dashboard and navigate to the Merchants Subscription tab. Choose a subscription plan (Starter at $99/month, Professional at $299/month, or Enterprise at $999/month) and complete the registration process. You'll receive integration support and marketing materials."
-    },
-    {
-      question: "What is the total supply of BIT tokens?",
-      answer: "The total supply is 100,000,000,000 (100 billion) BIT tokens with 9 decimals. 10% of tokens have been burned, reducing the circulating supply. The token is deployed on BNB Chain (BSC) with contract address: 0xd3bde17ebd27739cf5505cd58ecf31cb628e469c."
-    },
-    {
-      question: "What are the transaction fees?",
-      answer: "BIT token has a 3% buy tax and 3% sell tax. Transfer fees are 0%. The maximum total fee cap is 10% (buy + sell combined). Fees are used to support ecosystem development, marketing, and liquidity provision."
-    },
-    {
-      question: "Can I trade BIT tokens now?",
-      answer: "BIT tokens will be listed on major DEX platforms (PancakeSwap, Uniswap) in Q1 2026, followed by CEX listings (Binance, KuCoin, etc.) in Q3 2026. Currently, tokens can be acquired through presale, airdrops, and P2P transactions."
-    },
-    {
-      question: "How do I claim airdrop tokens?",
-      answer: "Visit the Dashboard and navigate to the Airdrop section. Connect your wallet and click 'Claim Airdrop' if you're eligible. Each wallet can claim 1,000 BIT tokens one time. Total airdrop supply is 10,000,000 BIT (0.01% of total supply)."
-    },
-    {
-      question: "What is the reward percentage for purchases?",
-      answer: "Customers typically earn 1-5% of their purchase value in BIT tokens, depending on the merchant and promotion. Reward rates vary by merchant subscription tier and special campaigns. Check individual merchant pages for specific reward rates."
-    },
-    {
-      question: "How do I withdraw my staking rewards?",
-      answer: "Staking rewards are automatically distributed to your wallet at the end of the staking period. You cannot withdraw rewards early. Once the lock period ends, both principal and rewards are released to your connected wallet address."
-    },
-    {
-      question: "Is BIT Access available in my country?",
-      answer: "BIT Access is available globally with some restrictions. We comply with local regulations and may not be available in certain jurisdictions. Check our Terms of Service for restricted countries. The platform supports multiple languages for global accessibility."
-    },
-    {
-      question: "What are the merchant subscription benefits?",
-      answer: "Merchants receive payment processing integration, customer rewards management, analytics dashboard, marketing materials, technical support, and access to our global customer network. Higher tiers include custom integrations and dedicated account managers."
-    },
-    {
-      question: "How secure is the BIT token smart contract?",
-      answer: "The BIT token smart contract has undergone a comprehensive self-audit. It features non-upgradeable architecture, verified source code, reentrancy protection, no hidden backdoors, and transparent fee mechanics with hard-coded limits (max 5% buy/sell fee)."
-    },
-    {
-      question: "Can I lose my staked tokens?",
-      answer: "No, staked tokens are securely locked in the smart contract and automatically returned to you at the end of the staking period along with rewards. However, you cannot withdraw early. Always ensure you're interacting with the official BIT Access staking contract."
-    },
-    {
-      question: "What happens if I lose access to my wallet?",
-      answer: "BIT Access cannot recover lost wallets or private keys as we operate on a non-custodial model. Always backup your seed phrase securely. We recommend using hardware wallets for large amounts and never sharing your private keys with anyone."
-    },
-    {
-      question: "How does governance work?",
-      answer: "BIT token holders can participate in community governance by voting on proposals related to platform development, fee adjustments, partnership decisions, and ecosystem initiatives. Voting power is proportional to token holdings. A DAO structure will be fully implemented in Q4 2026."
-    },
-    {
-      question: "What are the future roadmap milestones?",
-      answer: "Key milestones include: DEX listing (Q1 2026), multi-chain expansion (Q2 2026), CEX listings (Q3 2026), enterprise API launch (Q4 2026), and long-term goals of Layer 2 scaling, AI-powered tools, and global merchant network expansion."
-    },
-    {
-      question: "How do I report bugs or security issues?",
-      answer: "For security vulnerabilities, email security@bitaecosystem.org. For general bugs, contact support@bitaecosystem.org or join our Telegram community. We have a bug bounty program rewarding responsible disclosure of security issues."
-    },
-    {
-      question: "What is the token burning mechanism?",
-      answer: "10% of total token supply has already been burned. The smart contract includes a burn function callable only by the owner. Additional token burns may occur based on community governance decisions to reduce circulating supply and increase scarcity."
-    },
-    {
-      question: "Can merchants set custom reward rates?",
-      answer: "Yes, merchants can customize reward rates within guidelines based on their subscription tier. Professional and Enterprise merchants have more flexibility. Custom promotional campaigns can offer higher reward rates for limited periods to drive customer engagement."
-    },
-    {
-      question: "How do cross-border payments work?",
-      answer: "BIT Access enables instant cross-border payments using stablecoins (USDT/USDC) without traditional banking intermediaries. Transactions settle in real-time on the blockchain with minimal fees, making international commerce accessible and affordable for all participants."
-    },
-    {
-      question: "What educational resources are available?",
-      answer: "We offer comprehensive educational content including video tutorials on our YouTube channel, written guides in our documentation, community workshops, webinars for merchants, and incentive-based learning programs where you can earn BIT tokens while learning about blockchain."
-    },
-    {
-      question: "How do I contact customer support?",
-      answer: "Contact us via email at support@bitaecosystem.org, join our Telegram community at t.me/bitaecosystemofficial, or follow us on Twitter @bitaecosystem. We also have a dedicated helpdesk portal with ticketing system for merchant partners."
-    },
-    {
-      question: "What makes BIT Access different from other reward platforms?",
-      answer: "BIT Access uniquely combines real-world merchant adoption with blockchain rewards, using stablecoins for payments (reducing crypto volatility risk), offering generous staking APY up to 25%, and building a sustainable ecosystem with transparent tokenomics and community governance."
-    },
-    {
-      question: "Can I transfer BIT tokens between wallets?",
-      answer: "Yes, BIT tokens are freely transferable between wallets with 0% transfer fee. Only buy and sell transactions (on DEX/CEX) incur the 3% tax. Ensure you're sending to a BNB Chain (BSC) compatible wallet address."
-    },
-    {
-      question: "How is liquidity managed?",
-      answer: "10% of token allocation is dedicated to DEX liquidity and 10% to CEX liquidity. Liquidity is locked through reputable services like PinkLock to ensure stability. Market maker partnerships are being established for Q4 2025 to enhance trading depth and price stability."
-    },
-    {
-      question: "What is the roadmap for NFT marketplace integration?",
-      answer: "NFT marketplace integration is planned for Q3 2025, enabling users to trade digital collectibles, merchant loyalty NFTs, and exclusive rewards using BIT tokens. This will create additional utility and engagement opportunities within the ecosystem."
-    }
-  ];
-  return (
-    <div className="min-h-screen pt-24 pb-16">
+  const faqs = [{
+    question: "What is BIT Access?",
+    answer: "BIT Access is a Web3 rewards platform that bridges traditional commerce with blockchain technology. Merchants accept USDT/USDC stablecoins for payments, and customers automatically earn BIT tokens as rewards for their purchases."
+  }, {
+    question: "How do I connect my wallet?",
+    answer: 'Click the "Connect Wallet" button in the navigation bar and select your preferred wallet provider (MetaMask, Coinbase Wallet, WalletConnect, etc.). Follow the prompts to authorize the connection. Once connected, you\'ll be redirected to the dashboard.'
+  }, {
+    question: "What wallets are supported?",
+    answer: "We support all major Web3 wallets including MetaMask, Coinbase Wallet, Trust Wallet, WalletConnect, and more through our Web3Modal integration. Any wallet compatible with BNB Chain can be used."
+  }, {
+    question: "How do I earn BIT tokens?",
+    answer: "You earn BIT tokens automatically when you pay with USDT/USDC at participating merchants. Additionally, you can purchase BIT directly through DEX/CEX exchanges, participate in airdrops, join staking programs, or engage in community activities and bounty campaigns."
+  }, {
+    question: "What payment methods do merchants accept?",
+    answer: "Merchants accept USDT and USDC stablecoins on BSC (BNB Chain). Support for Polygon, Base, and Arbitrum networks is planned for Q2 2026. Customers receive BIT tokens as rewards for their purchases."
+  }, {
+    question: "How does staking work?",
+    answer: "You can lock your BIT tokens in one of three staking pools: 180 days (12% APY), 240 days (18% APY), or 365 days (25% APY). Rewards are calculated daily and distributed at maturity. The minimum staking amount is 1,000 BIT tokens."
+  }, {
+    question: "How do I become a merchant partner?",
+    answer: "Visit the Dashboard and navigate to the Merchants Subscription tab. Choose a subscription plan (Starter at $99/month, Professional at $299/month, or Enterprise at $999/month) and complete the registration process. You'll receive integration support and marketing materials."
+  }, {
+    question: "What is the total supply of BIT tokens?",
+    answer: "The total supply is 100,000,000,000 (100 billion) BIT tokens with 9 decimals. 10% of tokens have been burned, reducing the circulating supply. The token is deployed on BNB Chain (BSC) with contract address: 0xd3bde17ebd27739cf5505cd58ecf31cb628e469c."
+  }, {
+    question: "What are the transaction fees?",
+    answer: "BIT token has a 3% buy tax and 3% sell tax. Transfer fees are 0%. The maximum total fee cap is 10% (buy + sell combined). Fees are used to support ecosystem development, marketing, and liquidity provision."
+  }, {
+    question: "Can I trade BIT tokens now?",
+    answer: "BIT tokens will be listed on major DEX platforms (PancakeSwap, Uniswap) in Q1 2026, followed by CEX listings (Binance, KuCoin, etc.) in Q3 2026. Currently, tokens can be acquired through presale, airdrops, and P2P transactions."
+  }, {
+    question: "How do I claim airdrop tokens?",
+    answer: "Visit the Dashboard and navigate to the Airdrop section. Connect your wallet and click 'Claim Airdrop' if you're eligible. Each wallet can claim 1,000 BIT tokens one time. Total airdrop supply is 10,000,000 BIT (0.01% of total supply)."
+  }, {
+    question: "What is the reward percentage for purchases?",
+    answer: "Customers typically earn 1-5% of their purchase value in BIT tokens, depending on the merchant and promotion. Reward rates vary by merchant subscription tier and special campaigns. Check individual merchant pages for specific reward rates."
+  }, {
+    question: "How do I withdraw my staking rewards?",
+    answer: "Staking rewards are automatically distributed to your wallet at the end of the staking period. You cannot withdraw rewards early. Once the lock period ends, both principal and rewards are released to your connected wallet address."
+  }, {
+    question: "Is BIT Access available in my country?",
+    answer: "BIT Access is available globally with some restrictions. We comply with local regulations and may not be available in certain jurisdictions. Check our Terms of Service for restricted countries. The platform supports multiple languages for global accessibility."
+  }, {
+    question: "What are the merchant subscription benefits?",
+    answer: "Merchants receive payment processing integration, customer rewards management, analytics dashboard, marketing materials, technical support, and access to our global customer network. Higher tiers include custom integrations and dedicated account managers."
+  }, {
+    question: "How secure is the BIT token smart contract?",
+    answer: "The BIT token smart contract has undergone a comprehensive self-audit. It features non-upgradeable architecture, verified source code, reentrancy protection, no hidden backdoors, and transparent fee mechanics with hard-coded limits (max 5% buy/sell fee)."
+  }, {
+    question: "Can I lose my staked tokens?",
+    answer: "No, staked tokens are securely locked in the smart contract and automatically returned to you at the end of the staking period along with rewards. However, you cannot withdraw early. Always ensure you're interacting with the official BIT Access staking contract."
+  }, {
+    question: "What happens if I lose access to my wallet?",
+    answer: "BIT Access cannot recover lost wallets or private keys as we operate on a non-custodial model. Always backup your seed phrase securely. We recommend using hardware wallets for large amounts and never sharing your private keys with anyone."
+  }, {
+    question: "How does governance work?",
+    answer: "BIT token holders can participate in community governance by voting on proposals related to platform development, fee adjustments, partnership decisions, and ecosystem initiatives. Voting power is proportional to token holdings. A DAO structure will be fully implemented in Q4 2026."
+  }, {
+    question: "What are the future roadmap milestones?",
+    answer: "Key milestones include: DEX listing (Q1 2026), multi-chain expansion (Q2 2026), CEX listings (Q3 2026), enterprise API launch (Q4 2026), and long-term goals of Layer 2 scaling, AI-powered tools, and global merchant network expansion."
+  }, {
+    question: "How do I report bugs or security issues?",
+    answer: "For security vulnerabilities, email security@bitaecosystem.org. For general bugs, contact support@bitaecosystem.org or join our Telegram community. We have a bug bounty program rewarding responsible disclosure of security issues."
+  }, {
+    question: "What is the token burning mechanism?",
+    answer: "10% of total token supply has already been burned. The smart contract includes a burn function callable only by the owner. Additional token burns may occur based on community governance decisions to reduce circulating supply and increase scarcity."
+  }, {
+    question: "Can merchants set custom reward rates?",
+    answer: "Yes, merchants can customize reward rates within guidelines based on their subscription tier. Professional and Enterprise merchants have more flexibility. Custom promotional campaigns can offer higher reward rates for limited periods to drive customer engagement."
+  }, {
+    question: "How do cross-border payments work?",
+    answer: "BIT Access enables instant cross-border payments using stablecoins (USDT/USDC) without traditional banking intermediaries. Transactions settle in real-time on the blockchain with minimal fees, making international commerce accessible and affordable for all participants."
+  }, {
+    question: "What educational resources are available?",
+    answer: "We offer comprehensive educational content including video tutorials on our YouTube channel, written guides in our documentation, community workshops, webinars for merchants, and incentive-based learning programs where you can earn BIT tokens while learning about blockchain."
+  }, {
+    question: "How do I contact customer support?",
+    answer: "Contact us via email at support@bitaecosystem.org, join our Telegram community at t.me/bitaecosystemofficial, or follow us on Twitter @bitaecosystem. We also have a dedicated helpdesk portal with ticketing system for merchant partners."
+  }, {
+    question: "What makes BIT Access different from other reward platforms?",
+    answer: "BIT Access uniquely combines real-world merchant adoption with blockchain rewards, using stablecoins for payments (reducing crypto volatility risk), offering generous staking APY up to 25%, and building a sustainable ecosystem with transparent tokenomics and community governance."
+  }, {
+    question: "Can I transfer BIT tokens between wallets?",
+    answer: "Yes, BIT tokens are freely transferable between wallets with 0% transfer fee. Only buy and sell transactions (on DEX/CEX) incur the 3% tax. Ensure you're sending to a BNB Chain (BSC) compatible wallet address."
+  }, {
+    question: "How is liquidity managed?",
+    answer: "10% of token allocation is dedicated to DEX liquidity and 10% to CEX liquidity. Liquidity is locked through reputable services like PinkLock to ensure stability. Market maker partnerships are being established for Q4 2025 to enhance trading depth and price stability."
+  }, {
+    question: "What is the roadmap for NFT marketplace integration?",
+    answer: "NFT marketplace integration is planned for Q3 2025, enabling users to trade digital collectibles, merchant loyalty NFTs, and exclusive rewards using BIT tokens. This will create additional utility and engagement opportunities within the ecosystem."
+  }];
+  return <div className="min-h-screen pt-24 pb-16">
       <div className="container mx-auto px-4">
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 30,
-          }}
-          animate={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            duration: 0.6,
-          }}
-          className="text-center mb-16"
-        >
+        <motion.div initial={{
+        opacity: 0,
+        y: 30
+      }} animate={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 0.6
+      }} className="text-center mb-16">
           <h1 className="text-5xl md:text-6xl font-bold mb-6 text-shadow-gold">Helpdesk</h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Everything you need to know about Bit Access
@@ -531,19 +348,15 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
             <div className="flex-1 min-w-0">
               {/* Whitepaper Tab */}
               <TabsContent value="whitepaper">
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                    y: 20,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  transition={{
-                    duration: 0.5,
-                  }}
-                >
+                <motion.div initial={{
+                opacity: 0,
+                y: 20
+              }} animate={{
+                opacity: 1,
+                y: 0
+              }} transition={{
+                duration: 0.5
+              }}>
                   <Card className="bg-card border-border">
                     <CardHeader>
                       <div className="flex items-center justify-between flex-wrap gap-4">
@@ -564,12 +377,10 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                     </CardHeader>
                     <CardContent className="space-y-8">
                       {/* Evolution Section */}
-                      {whitepaperSections.map((section, index) => (
-                        <div key={index} className="pb-6 border-b border-border last:border-0">
+                      {whitepaperSections.map((section, index) => <div key={index} className="pb-6 border-b border-border last:border-0">
                           <h3 className="text-2xl font-bold mb-4 text-primary">{section.title}</h3>
                           <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{section.content}</p>
-                        </div>
-                      ))}
+                        </div>)}
 
                       {/* Introduction Section */}
                       <div className="space-y-6">
@@ -640,35 +451,27 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                         <div className="space-y-4">
                           <h3 className="text-xl font-bold">Core Values</h3>
                           <div className="grid md:grid-cols-2 gap-4">
-                            {[
-                              {
-                                title: "Innovation",
-                                desc: "Commitment to continuous technological advancements",
-                              },
-                              {
-                                title: "Decentralization",
-                                desc: "Empowering users by removing centralized control",
-                              },
-                              {
-                                title: "Integrity",
-                                desc: "Maintaining transparency and ethical standards",
-                              },
-                              {
-                                title: "Empowerment",
-                                desc: "Supporting users with decentralized financial tools",
-                              },
-                              {
-                                title: "Sustainability",
-                                desc: "Building solutions for long-term growth",
-                              },
-                            ].map((value, idx) => (
-                              <Card key={idx} className="bg-secondary/30">
+                            {[{
+                            title: "Innovation",
+                            desc: "Commitment to continuous technological advancements"
+                          }, {
+                            title: "Decentralization",
+                            desc: "Empowering users by removing centralized control"
+                          }, {
+                            title: "Integrity",
+                            desc: "Maintaining transparency and ethical standards"
+                          }, {
+                            title: "Empowerment",
+                            desc: "Supporting users with decentralized financial tools"
+                          }, {
+                            title: "Sustainability",
+                            desc: "Building solutions for long-term growth"
+                          }].map((value, idx) => <Card key={idx} className="bg-secondary/30">
                                 <CardContent className="p-4">
                                   <h4 className="font-bold mb-2">{value.title}</h4>
                                   <p className="text-sm text-muted-foreground">{value.desc}</p>
                                 </CardContent>
-                              </Card>
-                            ))}
+                              </Card>)}
                           </div>
                         </div>
                       </div>
@@ -753,19 +556,10 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                         <div className="space-y-4">
                           <h3 className="text-xl font-bold">4.2 Token Use Cases and Utility</h3>
                           <div className="grid md:grid-cols-2 gap-4">
-                            {[
-                              "E-commerce purchases with lower fees",
-                              "Access to educational content",
-                              "Staking programs for passive income",
-                              "Liquidity provision rewards",
-                              "Merchant loyalty programs",
-                              "Customer engagement incentives",
-                            ].map((use, idx) => (
-                              <div key={idx} className="flex items-start gap-2">
+                            {["E-commerce purchases with lower fees", "Access to educational content", "Staking programs for passive income", "Liquidity provision rewards", "Merchant loyalty programs", "Customer engagement incentives"].map((use, idx) => <div key={idx} className="flex items-start gap-2">
                                 <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                                 <span className="text-muted-foreground">{use}</span>
-                              </div>
-                            ))}
+                              </div>)}
                           </div>
                         </div>
                       </div>
@@ -781,21 +575,12 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                             and EVM compatibility.
                           </p>
                           <div className="grid md:grid-cols-2 gap-3">
-                            {[
-                              "End-to-end encryption",
-                              "Multi-signature wallets",
-                              "Cryptographic hashing",
-                              "Decentralized consensus (DPoS)",
-                              "Regular security audits",
-                              "User data protection",
-                            ].map((feature, idx) => (
-                              <Card key={idx} className="bg-secondary/30">
+                            {["End-to-end encryption", "Multi-signature wallets", "Cryptographic hashing", "Decentralized consensus (DPoS)", "Regular security audits", "User data protection"].map((feature, idx) => <Card key={idx} className="bg-secondary/30">
                                 <CardContent className="p-3 flex items-center gap-2">
                                   <Shield className="w-4 h-4 text-primary flex-shrink-0" />
                                   <span className="text-sm">{feature}</span>
                                 </CardContent>
-                              </Card>
-                            ))}
+                              </Card>)}
                           </div>
                         </div>
 
@@ -894,19 +679,10 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                               Key benefits include:
                             </p>
                             <div className="grid md:grid-cols-2 gap-3 mt-4">
-                              {[
-                                "Decentralization & trustless transactions",
-                                "Tokenized incentive programs",
-                                "Scalability across industries",
-                                "Transparency & security",
-                                "Community-driven governance",
-                                "Global reach & partnerships",
-                              ].map((benefit, idx) => (
-                                <div key={idx} className="flex items-start gap-2">
+                              {["Decentralization & trustless transactions", "Tokenized incentive programs", "Scalability across industries", "Transparency & security", "Community-driven governance", "Global reach & partnerships"].map((benefit, idx) => <div key={idx} className="flex items-start gap-2">
                                   <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                                   <span className="text-sm">{benefit}</span>
-                                </div>
-                              ))}
+                                </div>)}
                             </div>
                           </CardContent>
                         </Card>
@@ -937,12 +713,7 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                                   <Globe className="w-5 h-5 text-primary flex-shrink-0" />
                                   <div className="space-y-1">
                                     <p className="text-sm font-semibold">Website</p>
-                                    <a
-                                      href="https://bitaecosystem.org"
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="text-primary hover:underline text-sm break-all"
-                                    >
+                                    <a href="https://bitaecosystem.org" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm break-all">
                                       https://bitaecosystem.org
                                     </a>
                                   </div>
@@ -956,10 +727,7 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                                   <Mail className="w-5 h-5 text-primary flex-shrink-0" />
                                   <div className="space-y-1">
                                     <p className="text-sm font-semibold">Email</p>
-                                    <a
-                                      href="mailto:support@bitaecosystem.org"
-                                      className="text-primary hover:underline text-sm break-all"
-                                    >
+                                    <a href="mailto:support@bitaecosystem.org" className="text-primary hover:underline text-sm break-all">
                                       support@bitaecosystem.org
                                     </a>
                                   </div>
@@ -973,12 +741,7 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                                   <Facebook className="w-5 h-5 text-primary flex-shrink-0" />
                                   <div className="space-y-1">
                                     <p className="text-sm font-semibold">Facebook</p>
-                                    <a
-                                      href="https://www.facebook.com/bitaecosystemofficial"
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="text-primary hover:underline text-sm"
-                                    >
+                                    <a href="https://www.facebook.com/bitaecosystemofficial" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm">
                                       @bitaecosystemofficial
                                     </a>
                                   </div>
@@ -992,12 +755,7 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                                   <Twitter className="w-5 h-5 text-primary flex-shrink-0" />
                                   <div className="space-y-1">
                                     <p className="text-sm font-semibold">Twitter</p>
-                                    <a
-                                      href="https://x.com/bitaecosystem"
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="text-primary hover:underline text-sm"
-                                    >
+                                    <a href="https://x.com/bitaecosystem" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm">
                                       @bitaecosystem
                                     </a>
                                   </div>
@@ -1011,12 +769,7 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                                   <MessageCircle className="w-5 h-5 text-primary flex-shrink-0" />
                                   <div className="space-y-1">
                                     <p className="text-sm font-semibold">Telegram</p>
-                                    <a
-                                      href="https://t.me/bitaecosystemofficial"
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="text-primary hover:underline text-sm"
-                                    >
+                                    <a href="https://t.me/bitaecosystemofficial" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm">
                                       @bitaecosystemofficial
                                     </a>
                                   </div>
@@ -1030,12 +783,7 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                                   <Github className="w-5 h-5 text-primary flex-shrink-0" />
                                   <div className="space-y-1">
                                     <p className="text-sm font-semibold">GitHub</p>
-                                    <a
-                                      href="https://www.github.com/bitaecosystemofficial"
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="text-primary hover:underline text-sm"
-                                    >
+                                    <a href="https://www.github.com/bitaecosystemofficial" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm">
                                       @bitaecosystemofficial
                                     </a>
                                   </div>
@@ -1052,20 +800,15 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
 
               {/* Tokenomics Tab */}
               <TabsContent value="tokenomics">
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                    y: 20,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  transition={{
-                    duration: 0.5,
-                  }}
-                  className="space-y-6"
-                >
+                <motion.div initial={{
+                opacity: 0,
+                y: 20
+              }} animate={{
+                opacity: 1,
+                y: 0
+              }} transition={{
+                duration: 0.5
+              }} className="space-y-6">
                   <Card className="bg-card border-border">
                     <CardHeader>
                       <div className="flex items-center space-x-3">
@@ -1090,18 +833,13 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                       <div>
                         <h3 className="text-2xl font-bold mb-4 text-primary">Token Usage</h3>
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                          {tokenUsage.map((item, index) => (
-                            <Card
-                              key={index}
-                              className="bg-secondary/30 border-border hover:border-primary/50 transition-colors"
-                            >
+                          {tokenUsage.map((item, index) => <Card key={index} className="bg-secondary/30 border-border hover:border-primary/50 transition-colors">
                               <CardContent className="p-4">
                                 <item.icon className="w-8 h-8 text-primary mb-2" />
                                 <h4 className="font-bold mb-1">{item.title}</h4>
                                 <p className="text-sm text-muted-foreground">{item.description}</p>
                               </CardContent>
-                            </Card>
-                          ))}
+                            </Card>)}
                         </div>
                       </div>
 
@@ -1121,12 +859,10 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                                 For Token Holders
                               </h4>
                               <ul className="space-y-2">
-                                {tokenHolderBenefits.map((benefit, idx) => (
-                                  <li key={idx} className="flex items-start gap-2 text-sm">
+                                {tokenHolderBenefits.map((benefit, idx) => <li key={idx} className="flex items-start gap-2 text-sm">
                                     <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
                                     <span className="text-muted-foreground">{benefit}</span>
-                                  </li>
-                                ))}
+                                  </li>)}
                               </ul>
                             </CardContent>
                           </Card>
@@ -1139,12 +875,10 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                                 For the Community
                               </h4>
                               <ul className="space-y-2">
-                                {communityBenefits.map((benefit, idx) => (
-                                  <li key={idx} className="flex items-start gap-2 text-sm">
+                                {communityBenefits.map((benefit, idx) => <li key={idx} className="flex items-start gap-2 text-sm">
                                     <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
                                     <span className="text-muted-foreground">{benefit}</span>
-                                  </li>
-                                ))}
+                                  </li>)}
                               </ul>
                             </CardContent>
                           </Card>
@@ -1157,12 +891,10 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                                 For Customers
                               </h4>
                               <ul className="space-y-2">
-                                {customerBenefits.map((benefit, idx) => (
-                                  <li key={idx} className="flex items-start gap-2 text-sm">
+                                {customerBenefits.map((benefit, idx) => <li key={idx} className="flex items-start gap-2 text-sm">
                                     <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
                                     <span className="text-muted-foreground">{benefit}</span>
-                                  </li>
-                                ))}
+                                  </li>)}
                               </ul>
                             </CardContent>
                           </Card>
@@ -1175,12 +907,10 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                                 For Merchants
                               </h4>
                               <ul className="space-y-2">
-                                {merchantBenefits.map((benefit, idx) => (
-                                  <li key={idx} className="flex items-start gap-2 text-sm">
+                                {merchantBenefits.map((benefit, idx) => <li key={idx} className="flex items-start gap-2 text-sm">
                                     <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
                                     <span className="text-muted-foreground">{benefit}</span>
-                                  </li>
-                                ))}
+                                  </li>)}
                               </ul>
                             </CardContent>
                           </Card>
@@ -1206,7 +936,7 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                             </div>
                             <div className="flex justify-between p-3 bg-secondary/30 rounded">
                               <span className="text-muted-foreground">Initial Price:</span>
-                              <span className="font-bold">$0.00125 USDT/USDC</span>
+                              <span className="font-bold">$0.00108 USDT/USDC</span>
                             </div>
                             <div className="flex justify-between p-3 bg-secondary/30 rounded">
                               <span className="text-muted-foreground">Token Type:</span>
@@ -1252,20 +982,15 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
 
               {/* Token & Fund Allocation Tab */}
               <TabsContent value="allocation">
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                    y: 20,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  transition={{
-                    duration: 0.5,
-                  }}
-                  className="space-y-6"
-                >
+                <motion.div initial={{
+                opacity: 0,
+                y: 20
+              }} animate={{
+                opacity: 1,
+                y: 0
+              }} transition={{
+                duration: 0.5
+              }} className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-6">
                     {/* Token Distribution */}
                     <Card className="bg-card border-border">
@@ -1276,37 +1001,22 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                       <CardContent>
                         <ResponsiveContainer width="100%" height={350}>
                           <PieChart>
-                            <Pie
-                              data={tokenAllocationData}
-                              cx="50%"
-                              cy="50%"
-                              labelLine={false}
-                              outerRadius={90}
-                              fill="#8884d8"
-                              dataKey="value"
-                            >
-                              {tokenAllocationData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={entry.color} />
-                              ))}
+                            <Pie data={tokenAllocationData} cx="50%" cy="50%" labelLine={false} outerRadius={90} fill="#8884d8" dataKey="value">
+                              {tokenAllocationData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
                             </Pie>
-                            <Tooltip formatter={(value) => `${value}%`} />
+                            <Tooltip formatter={value => `${value}%`} />
                           </PieChart>
                         </ResponsiveContainer>
                         <div className="mt-4 space-y-1.5 max-h-64 overflow-y-auto">
-                          {tokenAllocationData.map((item, index) => (
-                            <div key={index} className="flex items-center justify-between text-sm py-1">
+                          {tokenAllocationData.map((item, index) => <div key={index} className="flex items-center justify-between text-sm py-1">
                               <div className="flex items-center">
-                                <div
-                                  className="w-3 h-3 rounded mr-2 flex-shrink-0"
-                                  style={{
-                                    backgroundColor: item.color,
-                                  }}
-                                />
+                                <div className="w-3 h-3 rounded mr-2 flex-shrink-0" style={{
+                              backgroundColor: item.color
+                            }} />
                                 <span className="text-xs">{item.name}</span>
                               </div>
                               <span className="font-bold text-xs">{item.value}%</span>
-                            </div>
-                          ))}
+                            </div>)}
                         </div>
                       </CardContent>
                     </Card>
@@ -1320,37 +1030,22 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                       <CardContent>
                         <ResponsiveContainer width="100%" height={350}>
                           <PieChart>
-                            <Pie
-                              data={fundAllocationData}
-                              cx="50%"
-                              cy="50%"
-                              labelLine={false}
-                              outerRadius={90}
-                              fill="#8884d8"
-                              dataKey="value"
-                            >
-                              {fundAllocationData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={entry.color} />
-                              ))}
+                            <Pie data={fundAllocationData} cx="50%" cy="50%" labelLine={false} outerRadius={90} fill="#8884d8" dataKey="value">
+                              {fundAllocationData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
                             </Pie>
-                            <Tooltip formatter={(value) => `${value}%`} />
+                            <Tooltip formatter={value => `${value}%`} />
                           </PieChart>
                         </ResponsiveContainer>
                         <div className="mt-4 space-y-1.5 max-h-64 overflow-y-auto">
-                          {fundAllocationData.map((item, index) => (
-                            <div key={index} className="flex items-center justify-between text-sm py-1">
+                          {fundAllocationData.map((item, index) => <div key={index} className="flex items-center justify-between text-sm py-1">
                               <div className="flex items-center">
-                                <div
-                                  className="w-3 h-3 rounded mr-2 flex-shrink-0"
-                                  style={{
-                                    backgroundColor: item.color,
-                                  }}
-                                />
+                                <div className="w-3 h-3 rounded mr-2 flex-shrink-0" style={{
+                              backgroundColor: item.color
+                            }} />
                                 <span className="text-xs">{item.name}</span>
                               </div>
                               <span className="font-bold text-xs">{item.value}%</span>
-                            </div>
-                          ))}
+                            </div>)}
                         </div>
                       </CardContent>
                     </Card>
@@ -1360,20 +1055,15 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
 
               {/* Roadmap Tab */}
               <TabsContent value="roadmap">
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                    y: 20,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  transition={{
-                    duration: 0.5,
-                  }}
-                  className="space-y-6"
-                >
+                <motion.div initial={{
+                opacity: 0,
+                y: 20
+              }} animate={{
+                opacity: 1,
+                y: 0
+              }} transition={{
+                duration: 0.5
+              }} className="space-y-6">
                   <Card className="bg-card border-border">
                     <CardHeader>
                       <div className="flex items-center space-x-3">
@@ -1387,100 +1077,71 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                     <CardContent>
                       <div className="space-y-8">
                         {roadmapPhases.map((phase, index) => {
-                          const statusConfig = {
-                            completed: {
-                              icon: CheckCircle,
-                              color: "text-green-500",
-                              bg: "bg-green-500",
-                              border: "border-green-500",
-                            },
-                            current: {
-                              icon: Clock,
-                              color: "text-primary",
-                              bg: "bg-primary",
-                              border: "border-primary",
-                            },
-                            upcoming: {
-                              icon: Circle,
-                              color: "text-muted-foreground",
-                              bg: "bg-muted-foreground",
-                              border: "border-muted-foreground",
-                            },
-                          };
-                          const config = statusConfig[phase.status as keyof typeof statusConfig];
-                          const StatusIcon = config.icon;
-                          return (
-                            <motion.div
-                              key={index}
-                              initial={{
-                                opacity: 0,
-                                x: -20,
-                              }}
-                              whileInView={{
-                                opacity: 1,
-                                x: 0,
-                              }}
-                              transition={{
-                                delay: index * 0.1,
-                              }}
-                              viewport={{
-                                once: true,
-                              }}
-                              className={`relative pl-8 border-l-2 ${phase.status === "current" ? "border-primary" : phase.status === "completed" ? "border-green-500" : "border-muted-foreground/30"}`}
-                            >
-                              <div
-                                className={`absolute -left-3 top-0 w-6 h-6 rounded-full ${config.bg} border-4 border-background flex items-center justify-center`}
-                              >
+                        const statusConfig = {
+                          completed: {
+                            icon: CheckCircle,
+                            color: "text-green-500",
+                            bg: "bg-green-500",
+                            border: "border-green-500"
+                          },
+                          current: {
+                            icon: Clock,
+                            color: "text-primary",
+                            bg: "bg-primary",
+                            border: "border-primary"
+                          },
+                          upcoming: {
+                            icon: Circle,
+                            color: "text-muted-foreground",
+                            bg: "bg-muted-foreground",
+                            border: "border-muted-foreground"
+                          }
+                        };
+                        const config = statusConfig[phase.status as keyof typeof statusConfig];
+                        const StatusIcon = config.icon;
+                        return <motion.div key={index} initial={{
+                          opacity: 0,
+                          x: -20
+                        }} whileInView={{
+                          opacity: 1,
+                          x: 0
+                        }} transition={{
+                          delay: index * 0.1
+                        }} viewport={{
+                          once: true
+                        }} className={`relative pl-8 border-l-2 ${phase.status === "current" ? "border-primary" : phase.status === "completed" ? "border-green-500" : "border-muted-foreground/30"}`}>
+                              <div className={`absolute -left-3 top-0 w-6 h-6 rounded-full ${config.bg} border-4 border-background flex items-center justify-center`}>
                                 <StatusIcon className="w-3 h-3 text-background" />
                               </div>
-                              <div
-                                className={`pb-8 ${phase.status === "current" ? "bg-primary/5 -ml-4 pl-8 pr-4 py-4 rounded-lg border border-primary/20" : ""}`}
-                              >
+                              <div className={`pb-8 ${phase.status === "current" ? "bg-primary/5 -ml-4 pl-8 pr-4 py-4 rounded-lg border border-primary/20" : ""}`}>
                                 <div className="flex items-center gap-2 mb-2 flex-wrap">
-                                  <span
-                                    className={`text-sm font-mono ${config.color} font-bold px-2 py-1 rounded ${phase.status === "completed" ? "bg-green-500/10" : phase.status === "current" ? "bg-primary/10" : "bg-muted/30"}`}
-                                  >
+                                  <span className={`text-sm font-mono ${config.color} font-bold px-2 py-1 rounded ${phase.status === "completed" ? "bg-green-500/10" : phase.status === "current" ? "bg-primary/10" : "bg-muted/30"}`}>
                                     {phase.phase}
                                   </span>
                                   <h3 className="text-2xl font-bold">{phase.title}</h3>
-                                  {phase.status === "completed" && (
-                                    <span className="text-xs bg-green-500/20 text-green-500 px-2 py-1 rounded-full font-semibold">
+                                  {phase.status === "completed" && <span className="text-xs bg-green-500/20 text-green-500 px-2 py-1 rounded-full font-semibold">
                                       ✓ Completed
-                                    </span>
-                                  )}
-                                  {phase.status === "current" && (
-                                    <span className="text-xs bg-primary/20 text-primary px-2 py-1 rounded-full font-semibold">
+                                    </span>}
+                                  {phase.status === "current" && <span className="text-xs bg-primary/20 text-primary px-2 py-1 rounded-full font-semibold">
                                       ● Current Phase
-                                    </span>
-                                  )}
-                                  {phase.status === "upcoming" && (
-                                    <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded-full font-semibold">
+                                    </span>}
+                                  {phase.status === "upcoming" && <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded-full font-semibold">
                                       Upcoming
-                                    </span>
-                                  )}
+                                    </span>}
                                 </div>
                                 <ul className="space-y-2 mt-4">
-                                  {phase.items.map((item, idx) => (
-                                    <li key={idx} className="flex items-start">
-                                      {phase.status === "completed" ? (
-                                        <CheckCircle className="w-4 h-4 text-green-500 mr-2 mt-1 flex-shrink-0" />
-                                      ) : phase.status === "current" ? (
-                                        <div className="w-4 h-4 mr-2 mt-1 flex-shrink-0 rounded-full border-2 border-primary flex items-center justify-center">
+                                  {phase.items.map((item, idx) => <li key={idx} className="flex items-start">
+                                      {phase.status === "completed" ? <CheckCircle className="w-4 h-4 text-green-500 mr-2 mt-1 flex-shrink-0" /> : phase.status === "current" ? <div className="w-4 h-4 mr-2 mt-1 flex-shrink-0 rounded-full border-2 border-primary flex items-center justify-center">
                                           <div className="w-2 h-2 rounded-full bg-primary" />
-                                        </div>
-                                      ) : (
-                                        <Circle className="w-4 h-4 text-muted-foreground mr-2 mt-1 flex-shrink-0" />
-                                      )}
+                                        </div> : <Circle className="w-4 h-4 text-muted-foreground mr-2 mt-1 flex-shrink-0" />}
                                       <span className={phase.status === "completed" ? "text-muted-foreground" : ""}>
                                         {item}
                                       </span>
-                                    </li>
-                                  ))}
+                                    </li>)}
                                 </ul>
                               </div>
-                            </motion.div>
-                          );
-                        })}
+                            </motion.div>;
+                      })}
                       </div>
 
                       {/* Long-term Vision Section */}
@@ -1504,12 +1165,10 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                             </CardHeader>
                             <CardContent>
                               <ul className="space-y-2">
-                                {longTermVision.technology.map((item, idx) => (
-                                  <li key={idx} className="flex items-start">
+                                {longTermVision.technology.map((item, idx) => <li key={idx} className="flex items-start">
                                     <TrendingUp className="w-4 h-4 text-primary mr-2 mt-1 flex-shrink-0" />
                                     <span className="text-sm">{item}</span>
-                                  </li>
-                                ))}
+                                  </li>)}
                               </ul>
                             </CardContent>
                           </Card>
@@ -1523,12 +1182,10 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                             </CardHeader>
                             <CardContent>
                               <ul className="space-y-2">
-                                {longTermVision.globalExpansion.map((item, idx) => (
-                                  <li key={idx} className="flex items-start">
+                                {longTermVision.globalExpansion.map((item, idx) => <li key={idx} className="flex items-start">
                                     <TrendingUp className="w-4 h-4 text-primary mr-2 mt-1 flex-shrink-0" />
                                     <span className="text-sm">{item}</span>
-                                  </li>
-                                ))}
+                                  </li>)}
                               </ul>
                             </CardContent>
                           </Card>
@@ -1541,19 +1198,15 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
 
               {/* Security Audit Tab */}
               <TabsContent value="audit">
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                    y: 20,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  transition={{
-                    duration: 0.5,
-                  }}
-                >
+                <motion.div initial={{
+                opacity: 0,
+                y: 20
+              }} animate={{
+                opacity: 1,
+                y: 0
+              }} transition={{
+                duration: 0.5
+              }}>
                   <Card className="bg-card border-border">
                     <CardHeader>
                       <div className="flex items-center justify-between flex-wrap gap-4">
@@ -1634,74 +1287,59 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                           Security & Safety Features
                         </h3>
                         <div className="grid md:grid-cols-2 gap-3">
-                          {[
-                            {
-                              feature: "Ownership Control",
-                              status: "Yes",
-                              note: "Secure, with owner functions gated",
-                            },
-                            {
-                              feature: "Hidden Owner/Backdoor",
-                              status: "None found",
-                              note: "No hidden ownership mechanisms",
-                            },
-                            {
-                              feature: "Blacklist/Whitelist",
-                              status: "Whitelist present",
-                              note: "Some addresses can be excluded from fees",
-                            },
-                            {
-                              feature: "Self-Destruct",
-                              status: "Not found",
-                              note: "Cannot be destroyed",
-                            },
-                            {
-                              feature: "Burn Functionality",
-                              status: "Yes",
-                              note: "Only callable by owner",
-                            },
-                            {
-                              feature: "Gas Efficiency",
-                              status: "No abuse found",
-                              note: "",
-                            },
-                            {
-                              feature: "Proxy/Upgradeable",
-                              status: "No proxy used",
-                              note: "",
-                            },
-                            {
-                              feature: "Reentrancy",
-                              status: "Protected",
-                              note: "On airdrop & swap functions",
-                            },
-                            {
-                              feature: "Tax Adjustable",
-                              status: "Yes",
-                              note: "Buy/sell tax adjustable by owner",
-                            },
-                            {
-                              feature: "Anti-Whale",
-                              status: "None",
-                              note: "Unlimited transfers allowed",
-                            },
-                            {
-                              feature: "Trading Lock",
-                              status: "Yes",
-                              note: "Trading cannot begin until enabled",
-                            },
-                            {
-                              feature: "Blacklist Risk",
-                              status: "None",
-                              note: "No blacklist function present",
-                            },
-                            {
-                              feature: "Cooldown Mechanism",
-                              status: "None",
-                              note: "",
-                            },
-                          ].map((item, idx) => (
-                            <Card key={idx} className="bg-secondary/30 border-border">
+                          {[{
+                          feature: "Ownership Control",
+                          status: "Yes",
+                          note: "Secure, with owner functions gated"
+                        }, {
+                          feature: "Hidden Owner/Backdoor",
+                          status: "None found",
+                          note: "No hidden ownership mechanisms"
+                        }, {
+                          feature: "Blacklist/Whitelist",
+                          status: "Whitelist present",
+                          note: "Some addresses can be excluded from fees"
+                        }, {
+                          feature: "Self-Destruct",
+                          status: "Not found",
+                          note: "Cannot be destroyed"
+                        }, {
+                          feature: "Burn Functionality",
+                          status: "Yes",
+                          note: "Only callable by owner"
+                        }, {
+                          feature: "Gas Efficiency",
+                          status: "No abuse found",
+                          note: ""
+                        }, {
+                          feature: "Proxy/Upgradeable",
+                          status: "No proxy used",
+                          note: ""
+                        }, {
+                          feature: "Reentrancy",
+                          status: "Protected",
+                          note: "On airdrop & swap functions"
+                        }, {
+                          feature: "Tax Adjustable",
+                          status: "Yes",
+                          note: "Buy/sell tax adjustable by owner"
+                        }, {
+                          feature: "Anti-Whale",
+                          status: "None",
+                          note: "Unlimited transfers allowed"
+                        }, {
+                          feature: "Trading Lock",
+                          status: "Yes",
+                          note: "Trading cannot begin until enabled"
+                        }, {
+                          feature: "Blacklist Risk",
+                          status: "None",
+                          note: "No blacklist function present"
+                        }, {
+                          feature: "Cooldown Mechanism",
+                          status: "None",
+                          note: ""
+                        }].map((item, idx) => <Card key={idx} className="bg-secondary/30 border-border">
                               <CardContent className="p-4">
                                 <div className="flex justify-between items-start mb-1">
                                   <span className="font-semibold text-sm">{item.feature}</span>
@@ -1709,8 +1347,7 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                                 </div>
                                 {item.note && <p className="text-xs text-muted-foreground">{item.note}</p>}
                               </CardContent>
-                            </Card>
-                          ))}
+                            </Card>)}
                         </div>
                       </div>
 
@@ -1874,55 +1511,41 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                           Risks / Considerations
                         </h3>
                         <div className="grid md:grid-cols-2 gap-3">
-                          {[
-                            {
-                              risk: "Owner Controls Fees",
-                              level: "Medium",
-                              note: "Tax can be increased within limits (5% max each)",
-                            },
-                            {
-                              risk: "Centralized Holdings",
-                              level: "High",
-                              note: "Top 5 holders = 70%+",
-                            },
-                            {
-                              risk: "Whitelist Present",
-                              level: "Medium",
-                              note: "Some addresses may avoid fees",
-                            },
-                            {
-                              risk: "Trading Lock Risk",
-                              level: "Low",
-                              note: "Owner must manually enable trading",
-                            },
-                            {
-                              risk: "Swap Failure Handling",
-                              level: "Safe",
-                              note: "Swap errors are caught and logged, not reverted",
-                            },
-                            {
-                              risk: "Mint Functionality",
-                              level: "Controlled",
-                              note: "Only internal minting, e.g., airdrop",
-                            },
-                          ].map((item, idx) => (
-                            <Card
-                              key={idx}
-                              className={`border-border ${item.level === "High" ? "bg-red-500/10 border-red-500/30" : item.level === "Medium" ? "bg-orange-500/10 border-orange-500/30" : item.level === "Low" ? "bg-yellow-500/10 border-yellow-500/30" : "bg-green-500/10 border-green-500/30"}`}
-                            >
+                          {[{
+                          risk: "Owner Controls Fees",
+                          level: "Medium",
+                          note: "Tax can be increased within limits (5% max each)"
+                        }, {
+                          risk: "Centralized Holdings",
+                          level: "High",
+                          note: "Top 5 holders = 70%+"
+                        }, {
+                          risk: "Whitelist Present",
+                          level: "Medium",
+                          note: "Some addresses may avoid fees"
+                        }, {
+                          risk: "Trading Lock Risk",
+                          level: "Low",
+                          note: "Owner must manually enable trading"
+                        }, {
+                          risk: "Swap Failure Handling",
+                          level: "Safe",
+                          note: "Swap errors are caught and logged, not reverted"
+                        }, {
+                          risk: "Mint Functionality",
+                          level: "Controlled",
+                          note: "Only internal minting, e.g., airdrop"
+                        }].map((item, idx) => <Card key={idx} className={`border-border ${item.level === "High" ? "bg-red-500/10 border-red-500/30" : item.level === "Medium" ? "bg-orange-500/10 border-orange-500/30" : item.level === "Low" ? "bg-yellow-500/10 border-yellow-500/30" : "bg-green-500/10 border-green-500/30"}`}>
                               <CardContent className="p-4">
                                 <div className="flex justify-between items-start mb-1">
                                   <span className="font-semibold text-sm">{item.risk}</span>
-                                  <span
-                                    className={`text-sm font-bold ${item.level === "High" ? "text-red-500" : item.level === "Medium" ? "text-orange-500" : item.level === "Low" ? "text-yellow-500" : "text-green-500"}`}
-                                  >
+                                  <span className={`text-sm font-bold ${item.level === "High" ? "text-red-500" : item.level === "Medium" ? "text-orange-500" : item.level === "Low" ? "text-yellow-500" : "text-green-500"}`}>
                                     {item.level}
                                   </span>
                                 </div>
                                 <p className="text-xs text-muted-foreground">{item.note}</p>
                               </CardContent>
-                            </Card>
-                          ))}
+                            </Card>)}
                         </div>
                       </div>
 
@@ -1988,19 +1611,15 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
 
               {/* Project Direction Tab */}
               <TabsContent value="direction">
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                    y: 20,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  transition={{
-                    duration: 0.5,
-                  }}
-                >
+                <motion.div initial={{
+                opacity: 0,
+                y: 20
+              }} animate={{
+                opacity: 1,
+                y: 0
+              }} transition={{
+                duration: 0.5
+              }}>
                   <Card className="bg-card border-border">
                     <CardHeader>
                       <div className="flex items-center space-x-3">
@@ -2081,19 +1700,15 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
 
               {/* FAQ Tab */}
               <TabsContent value="faq">
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                    y: 20,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  transition={{
-                    duration: 0.5,
-                  }}
-                >
+                <motion.div initial={{
+                opacity: 0,
+                y: 20
+              }} animate={{
+                opacity: 1,
+                y: 0
+              }} transition={{
+                duration: 0.5
+              }}>
                   <Card className="bg-card border-border">
                     <CardHeader>
                       <div className="flex items-center space-x-3">
@@ -2103,16 +1718,14 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
                     </CardHeader>
                     <CardContent>
                       <Accordion type="single" collapsible className="w-full">
-                        {faqs.map((faq, index) => (
-                          <AccordionItem key={index} value={`item-${index}`}>
+                        {faqs.map((faq, index) => <AccordionItem key={index} value={`item-${index}`}>
                             <AccordionTrigger className="text-left text-lg font-semibold">
                               {faq.question}
                             </AccordionTrigger>
                             <AccordionContent className="text-muted-foreground leading-relaxed">
                               {faq.answer}
                             </AccordionContent>
-                          </AccordionItem>
-                        ))}
+                          </AccordionItem>)}
                       </Accordion>
                     </CardContent>
                   </Card>
@@ -2121,19 +1734,15 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
 
               {/* Privacy Policy Tab */}
               <TabsContent value="privacy">
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                    y: 20,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  transition={{
-                    duration: 0.5,
-                  }}
-                >
+                <motion.div initial={{
+                opacity: 0,
+                y: 20
+              }} animate={{
+                opacity: 1,
+                y: 0
+              }} transition={{
+                duration: 0.5
+              }}>
                   <Card className="bg-card border-border">
                     <CardHeader>
                       <div className="flex items-center space-x-3">
@@ -2302,19 +1911,15 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
 
               {/* Terms of Use Tab */}
               <TabsContent value="terms">
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                    y: 20,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  transition={{
-                    duration: 0.5,
-                  }}
-                >
+                <motion.div initial={{
+                opacity: 0,
+                y: 20
+              }} animate={{
+                opacity: 1,
+                y: 0
+              }} transition={{
+                duration: 0.5
+              }}>
                   <Card className="bg-card border-border">
                     <CardHeader>
                       <div className="flex items-center space-x-3">
@@ -2500,19 +2105,15 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
 
               {/* Cookie Policy Tab */}
               <TabsContent value="cookies">
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                    y: 20,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  transition={{
-                    duration: 0.5,
-                  }}
-                >
+                <motion.div initial={{
+                opacity: 0,
+                y: 20
+              }} animate={{
+                opacity: 1,
+                y: 0
+              }} transition={{
+                duration: 0.5
+              }}>
                   <Card className="bg-card border-border">
                     <CardHeader>
                       <div className="flex items-center space-x-3">
@@ -2759,7 +2360,6 @@ BIT Access is not just about the future of decentralized finance (DeFi); it is a
           </div>
         </Tabs>
       </div>
-    </div>
-  );
+    </div>;
 };
 export default Helpdesk;
