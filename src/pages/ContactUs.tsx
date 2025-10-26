@@ -25,20 +25,20 @@ const ContactUs = () => {
     {
       icon: <Mail className="w-6 h-6 text-primary" />,
       title: "Email",
-      value: "support@bitaecosystem.org",
-      link: "mailto:support@bitaecosystem.org",
+      value: "support@bitaccess.io",
+      link: "mailto:support@bitaccess.io",
     },
     {
       icon: <MessageSquare className="w-6 h-6 text-primary" />,
       title: "Telegram",
-      value: "@bitaecosystemofficial",
-      link: "https://t.me/bitaecosystemofficial",
+      value: "@BitAccessSupport",
+      link: "https://t.me/BitAccessSupport",
     },
     {
       icon: <Twitter className="w-6 h-6 text-primary" />,
       title: "Twitter",
-      value: "@bitaecosystem",
-      link: "https://twitter.com/bitaecosystem",
+      value: "@BitAccess",
+      link: "https://twitter.com/BitAccess",
     },
     {
       icon: <MapPin className="w-6 h-6 text-primary" />,
@@ -197,34 +197,6 @@ const ContactUs = () => {
                 <p className="text-xs text-muted-foreground mt-4">
                   * Response time may vary during weekends and holidays
                 </p>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gradient-to-br from-primary/10 to-accent/10">
-              <CardHeader>
-                <CardTitle>Community</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Join our growing community for the latest updates and discussions
-                </p>
-                <div className="flex gap-3">
-                  <Button variant="outline" size="icon" asChild>
-                    <a href="https://twitter.com/BitAccess" target="_blank" rel="noopener noreferrer">
-                      <Twitter className="w-4 h-4" />
-                    </a>
-                  </Button>
-                  <Button variant="outline" size="icon" asChild>
-                    <a href="https://github.com/BitAccess" target="_blank" rel="noopener noreferrer">
-                      <Github className="w-4 h-4" />
-                    </a>
-                  </Button>
-                  <Button variant="outline" size="icon" asChild>
-                    <a href="https://t.me/BitAccessCommunity" target="_blank" rel="noopener noreferrer">
-                      <MessageSquare className="w-4 h-4" />
-                    </a>
-                  </Button>
-                </div>
               </CardContent>
             </Card>
           </motion.div>
