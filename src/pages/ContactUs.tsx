@@ -12,7 +12,7 @@ const ContactUs = () => {
     name: "",
     email: "",
     subject: "",
-    message: ""
+    message: "",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -25,27 +25,27 @@ const ContactUs = () => {
     {
       icon: <Mail className="w-6 h-6 text-primary" />,
       title: "Email",
-      value: "support@bitaccess.io",
-      link: "mailto:support@bitaccess.io"
+      value: "support@bitaecosystem.org",
+      link: "mailto:support@bitaecosystem.org",
     },
     {
       icon: <MessageSquare className="w-6 h-6 text-primary" />,
       title: "Telegram",
-      value: "@BitAccessSupport",
-      link: "https://t.me/BitAccessSupport"
+      value: "@bitaecosystemofficial",
+      link: "https://t.me/bitaecosystemofficial",
     },
     {
       icon: <Twitter className="w-6 h-6 text-primary" />,
       title: "Twitter",
-      value: "@BitAccess",
-      link: "https://twitter.com/BitAccess"
+      value: "@bitaecosystem",
+      link: "https://twitter.com/bitaecosystem",
     },
     {
       icon: <MapPin className="w-6 h-6 text-primary" />,
       title: "Location",
       value: "Global - Decentralized",
-      link: null
-    }
+      link: null,
+    },
   ];
 
   return (
@@ -86,7 +86,9 @@ const ContactUs = () => {
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label htmlFor="name" className="text-sm font-medium">Name</label>
+                      <label htmlFor="name" className="text-sm font-medium">
+                        Name
+                      </label>
                       <Input
                         id="name"
                         placeholder="Your name"
@@ -96,7 +98,9 @@ const ContactUs = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label htmlFor="email" className="text-sm font-medium">Email</label>
+                      <label htmlFor="email" className="text-sm font-medium">
+                        Email
+                      </label>
                       <Input
                         id="email"
                         type="email"
@@ -108,7 +112,9 @@ const ContactUs = () => {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <label htmlFor="subject" className="text-sm font-medium">Subject</label>
+                    <label htmlFor="subject" className="text-sm font-medium">
+                      Subject
+                    </label>
                     <Input
                       id="subject"
                       placeholder="What is this about?"
@@ -118,7 +124,9 @@ const ContactUs = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label htmlFor="message" className="text-sm font-medium">Message</label>
+                    <label htmlFor="message" className="text-sm font-medium">
+                      Message
+                    </label>
                     <Textarea
                       id="message"
                       placeholder="Tell us more about your inquiry..."
@@ -152,9 +160,7 @@ const ContactUs = () => {
               <CardContent className="space-y-4">
                 {contactInfo.map((item, index) => (
                   <div key={index} className="flex items-start gap-4">
-                    <div className="p-2 rounded-lg bg-primary/10">
-                      {item.icon}
-                    </div>
+                    <div className="p-2 rounded-lg bg-primary/10">{item.icon}</div>
                     <div className="flex-1">
                       <h3 className="font-semibold text-sm">{item.title}</h3>
                       {item.link ? (
