@@ -3,6 +3,10 @@ import { useAccount, useBalance, useReadContract } from "wagmi";
 import { CONTRACT_ADDRESSES, CONTRACT_ABIS } from "@/config/contracts";
 import { formatUnits } from "viem";
 import { Wallet } from "lucide-react";
+import bitIcon from "@/assets/bit-token-icon.png";
+import usdtIcon from "@/assets/usdt-icon.png";
+import usdcIcon from "@/assets/usdc-icon.png";
+import bscIcon from "@/assets/bsc-icon.png";
 
 interface BalanceModalProps {
   open: boolean;
@@ -45,22 +49,22 @@ export const BalanceModal = ({ open, onOpenChange }: BalanceModalProps) => {
     {
       name: "BNB",
       balance: bnbBalance ? formatUnits(bnbBalance.value, bnbBalance.decimals) : "0",
-      color: "text-yellow-500",
+      icon: bscIcon,
     },
     {
       name: "USDT",
       balance: usdtBalance ? formatUnits(usdtBalance as bigint, 18) : "0",
-      color: "text-green-500",
+      icon: usdtIcon,
     },
     {
       name: "USDC",
       balance: usdcBalance ? formatUnits(usdcBalance as bigint, 18) : "0",
-      color: "text-blue-500",
+      icon: usdcIcon,
     },
     {
       name: "BIT",
       balance: bitBalance ? formatUnits(bitBalance as bigint, 9) : "0",
-      color: "text-primary",
+      icon: bitIcon,
     },
   ];
 
@@ -79,8 +83,11 @@ export const BalanceModal = ({ open, onOpenChange }: BalanceModalProps) => {
               key={token.name}
               className="flex items-center justify-between p-4 rounded-lg bg-secondary/50 border border-border"
             >
-              <span className="font-medium text-foreground">{token.name}</span>
-              <span className={`font-bold text-lg ${token.color}`}>
+              <div className="flex items-center gap-3">
+                <img src={token.icon} alt={token.name} className="w-8 h-8" />
+                <span className="font-medium text-foreground">{token.name}</span>
+              </div>
+              <span className="font-bold text-lg text-primary">
                 {parseFloat(token.balance).toFixed(4)}
               </span>
             </div>

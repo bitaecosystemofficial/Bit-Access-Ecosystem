@@ -3,8 +3,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { ShoppingBag, Search, Package, Settings } from "lucide-react";
+import { ShoppingBag, Search, Package, Settings, Loader2 } from "lucide-react";
 import { formatUnits } from "viem";
+import { useReadContract, useAccount } from "wagmi";
+import { CONTRACT_ADDRESSES, CONTRACT_ABIS } from "@/config/contracts";
 import { ItemDetailsModal } from "./ItemDetailsModal";
 import { ItemAdminPanel } from "./ItemAdminPanel";
 import type { Item } from "@/types/Item";
@@ -13,102 +15,86 @@ import { useIsContractOwner } from "@/hooks/useIsContractOwner";
 export const ExchangeShopTab = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
-  const [items, setItems] = useState<Item[]>([]);
   const [showAdmin, setShowAdmin] = useState(false);
+  const [items, setItems] = useState<Item[]>([]);
+  const [loadingItems, setLoadingItems] = useState(true);
   const { isOwner } = useIsContractOwner();
+  const { address } = useAccount();
 
-  // Load items from localStorage
+  // Get total items from smart contract
+  const { data: totalItems, isLoading: loadingTotal, refetch: refetchTotal } = useReadContract({
+    address: CONTRACT_ADDRESSES.EXCHANGE_SHOP,
+    abi: CONTRACT_ABIS.EXCHANGE_SHOP,
+    functionName: "getTotalItems",
+  });
+
+  // Load all items from smart contract
   useEffect(() => {
-    const loadItems = () => {
-      const storedItems = localStorage.getItem("exchangeShopItems");
-      if (storedItems) {
-        try {
-          const parsedItems = JSON.parse(storedItems);
-          // Convert price strings back to BigInt
-          const itemsWithBigInt = parsedItems.map((item: any) => ({
-            ...item,
-            price: BigInt(item.price),
-          }));
-          setItems(itemsWithBigInt);
-        } catch (error) {
-          console.error("Error loading items:", error);
-          setItems([]);
-        }
-      } else {
-        // Initialize with default items
-        const defaultItems: Item[] = [
-          {
-            id: 0,
-            name: "Premium Headphones",
-            description: "High-quality wireless headphones with noise cancellation",
-            price: BigInt(500000000000), // 500 BIT
-            merchant: "0x1234567890123456789012345678901234567890",
-            stock: 25,
-            active: true,
-            category: "Electronics",
-            imageUrl: "/placeholder.svg",
-          },
-          {
-            id: 1,
-            name: "Smart Watch",
-            description: "Fitness tracking smartwatch with heart rate monitor",
-            price: BigInt(800000000000), // 800 BIT
-            merchant: "0x1234567890123456789012345678901234567890",
-            stock: 15,
-            active: true,
-            category: "Electronics",
-            imageUrl: "/placeholder.svg",
-          },
-          {
-            id: 2,
-            name: "Wireless Keyboard",
-            description: "Mechanical keyboard with RGB backlight",
-            price: BigInt(300000000000), // 300 BIT
-            merchant: "0x1234567890123456789012345678901234567890",
-            stock: 40,
-            active: true,
-            category: "Electronics",
-            imageUrl: "/placeholder.svg",
-          },
-        ];
-        saveItems(defaultItems);
-        setItems(defaultItems);
+    const loadItemsFromContract = async () => {
+      if (!totalItems) {
+        setLoadingItems(false);
+        setItems([]);
+        return;
       }
+
+      setLoadingItems(true);
+      const itemsArray: Item[] = [];
+      const total = Number(totalItems);
+
+      for (let i = 0; i < total; i++) {
+        try {
+          const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/read-contract`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              address: CONTRACT_ADDRESSES.EXCHANGE_SHOP,
+              abi: CONTRACT_ABIS.EXCHANGE_SHOP,
+              functionName: 'getItem',
+              args: [BigInt(i)],
+            }),
+          });
+
+          if (response.ok) {
+            const itemData = await response.json();
+            if (itemData && itemData.data) {
+              const [id, name, description, price, merchant, stock, active, category, imageUrl] = itemData.data;
+              itemsArray.push({
+                id: Number(id),
+                name,
+                description,
+                price,
+                merchant,
+                stock: Number(stock),
+                active,
+                category,
+                imageUrl,
+              });
+            }
+          }
+        } catch (error) {
+          console.error(`Error loading item ${i}:`, error);
+        }
+      }
+
+      setItems(itemsArray);
+      setLoadingItems(false);
     };
 
-    loadItems();
-  }, []);
+    loadItemsFromContract();
+  }, [totalItems]);
 
-  const saveItems = (itemsToSave: Item[]) => {
-    // Convert BigInt to string for JSON serialization
-    const itemsToStore = itemsToSave.map((item) => ({
-      ...item,
-      price: item.price.toString(),
-    }));
-    localStorage.setItem("exchangeShopItems", JSON.stringify(itemsToStore));
-  };
+  // Refetch items periodically when admin panel is shown
+  useEffect(() => {
+    if (showAdmin && isOwner) {
+      const interval = setInterval(() => {
+        refetchTotal();
+      }, 5000); // Refetch every 5 seconds
 
-  const addItem = (newItem: Omit<Item, "id">) => {
-    const maxId = items.length > 0 ? Math.max(...items.map((i) => i.id)) : -1;
-    const itemWithId = { ...newItem, id: maxId + 1 };
-    const updatedItems = [...items, itemWithId];
-    setItems(updatedItems);
-    saveItems(updatedItems);
-  };
-
-  const updateItem = (updatedItem: Item) => {
-    const updatedItems = items.map((item) =>
-      item.id === updatedItem.id ? updatedItem : item
-    );
-    setItems(updatedItems);
-    saveItems(updatedItems);
-  };
-
-  const deleteItem = (itemId: number) => {
-    const updatedItems = items.filter((item) => item.id !== itemId);
-    setItems(updatedItems);
-    saveItems(updatedItems);
-  };
+      return () => clearInterval(interval);
+    }
+  }, [showAdmin, isOwner, refetchTotal]);
 
   const filteredItems = items.filter(
     (item) =>
@@ -141,13 +127,8 @@ export const ExchangeShopTab = () => {
         </div>
       </div>
 
-      {showAdmin && (
-        <ItemAdminPanel
-          onAddItem={addItem}
-          onUpdateItem={updateItem}
-          onDeleteItem={deleteItem}
-          existingItems={items}
-        />
+      {showAdmin && isOwner && (
+        <ItemAdminPanel existingItems={items} />
       )}
 
       <div className="relative">
@@ -161,7 +142,16 @@ export const ExchangeShopTab = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredItems.length === 0 ? (
+        {loadingItems || loadingTotal ? (
+          <Card className="col-span-full">
+            <CardContent className="flex flex-col items-center justify-center py-12">
+              <Loader2 className="h-12 w-12 text-primary animate-spin mb-4" />
+              <p className="text-muted-foreground text-center">
+                Loading items from blockchain...
+              </p>
+            </CardContent>
+          </Card>
+        ) : filteredItems.length === 0 ? (
           <Card className="col-span-full">
             <CardContent className="flex flex-col items-center justify-center py-12">
               <Package className="h-12 w-12 text-muted-foreground mb-4" />
