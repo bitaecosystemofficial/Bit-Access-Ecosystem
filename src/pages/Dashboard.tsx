@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { useAccount, useDisconnect } from 'wagmi';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { ShoppingBag, TrendingUp, Users, LogOut } from 'lucide-react';
+import { ShoppingBag, TrendingUp, Users, LogOut, Store } from 'lucide-react';
 import { motion } from 'framer-motion';
 import BuyBitTab from '@/components/dashboard/BuyBitTab';
 import StakingTab from '@/components/dashboard/StakingTab';
 import CommunityTab from '@/components/dashboard/CommunityTab';
+import { ExchangeShopTab } from '@/components/dashboard/ExchangeShopTab';
 import PWAInstallPrompt from '@/components/dashboard/PWAInstallPrompt';
 
 const Dashboard = () => {
@@ -30,6 +31,7 @@ const Dashboard = () => {
     { value: 'buy', label: 'Buy BIT Token', icon: ShoppingBag },
     { value: 'staking', label: 'Staking', icon: TrendingUp },
     { value: 'community', label: 'Community', icon: Users },
+    { value: 'exchange', label: 'Exchange Shop', icon: Store },
   ];
 
   return (
@@ -42,7 +44,7 @@ const Dashboard = () => {
         
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           {/* Desktop Tabs */}
-          <TabsList className="hidden md:grid w-full grid-cols-3 mb-8 bg-card/50 backdrop-blur-sm border border-border/50 p-1 h-auto">
+          <TabsList className="hidden md:grid w-full grid-cols-4 mb-8 bg-card/50 backdrop-blur-sm border border-border/50 p-1 h-auto">
             {menuItems.map((item) => (
               <TabsTrigger 
                 key={item.value} 
@@ -65,6 +67,10 @@ const Dashboard = () => {
 
           <TabsContent value="community" className="mt-0">
             <CommunityTab />
+          </TabsContent>
+
+          <TabsContent value="exchange" className="mt-0">
+            <ExchangeShopTab />
           </TabsContent>
         </Tabs>
 
@@ -116,12 +122,16 @@ const Dashboard = () => {
             </Button>
             
             <Button
-              variant="ghost"
-              onClick={() => disconnect()}
-              className="flex flex-col items-center justify-center h-16 gap-1 hover:bg-destructive/10 hover:text-destructive transition-all"
+              variant={activeTab === 'exchange' ? 'default' : 'ghost'}
+              onClick={() => setActiveTab('exchange')}
+              className={`flex flex-col items-center justify-center h-16 gap-1 transition-all ${
+                activeTab === 'exchange' 
+                  ? 'bg-primary text-primary-foreground shadow-lg' 
+                  : 'hover:bg-secondary/50'
+              }`}
             >
-              <LogOut className="w-5 h-5" />
-              <span className="text-[10px] font-medium">Disconnect</span>
+              <Store className="w-5 h-5" />
+              <span className="text-[10px] font-medium">Exchange</span>
             </Button>
           </div>
         </motion.div>

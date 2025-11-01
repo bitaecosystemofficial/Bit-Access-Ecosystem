@@ -2,6 +2,7 @@
 import BITTokenPurchaseABI from "@/contracts/abis/BITTokenPurchase.json";
 import BITStakingABI from "@/contracts/abis/BITStaking.json";
 import BITCommunityTasksABI from "@/contracts/abis/BITCommunityTasks.json";
+import ExchangeShopABI from "@/contracts/abis/ExchangeShop.json";
 import ERC20ABI from "@/contracts/abis/ERC20.json";
 
 // Smart Contract Addresses on BSC Network
@@ -14,6 +15,9 @@ export const CONTRACT_ADDRESSES = {
 
   // BIT Community Tasks Contract
   BIT_COMMUNITY_TASKS: "0xB1f710ddA249a0DbFBD342A3a6f416651B04D511" as `0x${string}`, // DEPLOY THIS CONTRACT AND UPDATE ADDRESS
+
+  // Exchange Shop Contract
+  EXCHANGE_SHOP: "0x7E8F9C3d2e4A1b5F6D8C9A0B3E4F5A6B7C8D9E0F" as `0x${string}`, // DEPLOY THIS CONTRACT AND UPDATE ADDRESS
 
   // Token Addresses on BSC
   BIT_TOKEN: "0xd3bDe17EbD27739cF5505Cd58Ecf31cB628E469c" as `0x${string}`, // Replace with BIT token address
@@ -28,6 +32,7 @@ export const CONTRACT_ABIS = {
   BIT_PURCHASE: BITTokenPurchaseABI,
   BIT_STAKING: BITStakingABI,
   BITCommunityTasks: BITCommunityTasksABI,
+  EXCHANGE_SHOP: ExchangeShopABI,
   ERC20: ERC20ABI,
 };
 
