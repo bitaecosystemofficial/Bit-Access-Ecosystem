@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useAccount, useDisconnect } from 'wagmi';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { ShoppingBag, TrendingUp, Users, LogOut, Store } from 'lucide-react';
+import { ShoppingBag, TrendingUp, Users, LogOut, Store, Wallet } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import BuyBitTab from '@/components/dashboard/BuyBitTab';
 import StakingTab from '@/components/dashboard/StakingTab';
 import CommunityTab from '@/components/dashboard/CommunityTab';
@@ -12,7 +13,7 @@ import { ExchangeShopTab } from '@/components/dashboard/ExchangeShopTab';
 import PWAInstallPrompt from '@/components/dashboard/PWAInstallPrompt';
 
 const Dashboard = () => {
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
   const { disconnect } = useDisconnect();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('buy');
@@ -81,7 +82,7 @@ const Dashboard = () => {
           transition={{ duration: 0.5 }}
           className="md:hidden fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-lg border-t border-border/50 shadow-2xl z-50"
         >
-          <div className="grid grid-cols-4 gap-1 p-2">
+          <div className="grid grid-cols-5 gap-1 p-2">
             <Button
               variant={activeTab === 'buy' ? 'default' : 'ghost'}
               onClick={() => setActiveTab('buy')}
@@ -133,6 +134,42 @@ const Dashboard = () => {
               <Store className="w-5 h-5" />
               <span className="text-[10px] font-medium">Exchange</span>
             </Button>
+
+            {/* Mobile Wallet Menu */}
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="flex flex-col items-center justify-center h-16 gap-1 hover:bg-secondary/50"
+                >
+                  <Wallet className="w-5 h-5" />
+                  <span className="text-[10px] font-medium">Wallet</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="bottom" className="h-auto rounded-t-3xl">
+                <div className="py-6 space-y-4">
+                  <h3 className="text-lg font-semibold mb-4">Wallet Options</h3>
+                  <div className="space-y-3">
+                    {address && (
+                      <div className="p-4 bg-secondary/50 rounded-lg">
+                        <p className="text-xs text-muted-foreground mb-1">Connected Address</p>
+                        <p className="text-sm font-mono">
+                          {address.slice(0, 6)}...{address.slice(-4)}
+                        </p>
+                      </div>
+                    )}
+                    <Button
+                      onClick={() => disconnect()}
+                      variant="destructive"
+                      className="w-full h-12 text-base"
+                    >
+                      <LogOut className="w-5 h-5 mr-2" />
+                      Disconnect Wallet
+                    </Button>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </motion.div>
 

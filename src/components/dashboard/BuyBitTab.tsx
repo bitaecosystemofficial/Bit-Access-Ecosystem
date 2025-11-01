@@ -94,10 +94,9 @@ const BuyBitTab = () => {
     if (stored) {
       return new Date(stored);
     }
-    // If not stored, create new end date 120 days from YESTERDAY
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const endDate = new Date(yesterday);
+    // If not stored, create new end date 90 days from now
+    const now = new Date();
+    const endDate = new Date(now);
     endDate.setDate(endDate.getDate() + 90);
     localStorage.setItem("presaleEndDate", endDate.toISOString());
     return endDate;

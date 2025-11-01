@@ -3,67 +3,110 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { ShoppingBag, Search, Package } from "lucide-react";
-import { useReadContract } from "wagmi";
-import { CONTRACT_ADDRESSES, CONTRACT_ABIS } from "@/config/contracts";
+import { ShoppingBag, Search, Package, Settings } from "lucide-react";
 import { formatUnits } from "viem";
 import { ItemDetailsModal } from "./ItemDetailsModal";
+import { ItemAdminPanel } from "./ItemAdminPanel";
 import type { Item } from "@/types/Item";
 
 export const ExchangeShopTab = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [items, setItems] = useState<Item[]>([]);
+  const [showAdmin, setShowAdmin] = useState(false);
 
-  const { data: totalItems } = useReadContract({
-    address: CONTRACT_ADDRESSES.EXCHANGE_SHOP,
-    abi: CONTRACT_ABIS.EXCHANGE_SHOP,
-    functionName: "getTotalItems",
-  });
-
-  // Fetch all items
+  // Load items from localStorage
   useEffect(() => {
-    const fetchItems = async () => {
-      if (!totalItems) return;
-
-      const itemsArray: Item[] = [];
-      const count = Number(totalItems);
-
-      for (let i = 0; i < count; i++) {
+    const loadItems = () => {
+      const storedItems = localStorage.getItem("exchangeShopItems");
+      if (storedItems) {
         try {
-          const itemData = await fetch(
-            `${import.meta.env.VITE_SUPABASE_URL}/rest/v1/rpc/get_item`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ item_id: i }),
-            }
-          );
-          
-          // Fallback to mock data for demo
-          const mockItem: Item = {
-            id: i,
-            name: `Product ${i + 1}`,
-            description: "High-quality product available for exchange",
-            price: BigInt(1000000000000), // 1000 BIT
+          const parsedItems = JSON.parse(storedItems);
+          // Convert price strings back to BigInt
+          const itemsWithBigInt = parsedItems.map((item: any) => ({
+            ...item,
+            price: BigInt(item.price),
+          }));
+          setItems(itemsWithBigInt);
+        } catch (error) {
+          console.error("Error loading items:", error);
+          setItems([]);
+        }
+      } else {
+        // Initialize with default items
+        const defaultItems: Item[] = [
+          {
+            id: 0,
+            name: "Premium Headphones",
+            description: "High-quality wireless headphones with noise cancellation",
+            price: BigInt(500000000000), // 500 BIT
             merchant: "0x1234567890123456789012345678901234567890",
-            stock: 50,
+            stock: 25,
             active: true,
             category: "Electronics",
             imageUrl: "/placeholder.svg",
-          };
-          
-          itemsArray.push(mockItem);
-        } catch (error) {
-          console.error(`Error fetching item ${i}:`, error);
-        }
+          },
+          {
+            id: 1,
+            name: "Smart Watch",
+            description: "Fitness tracking smartwatch with heart rate monitor",
+            price: BigInt(800000000000), // 800 BIT
+            merchant: "0x1234567890123456789012345678901234567890",
+            stock: 15,
+            active: true,
+            category: "Electronics",
+            imageUrl: "/placeholder.svg",
+          },
+          {
+            id: 2,
+            name: "Wireless Keyboard",
+            description: "Mechanical keyboard with RGB backlight",
+            price: BigInt(300000000000), // 300 BIT
+            merchant: "0x1234567890123456789012345678901234567890",
+            stock: 40,
+            active: true,
+            category: "Electronics",
+            imageUrl: "/placeholder.svg",
+          },
+        ];
+        saveItems(defaultItems);
+        setItems(defaultItems);
       }
-
-      setItems(itemsArray);
     };
 
-    fetchItems();
-  }, [totalItems]);
+    loadItems();
+  }, []);
+
+  const saveItems = (itemsToSave: Item[]) => {
+    // Convert BigInt to string for JSON serialization
+    const itemsToStore = itemsToSave.map((item) => ({
+      ...item,
+      price: item.price.toString(),
+    }));
+    localStorage.setItem("exchangeShopItems", JSON.stringify(itemsToStore));
+  };
+
+  const addItem = (newItem: Omit<Item, "id">) => {
+    const maxId = items.length > 0 ? Math.max(...items.map((i) => i.id)) : -1;
+    const itemWithId = { ...newItem, id: maxId + 1 };
+    const updatedItems = [...items, itemWithId];
+    setItems(updatedItems);
+    saveItems(updatedItems);
+  };
+
+  const updateItem = (updatedItem: Item) => {
+    const updatedItems = items.map((item) =>
+      item.id === updatedItem.id ? updatedItem : item
+    );
+    setItems(updatedItems);
+    saveItems(updatedItems);
+  };
+
+  const deleteItem = (itemId: number) => {
+    const updatedItems = items.filter((item) => item.id !== itemId);
+    setItems(updatedItems);
+    saveItems(updatedItems);
+  };
 
   const filteredItems = items.filter(
     (item) =>
@@ -81,8 +124,27 @@ export const ExchangeShopTab = () => {
             Buy items using your BIT tokens
           </p>
         </div>
-        <ShoppingBag className="h-8 w-8 text-primary" />
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setShowAdmin(!showAdmin)}
+            title="Manage Items"
+          >
+            <Settings className="h-5 w-5" />
+          </Button>
+          <ShoppingBag className="h-8 w-8 text-primary" />
+        </div>
       </div>
+
+      {showAdmin && (
+        <ItemAdminPanel
+          onAddItem={addItem}
+          onUpdateItem={updateItem}
+          onDeleteItem={deleteItem}
+          existingItems={items}
+        />
+      )}
 
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
