@@ -357,6 +357,84 @@ const CommunityTab = () => {
   const completedTasks = tasks.filter(t => t.completed).length;
   const progressPercentage = (completedTasks / tasks.length) * 100;
 
+  // TaskCard component to handle individual tasks without hook violations
+  const TaskCard = ({ task, TaskIcon, isLinkActive, onTaskAction }: {
+    task: Task;
+    TaskIcon: any;
+    isLinkActive: boolean;
+    onTaskAction: (taskId: string) => void;
+  }) => {
+    const timeLeft = task.activationDate ? useCountdown(task.activationDate) : null;
+    
+    return (
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        className={`bg-gradient-to-r ${task.color} border border-border/50 rounded-xl p-4 flex flex-col`}
+      >
+        {/* Task Content */}
+        <div className="flex items-start gap-3 flex-1 mb-4">
+          <div className="mt-1">
+            <TaskIcon className="w-5 h-5 text-primary" />
+          </div>
+          <div className="flex-1">
+            <h4 className="font-semibold text-base mb-1">{task.title}</h4>
+            <p className="text-sm text-muted-foreground mb-3">{task.description}</p>
+            <div className="flex items-center gap-3 flex-wrap">
+              <div className="flex items-center gap-2">
+                <Coins className="w-4 h-4 text-primary" />
+                <span className="font-bold text-primary">+{task.reward} BIT</span>
+              </div>
+              {task.requiresInvites && (
+                <Badge variant="outline" className="text-xs">
+                  <Users className="w-3 h-3 mr-1" />
+                  {task.inviteCount} invites needed
+                </Badge>
+              )}
+              {!isLinkActive && timeLeft && (
+                <Badge variant="outline" className="text-xs bg-orange-500/10">
+                  <Clock className="w-3 h-3 mr-1" />
+                  {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
+                </Badge>
+              )}
+              {task.linkVisited && !task.completed && (
+                <Badge variant="outline" className="text-xs bg-blue-500/10">
+                  <Check className="w-3 h-3 mr-1" />
+                  Link Visited
+                </Badge>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Action Button */}
+        <div className="flex justify-end">
+          {task.completed ? (
+            <Badge className="bg-green-500/20 text-green-600 dark:text-green-400 border-green-500/30">
+              <Check className="w-3 h-3 mr-1" />
+              Completed
+            </Badge>
+          ) : (
+            <Button
+              onClick={() => onTaskAction(task.id)}
+              disabled={!isLinkActive}
+              size="sm"
+              className="min-w-[100px]"
+            >
+              {task.link ? (
+                <>
+                  Visit Link <ExternalLink className="w-3 h-3 ml-1" />
+                </>
+              ) : (
+                'Complete'
+              )}
+            </Button>
+          )}
+        </div>
+      </motion.div>
+    );
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -455,86 +533,15 @@ const CommunityTab = () => {
               {categoryTasks.map((task) => {
                 const TaskIcon = task.icon;
                 const isLinkActive = !task.activationDate || Date.now() >= task.activationDate;
-                const timeLeft = task.activationDate ? useCountdown(task.activationDate) : null;
                 
                 return (
-                  <motion.div
+                  <TaskCard 
                     key={task.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className={`bg-gradient-to-r ${task.color} border border-border/50 rounded-xl p-4 flex flex-col`}
-                  >
-                    {/* Task Content */}
-                    <div className="flex items-start gap-3 flex-1 mb-4">
-                      <div className="mt-1">
-                        <TaskIcon className="w-5 h-5 text-primary" />
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-base mb-1">{task.title}</h4>
-                        <p className="text-sm text-muted-foreground mb-3">{task.description}</p>
-                        <div className="flex items-center gap-3 flex-wrap">
-                          <div className="flex items-center gap-2">
-                            <Coins className="w-4 h-4 text-primary" />
-                            <span className="font-bold text-primary">+{task.reward} BIT</span>
-                          </div>
-                          {task.requiresInvites && (
-                            <Badge variant="outline" className="text-xs">
-                              <Users className="w-3 h-3 mr-1" />
-                              {task.inviteCount} invites needed
-                            </Badge>
-                          )}
-                          {!isLinkActive && timeLeft && (
-                            <Badge variant="outline" className="text-xs bg-orange-500/10">
-                              <Clock className="w-3 h-3 mr-1" />
-                              {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
-                            </Badge>
-                          )}
-                          {task.linkVisited && !task.completed && (
-                            <Badge variant="outline" className="text-xs bg-blue-500/10">
-                              <Check className="w-3 h-3 mr-1" />
-                              Link Visited
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Button Section - Fixed at Bottom on Mobile */}
-                    <div className="flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-end mt-auto">
-                      {task.completed ? (
-                        <Badge className="bg-green-500 text-white whitespace-nowrap w-full sm:w-auto justify-center py-2">
-                          <Check className="w-3 h-3 mr-1" />
-                          Completed
-                        </Badge>
-                      ) : (
-                        <>
-                          <Button
-                            onClick={() => handleTaskAction(task.id)}
-                            size="sm"
-                            className="bg-primary hover:bg-primary/90 whitespace-nowrap w-full sm:w-auto h-10 sm:h-9"
-                            disabled={!isLinkActive}
-                          >
-                            {isLinkActive ? (
-                              <>
-                                <ExternalLink className="w-3 h-3 mr-1" />
-                                Visit Link
-                              </>
-                            ) : (
-                              <>
-                                <Clock className="w-3 h-3 mr-1" />
-                                Locked
-                              </>
-                            )}
-                          </Button>
-                          {task.linkVisited && (
-                            <Badge className="bg-blue-500 text-white whitespace-nowrap text-xs w-full sm:w-auto justify-center py-2">
-                              Auto-completing...
-                            </Badge>
-                          )}
-                        </>
-                      )}
-                    </div>
-                  </motion.div>
+                    task={task}
+                    TaskIcon={TaskIcon}
+                    isLinkActive={isLinkActive}
+                    onTaskAction={handleTaskAction}
+                  />
                 );
               })}
             </CardContent>
