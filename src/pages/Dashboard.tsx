@@ -11,12 +11,14 @@ import StakingTab from '@/components/dashboard/StakingTab';
 import CommunityTab from '@/components/dashboard/CommunityTab';
 import { ExchangeShopTab } from '@/components/dashboard/ExchangeShopTab';
 import PWAInstallPrompt from '@/components/dashboard/PWAInstallPrompt';
+import { BalanceModal } from '@/components/dashboard/BalanceModal';
 
 const Dashboard = () => {
   const { isConnected, address } = useAccount();
   const { disconnect } = useDisconnect();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('buy');
+  const [showBalanceModal, setShowBalanceModal] = useState(false);
 
   useEffect(() => {
     if (!isConnected) {
@@ -141,6 +143,7 @@ const Dashboard = () => {
                 <Button
                   variant="ghost"
                   className="flex flex-col items-center justify-center h-16 gap-1 hover:bg-secondary/50"
+                  onClick={() => setShowBalanceModal(true)}
                 >
                   <Wallet className="w-5 h-5" />
                   <span className="text-[10px] font-medium">Wallet</span>
@@ -159,6 +162,14 @@ const Dashboard = () => {
                       </div>
                     )}
                     <Button
+                      onClick={() => setShowBalanceModal(true)}
+                      variant="outline"
+                      className="w-full h-12 text-base mb-2"
+                    >
+                      <Wallet className="w-5 h-5 mr-2" />
+                      View Balances
+                    </Button>
+                    <Button
                       onClick={() => disconnect()}
                       variant="destructive"
                       className="w-full h-12 text-base"
@@ -176,6 +187,8 @@ const Dashboard = () => {
         {/* Add padding at bottom on mobile to account for floating nav */}
         <div className="md:hidden h-20"></div>
       </div>
+      
+      <BalanceModal open={showBalanceModal} onOpenChange={setShowBalanceModal} />
     </div>
   );
 };

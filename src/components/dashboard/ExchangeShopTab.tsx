@@ -8,12 +8,14 @@ import { formatUnits } from "viem";
 import { ItemDetailsModal } from "./ItemDetailsModal";
 import { ItemAdminPanel } from "./ItemAdminPanel";
 import type { Item } from "@/types/Item";
+import { useIsContractOwner } from "@/hooks/useIsContractOwner";
 
 export const ExchangeShopTab = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [items, setItems] = useState<Item[]>([]);
   const [showAdmin, setShowAdmin] = useState(false);
+  const { isOwner } = useIsContractOwner();
 
   // Load items from localStorage
   useEffect(() => {
@@ -125,14 +127,16 @@ export const ExchangeShopTab = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setShowAdmin(!showAdmin)}
-            title="Manage Items"
-          >
-            <Settings className="h-5 w-5" />
-          </Button>
+          {isOwner && (
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setShowAdmin(!showAdmin)}
+              title="Manage Items"
+            >
+              <Settings className="h-5 w-5" />
+            </Button>
+          )}
           <ShoppingBag className="h-8 w-8 text-primary" />
         </div>
       </div>
