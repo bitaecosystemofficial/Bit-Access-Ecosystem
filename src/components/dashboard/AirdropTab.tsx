@@ -3,7 +3,7 @@ import { useAccount, useReadContract, useWriteContract, useWaitForTransactionRec
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { Gift, ExternalLink, Check, Facebook, Twitter, Youtube, MessageCircle, Star } from 'lucide-react';
+import { Gift, ExternalLink, Check, Facebook, Twitter, Youtube, MessageCircle, Star, Github } from 'lucide-react';
 import { formatEther } from 'viem';
 import BIT_AIRDROP_ABI from '@/contracts/abis/BITAirdrop.json';
 
@@ -90,6 +90,14 @@ export function AirdropTab() {
       icon: Star,
       link: 'https://trustpilot.com', // Replace with actual link
       color: 'text-green-600'
+    },
+    {
+      id: 'github-visit',
+      title: 'Visit our GitHub Repo',
+      description: 'Star our GitHub repository',
+      icon: Github,
+      link: 'https://github.com', // Replace with actual link
+      color: 'text-gray-900 dark:text-gray-100'
     }
   ];
 
@@ -203,7 +211,7 @@ export function AirdropTab() {
   }, [hash]);
 
   const totalRewards = progressData ? Number(formatEther(progressData[1] as bigint)) : 0;
-  const remainingUnclaimed = progressData ? Number(formatEther(progressData[2] as bigint)) : 700;
+  const remainingUnclaimed = progressData ? Number(formatEther(progressData[2] as bigint)) : 2000;
   const tasksCompleted = progressData ? Number(progressData[0]) : 0;
   const canClaim = progressData ? Boolean(progressData[4]) : false;
   const alreadyClaimed = progressData ? Boolean(progressData[3]) : false;
@@ -242,7 +250,7 @@ export function AirdropTab() {
             <CardTitle>Complete Tasks to Earn BIT Tokens</CardTitle>
           </div>
           <CardDescription>
-            Complete all tasks to unlock your 700 BIT airdrop reward (100 BIT per task)
+            Complete all tasks to unlock your 2,000 BIT airdrop reward (250 BIT per task)
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -261,7 +269,7 @@ export function AirdropTab() {
                           <h3 className="font-semibold mb-1">{task.title}</h3>
                           <p className="text-sm text-muted-foreground mb-3">{task.description}</p>
                           <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium text-primary">+100 BIT</span>
+                            <span className="text-sm font-medium text-primary">+250 BIT</span>
                             {isCompleted ? (
                               <div className="flex items-center gap-1 text-green-600">
                                 <Check className="h-4 w-4" />

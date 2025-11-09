@@ -9,8 +9,8 @@ interface IERC20 {
 contract BITAirdrop {
     address public owner;
     IERC20 public bitToken;
-    uint256 public constant REWARD_PER_TASK = 100 * 10**18; // 100 BIT tokens
-    uint256 public constant TOTAL_TASKS = 7;
+    uint256 public constant REWARD_PER_TASK = 250 * 10**18; // 250 BIT tokens
+    uint256 public constant TOTAL_TASKS = 8;
     
     struct UserProgress {
         bool facebookLike;
@@ -20,6 +20,7 @@ contract BITAirdrop {
         bool facebookReview;
         bool googleReview;
         bool trustpilotReview;
+        bool githubVisit;
         bool claimed;
         uint256 completedTasks;
     }
@@ -64,6 +65,8 @@ contract BITAirdrop {
             progress.googleReview = true;
         } else if (keccak256(bytes(taskId)) == keccak256(bytes("trustpilot-review"))) {
             progress.trustpilotReview = true;
+        } else if (keccak256(bytes(taskId)) == keccak256(bytes("github-visit"))) {
+            progress.githubVisit = true;
         }
         
         emit TaskCompleted(msg.sender, taskId, progress.completedTasks);
