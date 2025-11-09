@@ -5,9 +5,9 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Gift, ExternalLink, Check, Facebook, Twitter, Youtube, MessageCircle, Star } from 'lucide-react';
 import { formatEther } from 'viem';
+import BIT_AIRDROP_ABI from '@/contracts/abis/BITAirdrop.json';
 
 const CONTRACT_ADDRESS = '0x0000000000000000000000000000000000000000'; // Replace with actual deployed address
-const BIT_AIRDROP_ABI = await import('@/contracts/abis/BITAirdrop.json').then(m => m.default);
 
 interface Task {
   id: string;
