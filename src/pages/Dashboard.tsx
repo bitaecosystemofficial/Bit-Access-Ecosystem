@@ -8,7 +8,7 @@ import { motion } from 'framer-motion';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import BuyBitTab from '@/components/dashboard/BuyBitTab';
 import StakingTab from '@/components/dashboard/StakingTab';
-import CommunityTab from '@/components/dashboard/CommunityTab';
+import { AirdropTab } from '@/components/dashboard/AirdropTab';
 import { ExchangeShopTab } from '@/components/dashboard/ExchangeShopTab';
 import PWAInstallPrompt from '@/components/dashboard/PWAInstallPrompt';
 import { BalanceModal } from '@/components/dashboard/BalanceModal';
@@ -33,7 +33,7 @@ const Dashboard = () => {
   const menuItems = [
     { value: 'buy', label: 'Buy BIT Token', icon: ShoppingBag },
     { value: 'staking', label: 'Staking', icon: TrendingUp },
-    { value: 'community', label: 'Community', icon: Users },
+    { value: 'airdrop', label: 'Airdrop', icon: Users },
     { value: 'exchange', label: 'Exchange Shop', icon: Store },
   ];
 
@@ -68,8 +68,8 @@ const Dashboard = () => {
             <StakingTab />
           </TabsContent>
 
-          <TabsContent value="community" className="mt-0">
-            <CommunityTab />
+          <TabsContent value="airdrop" className="mt-0">
+            <AirdropTab />
           </TabsContent>
 
           <TabsContent value="exchange" className="mt-0">
@@ -112,16 +112,16 @@ const Dashboard = () => {
             </Button>
             
             <Button
-              variant={activeTab === 'community' ? 'default' : 'ghost'}
-              onClick={() => setActiveTab('community')}
+              variant={activeTab === 'airdrop' ? 'default' : 'ghost'}
+              onClick={() => setActiveTab('airdrop')}
               className={`flex flex-col items-center justify-center h-16 gap-1 transition-all ${
-                activeTab === 'community' 
+                activeTab === 'airdrop' 
                   ? 'bg-primary text-primary-foreground shadow-lg' 
                   : 'hover:bg-secondary/50'
               }`}
             >
               <Users className="w-5 h-5" />
-              <span className="text-[10px] font-medium">Community</span>
+              <span className="text-[10px] font-medium">Airdrop</span>
             </Button>
             
             <Button
