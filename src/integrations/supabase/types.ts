@@ -14,7 +14,102 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      admin_wallets: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          label: string | null
+          wallet_address: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          label?: string | null
+          wallet_address: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          label?: string | null
+          wallet_address?: string
+        }
+        Relationships: []
+      }
+      airdrop_events: {
+        Row: {
+          claimed: boolean
+          created_at: string
+          event_type: string
+          id: string
+          task_id: string | null
+          tasks_completed: number
+          total_rewards: number
+          tx_hash: string | null
+          updated_at: string
+          wallet_address: string
+        }
+        Insert: {
+          claimed?: boolean
+          created_at?: string
+          event_type: string
+          id?: string
+          task_id?: string | null
+          tasks_completed?: number
+          total_rewards?: number
+          tx_hash?: string | null
+          updated_at?: string
+          wallet_address: string
+        }
+        Update: {
+          claimed?: boolean
+          created_at?: string
+          event_type?: string
+          id?: string
+          task_id?: string | null
+          tasks_completed?: number
+          total_rewards?: number
+          tx_hash?: string | null
+          updated_at?: string
+          wallet_address?: string
+        }
+        Relationships: []
+      }
+      leaderboard_stats: {
+        Row: {
+          claimed: boolean
+          created_at: string
+          id: string
+          last_activity_at: string
+          tasks_completed: number
+          total_rewards: number
+          updated_at: string
+          wallet_address: string
+        }
+        Insert: {
+          claimed?: boolean
+          created_at?: string
+          id?: string
+          last_activity_at?: string
+          tasks_completed?: number
+          total_rewards?: number
+          updated_at?: string
+          wallet_address: string
+        }
+        Update: {
+          claimed?: boolean
+          created_at?: string
+          id?: string
+          last_activity_at?: string
+          tasks_completed?: number
+          total_rewards?: number
+          updated_at?: string
+          wallet_address?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

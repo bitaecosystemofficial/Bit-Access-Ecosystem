@@ -7,6 +7,7 @@ import { Gift, ExternalLink, Check, Facebook, Twitter, Youtube, MessageCircle, S
 import { formatEther } from 'viem';
 import BIT_AIRDROP_ABI from '@/contracts/abis/BITAirdrop.json';
 import { AirdropLeaderboard } from './AirdropLeaderboard';
+import { supabase } from '@/integrations/supabase/client';
 
 const CONTRACT_ADDRESS = '0x0000000000000000000000000000000000000000'; // Replace with actual deployed address
 
@@ -205,11 +206,33 @@ export function AirdropTab() {
     }
   };
 
+  // Sync with database for leaderboard when transaction completes
   useEffect(() => {
-    if (hash) {
+    if (hash && address) {
       refetchProgress();
+      
+      // Update leaderboard stats in database
+      const updateLeaderboard = async () => {
+        try {
+          const { error } = await supabase
+            .from('leaderboard_stats')
+            .upsert({
+              wallet_address: address.toLowerCase(),
+              tasks_completed: tasksCompleted + 1,
+              total_rewards: (tasksCompleted + 1) * 250,
+              claimed: alreadyClaimed,
+              last_activity_at: new Date().toISOString(),
+            }, { onConflict: 'wallet_address' });
+          
+          if (error) console.error('Error updating leaderboard:', error);
+        } catch (err) {
+          console.error('Error syncing leaderboard:', err);
+        }
+      };
+      
+      updateLeaderboard();
     }
-  }, [hash]);
+  }, [hash, address]);
 
   const totalRewards = progressData ? Number(formatEther(progressData[1] as bigint)) : 0;
   const remainingUnclaimed = progressData ? Number(formatEther(progressData[2] as bigint)) : 2000;
