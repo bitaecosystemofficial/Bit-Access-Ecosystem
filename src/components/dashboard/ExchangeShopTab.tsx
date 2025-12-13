@@ -3,14 +3,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { ShoppingBag, Search, Package, Settings, Loader2 } from "lucide-react";
+import { ShoppingBag, Search, Package, Settings, Loader2, Shield, Lock } from "lucide-react";
 import { formatUnits } from "viem";
 import { useReadContract, useAccount } from "wagmi";
 import { CONTRACT_ADDRESSES, CONTRACT_ABIS } from "@/config/contracts";
 import { ItemDetailsModal } from "./ItemDetailsModal";
 import { ItemAdminPanel } from "./ItemAdminPanel";
 import type { Item } from "@/types/Item";
-import { useIsContractOwner } from "@/hooks/useIsContractOwner";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
+import { supabase } from "@/integrations/supabase/client";
 
 export const ExchangeShopTab = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -18,8 +19,39 @@ export const ExchangeShopTab = () => {
   const [showAdmin, setShowAdmin] = useState(false);
   const [items, setItems] = useState<Item[]>([]);
   const [loadingItems, setLoadingItems] = useState(true);
-  const { isOwner } = useIsContractOwner();
+  const [dbAdminCheck, setDbAdminCheck] = useState<boolean | null>(null);
+  const { isAdmin, isOwner } = useIsAdmin();
   const { address } = useAccount();
+
+  // Check admin status from database as well
+  useEffect(() => {
+    const checkDbAdmin = async () => {
+      if (!address) {
+        setDbAdminCheck(false);
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from('admin_wallets')
+          .select('*')
+          .eq('wallet_address', address.toLowerCase())
+          .eq('is_active', true)
+          .maybeSingle();
+
+        if (error) throw error;
+        setDbAdminCheck(!!data);
+      } catch (error) {
+        console.error('Error checking admin status:', error);
+        setDbAdminCheck(false);
+      }
+    };
+
+    checkDbAdmin();
+  }, [address]);
+
+  // Combined admin check (contract OR database)
+  const isAuthorizedAdmin = isAdmin || isOwner || dbAdminCheck === true;
 
   // Get total items from smart contract
   const { data: totalItems, isLoading: loadingTotal, refetch: refetchTotal } = useReadContract({
@@ -87,14 +119,14 @@ export const ExchangeShopTab = () => {
 
   // Refetch items periodically when admin panel is shown
   useEffect(() => {
-    if (showAdmin && isOwner) {
+    if (showAdmin && isAuthorizedAdmin) {
       const interval = setInterval(() => {
         refetchTotal();
-      }, 5000); // Refetch every 5 seconds
+      }, 5000);
 
       return () => clearInterval(interval);
     }
-  }, [showAdmin, isOwner, refetchTotal]);
+  }, [showAdmin, isAuthorizedAdmin, refetchTotal]);
 
   const filteredItems = items.filter(
     (item) =>
@@ -113,22 +145,48 @@ export const ExchangeShopTab = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {isOwner && (
+          {isAuthorizedAdmin && (
             <Button
               variant="outline"
               size="icon"
               onClick={() => setShowAdmin(!showAdmin)}
-              title="Manage Items"
+              title="Admin Panel"
+              className="relative"
             >
               <Settings className="h-5 w-5" />
+              <Shield className="h-3 w-3 absolute -top-1 -right-1 text-primary" />
             </Button>
           )}
           <ShoppingBag className="h-8 w-8 text-primary" />
         </div>
       </div>
 
-      {showAdmin && isOwner && (
-        <ItemAdminPanel existingItems={items} />
+      {/* Admin Panel - Protected */}
+      {showAdmin && (
+        isAuthorizedAdmin ? (
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 p-3 bg-primary/5 border border-primary/20 rounded-lg">
+              <Shield className="h-5 w-5 text-primary" />
+              <div>
+                <p className="font-medium text-sm">Admin Mode Active</p>
+                <p className="text-xs text-muted-foreground">
+                  {isOwner ? 'Contract Owner' : 'Authorized Admin'}
+                </p>
+              </div>
+            </div>
+            <ItemAdminPanel existingItems={items} />
+          </div>
+        ) : (
+          <Card className="border-destructive/50 bg-destructive/5">
+            <CardContent className="flex flex-col items-center justify-center py-8">
+              <Lock className="h-12 w-12 text-destructive mb-4" />
+              <p className="font-medium text-destructive">Access Denied</p>
+              <p className="text-sm text-muted-foreground text-center mt-2">
+                Your wallet address is not authorized to access the admin panel.
+              </p>
+            </CardContent>
+          </Card>
+        )
       )}
 
       <div className="relative">
@@ -169,8 +227,19 @@ export const ExchangeShopTab = () => {
               className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
               onClick={() => setSelectedItem(item)}
             >
-              <div className="aspect-video bg-muted flex items-center justify-center">
-                <Package className="h-12 w-12 text-muted-foreground" />
+              <div className="aspect-video bg-muted flex items-center justify-center overflow-hidden">
+                {item.imageUrl && item.imageUrl !== '/placeholder.svg' ? (
+                  <img 
+                    src={item.imageUrl} 
+                    alt={item.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                      (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
+                    }}
+                  />
+                ) : null}
+                <Package className={`h-12 w-12 text-muted-foreground ${item.imageUrl && item.imageUrl !== '/placeholder.svg' ? 'hidden' : ''}`} />
               </div>
               <CardHeader>
                 <div className="flex items-start justify-between">
