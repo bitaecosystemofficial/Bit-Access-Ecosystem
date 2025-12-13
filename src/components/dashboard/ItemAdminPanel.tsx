@@ -1,15 +1,16 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Shield, Plus, Loader2 } from 'lucide-react';
+import { Shield, Plus, Loader2, Upload, Image as ImageIcon, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { parseUnits } from 'viem';
 import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { CONTRACT_ADDRESSES, CONTRACT_ABIS } from '@/config/contracts';
 import { toast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 import type { Item } from '@/types/Item';
 
 interface ItemAdminPanelProps {
@@ -19,6 +20,9 @@ interface ItemAdminPanelProps {
 export function ItemAdminPanel({ existingItems }: ItemAdminPanelProps) {
   const { writeContract, data: hash } = useWriteContract();
   const { isLoading: isConfirming } = useWaitForTransactionReceipt({ hash });
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({
     name: '',
@@ -27,16 +31,95 @@ export function ItemAdminPanel({ existingItems }: ItemAdminPanelProps) {
     merchant: '0x1234567890123456789012345678901234567890',
     stock: '',
     category: 'Electronics',
-    imageUrl: '/placeholder.svg',
+    imageUrl: '',
   });
 
   const categories = ['Electronics', 'Fashion', 'Home & Living', 'Sports', 'Books', 'Gaming', 'Other'];
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Invalid File",
+        description: "Please upload an image file",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      toast({
+        title: "File Too Large",
+        description: "Please upload an image smaller than 10MB",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setIsUploading(true);
+
+      // Show preview
+      const reader = new FileReader();
+      reader.onload = (e) => setImagePreview(e.target?.result as string);
+      reader.readAsDataURL(file);
+
+      // Upload to NFT.storage via edge function
+      const formDataUpload = new FormData();
+      formDataUpload.append('file', file);
+
+      const { data, error } = await supabase.functions.invoke('upload-to-nft-storage', {
+        body: formDataUpload,
+      });
+
+      if (error) throw error;
+
+      if (data?.url) {
+        setFormData({ ...formData, imageUrl: data.url });
+        toast({
+          title: "Image Uploaded",
+          description: "Image stored on IPFS via NFT.storage",
+        });
+      }
+    } catch (error: any) {
+      console.error('Error uploading image:', error);
+      toast({
+        title: "Upload Failed",
+        description: error?.message || "Failed to upload image to NFT.storage",
+        variant: "destructive",
+      });
+      setImagePreview(null);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const removeImage = () => {
+    setImagePreview(null);
+    setFormData({ ...formData, imageUrl: '' });
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
 
   const handleSubmit = async () => {
     if (!formData.name || !formData.price || !formData.stock) {
       toast({
         title: "Missing Fields",
         description: "Please fill in all required fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!formData.imageUrl) {
+      toast({
+        title: "Missing Image",
+        description: "Please upload an image for the item",
         variant: "destructive",
       });
       return;
@@ -73,8 +156,12 @@ export function ItemAdminPanel({ existingItems }: ItemAdminPanelProps) {
         merchant: '0x1234567890123456789012345678901234567890',
         stock: '',
         category: 'Electronics',
-        imageUrl: '/placeholder.svg',
+        imageUrl: '',
       });
+      setImagePreview(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     } catch (error: any) {
       console.error("Error listing item:", error);
       toast({
@@ -94,10 +181,83 @@ export function ItemAdminPanel({ existingItems }: ItemAdminPanelProps) {
             <CardTitle>Add New Item to Blockchain</CardTitle>
           </div>
           <CardDescription>
-            List items on the Exchange Shop smart contract. Items will be stored on the blockchain.
+            List items on the Exchange Shop smart contract. Images are stored on IPFS via NFT.storage.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Image Upload Section */}
+          <div className="space-y-2">
+            <Label>Item Image *</Label>
+            <div className="flex items-start gap-4">
+              {imagePreview ? (
+                <div className="relative">
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    className="w-32 h-32 object-cover rounded-lg border border-border"
+                  />
+                  <button
+                    type="button"
+                    onClick={removeImage}
+                    className="absolute -top-2 -right-2 p-1 bg-destructive text-destructive-foreground rounded-full hover:bg-destructive/80"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ) : (
+                <div
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-32 h-32 border-2 border-dashed border-border rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-primary/50 transition-colors"
+                >
+                  {isUploading ? (
+                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                  ) : (
+                    <>
+                      <ImageIcon className="h-8 w-8 text-muted-foreground mb-2" />
+                      <span className="text-xs text-muted-foreground">Click to upload</span>
+                    </>
+                  )}
+                </div>
+              )}
+              <div className="flex-1 space-y-2">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isUploading}
+                >
+                  {isUploading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Uploading to IPFS...
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="h-4 w-4 mr-2" />
+                      Upload Image
+                    </>
+                  )}
+                </Button>
+                <p className="text-xs text-muted-foreground">
+                  Images are stored permanently on IPFS via NFT.storage
+                </p>
+                {formData.imageUrl && (
+                  <p className="text-xs text-green-600 break-all">
+                    IPFS URL: {formData.imageUrl}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="name">Item Name *</Label>
@@ -167,7 +327,7 @@ export function ItemAdminPanel({ existingItems }: ItemAdminPanelProps) {
             </div>
           </div>
 
-          <Button onClick={handleSubmit} className="w-full" disabled={isConfirming}>
+          <Button onClick={handleSubmit} className="w-full" disabled={isConfirming || isUploading}>
             {isConfirming ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -195,11 +355,20 @@ export function ItemAdminPanel({ existingItems }: ItemAdminPanelProps) {
                   key={item.id}
                   className="flex items-center justify-between p-3 border border-border rounded-lg"
                 >
-                  <div className="flex-1">
-                    <p className="font-medium">{item.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {(Number(item.price) / 1e9).toLocaleString()} BIT · Stock: {item.stock} · {item.category}
-                    </p>
+                  <div className="flex items-center gap-3">
+                    {item.imageUrl && (
+                      <img
+                        src={item.imageUrl}
+                        alt={item.name}
+                        className="w-10 h-10 object-cover rounded"
+                      />
+                    )}
+                    <div className="flex-1">
+                      <p className="font-medium">{item.name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {(Number(item.price) / 1e9).toLocaleString()} BIT · Stock: {item.stock} · {item.category}
+                      </p>
+                    </div>
                   </div>
                   <Badge variant={item.active ? "default" : "secondary"}>
                     {item.active ? "Active" : "Inactive"}

@@ -6,6 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Gift, ExternalLink, Check, Facebook, Twitter, Youtube, MessageCircle, Star, Github } from 'lucide-react';
 import { formatEther } from 'viem';
 import BIT_AIRDROP_ABI from '@/contracts/abis/BITAirdrop.json';
+import { AirdropLeaderboard } from './AirdropLeaderboard';
 
 const CONTRACT_ADDRESS = '0x0000000000000000000000000000000000000000'; // Replace with actual deployed address
 
@@ -314,6 +315,9 @@ export function AirdropTab() {
           )}
         </CardContent>
       </Card>
+
+      {/* Leaderboard */}
+      <AirdropLeaderboard />
     </div>
   );
 }
