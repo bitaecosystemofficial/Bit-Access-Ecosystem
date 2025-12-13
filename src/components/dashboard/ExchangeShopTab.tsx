@@ -3,12 +3,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { ShoppingBag, Search, Package, Settings, Loader2, Shield, Lock } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ShoppingBag, Search, Package, Settings, Loader2, Shield, Lock, Users } from "lucide-react";
 import { formatUnits } from "viem";
 import { useReadContract, useAccount } from "wagmi";
 import { CONTRACT_ADDRESSES, CONTRACT_ABIS } from "@/config/contracts";
 import { ItemDetailsModal } from "./ItemDetailsModal";
 import { ItemAdminPanel } from "./ItemAdminPanel";
+import { AdminWalletPanel } from "./AdminWalletPanel";
 import type { Item } from "@/types/Item";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { supabase } from "@/integrations/supabase/client";
@@ -174,7 +176,24 @@ export const ExchangeShopTab = () => {
                 </p>
               </div>
             </div>
-            <ItemAdminPanel existingItems={items} />
+            <Tabs defaultValue="items" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="items" className="flex items-center gap-2">
+                  <Package className="h-4 w-4" />
+                  Items
+                </TabsTrigger>
+                <TabsTrigger value="admins" className="flex items-center gap-2">
+                  <Users className="h-4 w-4" />
+                  Admins
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="items" className="mt-4">
+                <ItemAdminPanel existingItems={items} />
+              </TabsContent>
+              <TabsContent value="admins" className="mt-4">
+                <AdminWalletPanel />
+              </TabsContent>
+            </Tabs>
           </div>
         ) : (
           <Card className="border-destructive/50 bg-destructive/5">
