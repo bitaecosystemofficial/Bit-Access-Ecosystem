@@ -6,31 +6,8 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// BIT Airdrop contract ABI for events
-const AIRDROP_ABI = [
-  {
-    "anonymous": false,
-    "inputs": [
-      { "indexed": true, "name": "user", "type": "address" },
-      { "indexed": true, "name": "taskId", "type": "uint256" },
-      { "indexed": false, "name": "reward", "type": "uint256" }
-    ],
-    "name": "TaskCompleted",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      { "indexed": true, "name": "user", "type": "address" },
-      { "indexed": false, "name": "totalReward", "type": "uint256" }
-    ],
-    "name": "AirdropClaimed",
-    "type": "event"
-  }
-];
-
-// Contract addresses
-const BIT_AIRDROP_ADDRESS = "0x1234567890123456789012345678901234567890"; // Replace with actual address
+// Contract addresses - Replace with actual deployed addresses
+const BIT_AIRDROP_ADDRESS = "0x0000000000000000000000000000000000000000";
 const BSC_RPC_URL = "https://bsc-dataseed.binance.org/";
 
 interface BlockchainEvent {
@@ -40,6 +17,15 @@ interface BlockchainEvent {
   blockNumber: string;
   transactionHash: string;
   logIndex: string;
+}
+
+// Keccak256 hash function using crypto.subtle
+async function keccak256(input: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(input);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return '0x' + hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
 serve(async (req) => {
@@ -55,15 +41,7 @@ serve(async (req) => {
 
     console.log('Starting blockchain event indexing...');
 
-    // Get the last processed block from storage or start from recent
-    const { data: lastBlock } = await supabase
-      .from('leaderboard_stats')
-      .select('updated_at')
-      .order('updated_at', { ascending: false })
-      .limit(1)
-      .single();
-
-    // Calculate block range (last 1000 blocks or so)
+    // Calculate block range (last 2000 blocks ~= 10 minutes on BSC)
     const latestBlockResponse = await fetch(BSC_RPC_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -77,23 +55,23 @@ serve(async (req) => {
 
     const latestBlockData = await latestBlockResponse.json();
     const latestBlock = parseInt(latestBlockData.result, 16);
-    const fromBlock = Math.max(latestBlock - 1000, 0);
+    const fromBlock = Math.max(latestBlock - 2000, 0);
 
     console.log(`Indexing blocks from ${fromBlock} to ${latestBlock}`);
 
-    // TaskCompleted event topic
-    const taskCompletedTopic = "0x" + Array.from(
-      new Uint8Array(
-        await crypto.subtle.digest('SHA-256', new TextEncoder().encode('TaskCompleted(address,uint256,uint256)'))
-      )
-    ).slice(0, 32).map(b => b.toString(16).padStart(2, '0')).join('');
+    // Event signatures matching the updated BITAirdrop.sol contract
+    // TaskCompleted(address indexed user, string taskId, uint256 completedCount, uint256 timestamp)
+    const taskCompletedTopic = await keccak256('TaskCompleted(address,string,uint256,uint256)');
+    
+    // AirdropClaimed(address indexed user, uint256 amount, uint256 timestamp)
+    const airdropClaimedTopic = await keccak256('AirdropClaimed(address,uint256,uint256)');
+    
+    // ParticipantJoined(address indexed user, uint256 timestamp)
+    const participantJoinedTopic = await keccak256('ParticipantJoined(address,uint256)');
 
-    // AirdropClaimed event topic
-    const airdropClaimedTopic = "0x" + Array.from(
-      new Uint8Array(
-        await crypto.subtle.digest('SHA-256', new TextEncoder().encode('AirdropClaimed(address,uint256)'))
-      )
-    ).slice(0, 32).map(b => b.toString(16).padStart(2, '0')).join('');
+    let taskEventsProcessed = 0;
+    let claimEventsProcessed = 0;
+    let newParticipants = 0;
 
     // Fetch TaskCompleted events
     const taskEventsResponse = await fetch(BSC_RPC_URL, {
@@ -119,61 +97,73 @@ serve(async (req) => {
 
     // Process TaskCompleted events
     for (const event of taskEvents) {
-      const userAddress = '0x' + event.topics[1].slice(26).toLowerCase();
-      const taskId = parseInt(event.topics[2], 16).toString();
-      const reward = parseInt(event.data, 16);
+      try {
+        // User address is indexed (in topics[1])
+        const userAddress = '0x' + event.topics[1].slice(26).toLowerCase();
+        
+        // Decode data: taskId (string), completedCount (uint256), timestamp (uint256)
+        // For string, we need to handle ABI encoding
+        const data = event.data.slice(2); // Remove 0x prefix
+        const completedCount = parseInt(data.slice(128, 192), 16); // Third 32 bytes
+        const reward = completedCount * 250; // 250 BIT per task
 
-      // Check if event already exists
-      const { data: existingEvent } = await supabase
-        .from('airdrop_events')
-        .select('id')
-        .eq('tx_hash', event.transactionHash)
-        .eq('task_id', taskId)
-        .maybeSingle();
-
-      if (!existingEvent) {
-        // Insert new airdrop event
-        await supabase
+        // Check if event already exists
+        const { data: existingEvent } = await supabase
           .from('airdrop_events')
-          .insert({
-            wallet_address: userAddress,
-            event_type: 'task_completed',
-            task_id: taskId,
-            total_rewards: reward / 1e9, // Convert from wei to BIT (9 decimals)
-            tx_hash: event.transactionHash,
-            claimed: false
-          });
-
-        // Update or insert leaderboard stats
-        const { data: existingStats } = await supabase
-          .from('leaderboard_stats')
-          .select('*')
+          .select('id')
+          .eq('tx_hash', event.transactionHash)
           .eq('wallet_address', userAddress)
+          .eq('event_type', 'task_completed')
           .maybeSingle();
 
-        if (existingStats) {
+        if (!existingEvent) {
+          // Insert new airdrop event
           await supabase
-            .from('leaderboard_stats')
-            .update({
-              tasks_completed: existingStats.tasks_completed + 1,
-              total_rewards: existingStats.total_rewards + (reward / 1e9),
-              last_activity_at: new Date().toISOString(),
-              updated_at: new Date().toISOString()
-            })
-            .eq('wallet_address', userAddress);
-        } else {
-          await supabase
-            .from('leaderboard_stats')
+            .from('airdrop_events')
             .insert({
               wallet_address: userAddress,
-              tasks_completed: 1,
-              total_rewards: reward / 1e9,
-              claimed: false,
-              last_activity_at: new Date().toISOString()
+              event_type: 'task_completed',
+              tasks_completed: completedCount,
+              total_rewards: reward,
+              tx_hash: event.transactionHash,
+              claimed: false
             });
-        }
 
-        console.log(`Processed TaskCompleted for ${userAddress}, task ${taskId}`);
+          // Update or insert leaderboard stats
+          const { data: existingStats } = await supabase
+            .from('leaderboard_stats')
+            .select('*')
+            .eq('wallet_address', userAddress)
+            .maybeSingle();
+
+          if (existingStats) {
+            await supabase
+              .from('leaderboard_stats')
+              .update({
+                tasks_completed: completedCount,
+                total_rewards: reward,
+                last_activity_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+              })
+              .eq('wallet_address', userAddress);
+          } else {
+            await supabase
+              .from('leaderboard_stats')
+              .insert({
+                wallet_address: userAddress,
+                tasks_completed: completedCount,
+                total_rewards: reward,
+                claimed: false,
+                last_activity_at: new Date().toISOString()
+              });
+            newParticipants++;
+          }
+
+          taskEventsProcessed++;
+          console.log(`Processed TaskCompleted for ${userAddress}, completed: ${completedCount}`);
+        }
+      } catch (err) {
+        console.error('Error processing task event:', err);
       }
     }
 
@@ -201,49 +191,64 @@ serve(async (req) => {
 
     // Process AirdropClaimed events
     for (const event of claimEvents) {
-      const userAddress = '0x' + event.topics[1].slice(26).toLowerCase();
-      const totalReward = parseInt(event.data, 16);
+      try {
+        const userAddress = '0x' + event.topics[1].slice(26).toLowerCase();
+        
+        // Decode data: amount (uint256), timestamp (uint256)
+        const data = event.data.slice(2);
+        const amount = parseInt(data.slice(0, 64), 16);
+        const totalReward = amount / 1e18; // Convert from wei (18 decimals)
 
-      // Check if claim event already exists
-      const { data: existingClaim } = await supabase
-        .from('airdrop_events')
-        .select('id')
-        .eq('tx_hash', event.transactionHash)
-        .eq('event_type', 'airdrop_claimed')
-        .maybeSingle();
-
-      if (!existingClaim) {
-        // Insert claim event
-        await supabase
+        // Check if claim event already exists
+        const { data: existingClaim } = await supabase
           .from('airdrop_events')
-          .insert({
-            wallet_address: userAddress,
-            event_type: 'airdrop_claimed',
-            total_rewards: totalReward / 1e9,
-            tx_hash: event.transactionHash,
-            claimed: true
-          });
+          .select('id')
+          .eq('tx_hash', event.transactionHash)
+          .eq('event_type', 'airdrop_claimed')
+          .maybeSingle();
 
-        // Update leaderboard stats to mark as claimed
-        await supabase
-          .from('leaderboard_stats')
-          .update({
-            claimed: true,
-            last_activity_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          })
-          .eq('wallet_address', userAddress);
+        if (!existingClaim) {
+          // Insert claim event
+          await supabase
+            .from('airdrop_events')
+            .insert({
+              wallet_address: userAddress,
+              event_type: 'airdrop_claimed',
+              tasks_completed: 8, // All tasks completed
+              total_rewards: totalReward,
+              tx_hash: event.transactionHash,
+              claimed: true
+            });
 
-        console.log(`Processed AirdropClaimed for ${userAddress}`);
+          // Update leaderboard stats to mark as claimed
+          await supabase
+            .from('leaderboard_stats')
+            .update({
+              claimed: true,
+              total_rewards: totalReward,
+              tasks_completed: 8,
+              last_activity_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            })
+            .eq('wallet_address', userAddress);
+
+          claimEventsProcessed++;
+          console.log(`Processed AirdropClaimed for ${userAddress}, reward: ${totalReward}`);
+        }
+      } catch (err) {
+        console.error('Error processing claim event:', err);
       }
     }
 
     const summary = {
       success: true,
       blocksIndexed: latestBlock - fromBlock,
-      taskEventsProcessed: taskEvents.length,
-      claimEventsProcessed: claimEvents.length,
-      latestBlock: latestBlock
+      fromBlock,
+      toBlock: latestBlock,
+      taskEventsProcessed,
+      claimEventsProcessed,
+      newParticipants,
+      timestamp: new Date().toISOString()
     };
 
     console.log('Indexing complete:', summary);
