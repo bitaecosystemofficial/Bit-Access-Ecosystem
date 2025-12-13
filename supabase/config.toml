@@ -1,1 +1,7 @@
 project_id = "tzqwcwbxfvopeaqcjkhh"
+
+[functions.upload-to-nft-storage]
+verify_jwt = false
+
+[functions.index-blockchain-events]
+verify_jwt = false
