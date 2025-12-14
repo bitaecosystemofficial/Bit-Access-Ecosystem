@@ -9,6 +9,9 @@ interface IERC20 {
 contract ExchangeShop {
     IERC20 public bitToken;
     address public owner;
+    
+    // BIT token has 9 decimals
+    uint256 public constant TOKEN_DECIMALS = 9;
 
     // Admin whitelist for managing items
     mapping(address => bool) public adminWhitelist;
@@ -33,7 +36,6 @@ contract ExchangeShop {
         uint256 itemId;
         uint256 price;
         uint256 timestamp;
-        string txHash;
     }
 
     mapping(uint256 => Item) public items;
@@ -201,8 +203,7 @@ contract ExchangeShop {
             buyer: msg.sender,
             itemId: itemId,
             price: item.price,
-            timestamp: block.timestamp,
-            txHash: ""
+            timestamp: block.timestamp
         });
 
         itemExchanges[itemId].push(newExchange);
@@ -242,7 +243,7 @@ contract ExchangeShop {
         return (nextItemId, totalExchanges, totalVolumeTraded);
     }
 
-    // Get paginated items
+    // Get paginated items - efficient batch loading
     function getItemsPage(uint256 offset, uint256 limit) external view returns (Item[] memory) {
         uint256 end = offset + limit;
         if (end > nextItemId) {
@@ -255,6 +256,30 @@ contract ExchangeShop {
             result[i] = items[offset + i];
         }
         return result;
+    }
+
+    // Get all active items
+    function getActiveItems() external view returns (Item[] memory) {
+        uint256 activeCount = 0;
+        for (uint256 i = 0; i < nextItemId; i++) {
+            if (items[i].active && items[i].stock > 0) {
+                activeCount++;
+            }
+        }
+        
+        Item[] memory result = new Item[](activeCount);
+        uint256 index = 0;
+        for (uint256 i = 0; i < nextItemId; i++) {
+            if (items[i].active && items[i].stock > 0) {
+                result[index] = items[i];
+                index++;
+            }
+        }
+        return result;
+    }
+
+    function getContractBalance() external view returns (uint256) {
+        return bitToken.balanceOf(address(this));
     }
 
     function transferOwnership(address newOwner) external onlyOwner {
