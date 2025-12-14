@@ -1,15 +1,29 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Gift, ExternalLink, Check, Facebook, Twitter, Youtube, MessageCircle, Star, Github } from 'lucide-react';
-import { formatEther } from 'viem';
+import { formatUnits } from 'viem';
 import BIT_AIRDROP_ABI from '@/contracts/abis/BITAirdrop.json';
+import { CONTRACT_ADDRESSES } from '@/config/contracts';
 import { AirdropLeaderboard } from './AirdropLeaderboard';
 import { supabase } from '@/integrations/supabase/client';
 
-const CONTRACT_ADDRESS = '0x0000000000000000000000000000000000000000'; // Replace with actual deployed address
+// BIT token has 9 decimals
+const BIT_DECIMALS = 9;
+
+// Task IDs matching the smart contract
+const TASK_IDS = [
+  'facebook-like',
+  'twitter-follow',
+  'youtube-subscribe',
+  'telegram-join',
+  'facebook-review',
+  'google-review',
+  'trustpilot-review',
+  'github-visit'
+] as const;
 
 interface Task {
   id: string;
@@ -23,17 +37,40 @@ interface Task {
 export function AirdropTab() {
   const { address } = useAccount();
   const { toast } = useToast();
-  const [completedTasks, setCompletedTasks] = useState<Set<string>>(new Set());
   
   const { writeContract, data: hash, isPending } = useWriteContract();
-  const { isLoading: isConfirming } = useWaitForTransactionReceipt({ hash });
+  const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({ hash });
 
   // Read user progress from contract
   const { data: progressData, refetch: refetchProgress } = useReadContract({
-    address: CONTRACT_ADDRESS as `0x${string}`,
+    address: CONTRACT_ADDRESSES.BIT_AIRDROP,
     abi: BIT_AIRDROP_ABI,
     functionName: 'getUserProgress',
     args: address ? [address] : undefined,
+    query: { enabled: !!address }
+  });
+
+  // Read all task statuses in one call using getTaskStatus
+  const { data: taskStatusData, refetch: refetchTaskStatus } = useReadContract({
+    address: CONTRACT_ADDRESSES.BIT_AIRDROP,
+    abi: BIT_AIRDROP_ABI,
+    functionName: 'getTaskStatus',
+    args: address ? [address] : undefined,
+    query: { enabled: !!address }
+  });
+
+  // Read leaderboard stats from contract
+  const { data: leaderboardStats } = useReadContract({
+    address: CONTRACT_ADDRESSES.BIT_AIRDROP,
+    abi: BIT_AIRDROP_ABI,
+    functionName: 'getLeaderboardStats',
+  });
+
+  // Read reward constants from contract
+  const { data: rewardConstants } = useReadContract({
+    address: CONTRACT_ADDRESSES.BIT_AIRDROP,
+    abi: BIT_AIRDROP_ABI,
+    functionName: 'getRewardConstants',
   });
 
   const tasks: Task[] = [
@@ -42,7 +79,7 @@ export function AirdropTab() {
       title: 'Like Us on Facebook',
       description: 'Like our Facebook page',
       icon: Facebook,
-      link: 'https://facebook.com', // Replace with actual link
+      link: 'https://facebook.com/bitaccess',
       color: 'text-blue-600'
     },
     {
@@ -50,7 +87,7 @@ export function AirdropTab() {
       title: 'Follow on Twitter',
       description: 'Follow our Twitter page',
       icon: Twitter,
-      link: 'https://twitter.com', // Replace with actual link
+      link: 'https://twitter.com/bitaccess',
       color: 'text-sky-500'
     },
     {
@@ -58,7 +95,7 @@ export function AirdropTab() {
       title: 'Subscribe to YouTube',
       description: 'Subscribe to our YouTube channel',
       icon: Youtube,
-      link: 'https://youtube.com', // Replace with actual link
+      link: 'https://youtube.com/@bitaccess',
       color: 'text-red-600'
     },
     {
@@ -66,7 +103,7 @@ export function AirdropTab() {
       title: 'Join Telegram Group',
       description: 'Join our Telegram community',
       icon: MessageCircle,
-      link: 'https://t.me', // Replace with actual link
+      link: 'https://t.me/bitaccess',
       color: 'text-blue-500'
     },
     {
@@ -74,7 +111,7 @@ export function AirdropTab() {
       title: 'Leave Facebook Review',
       description: 'Leave us a review on Facebook',
       icon: Star,
-      link: 'https://facebook.com', // Replace with actual link
+      link: 'https://facebook.com/bitaccess/reviews',
       color: 'text-blue-600'
     },
     {
@@ -82,7 +119,7 @@ export function AirdropTab() {
       title: 'Leave Google Review',
       description: 'Leave us a review on Google',
       icon: Star,
-      link: 'https://google.com', // Replace with actual link
+      link: 'https://g.page/bitaccess/review',
       color: 'text-yellow-600'
     },
     {
@@ -90,7 +127,7 @@ export function AirdropTab() {
       title: 'Leave Trustpilot Review',
       description: 'Leave us a review on Trustpilot',
       icon: Star,
-      link: 'https://trustpilot.com', // Replace with actual link
+      link: 'https://trustpilot.com/review/bitaccess.io',
       color: 'text-green-600'
     },
     {
@@ -98,51 +135,53 @@ export function AirdropTab() {
       title: 'Visit our GitHub Repo',
       description: 'Star our GitHub repository',
       icon: Github,
-      link: 'https://github.com', // Replace with actual link
+      link: 'https://github.com/bitaccess',
       color: 'text-gray-900 dark:text-gray-100'
     }
   ];
 
-  useEffect(() => {
-    if (progressData) {
-      // Fetch which tasks are completed
-      const fetchTaskStatus = async () => {
-        const completed = new Set<string>();
-        for (const task of tasks) {
-          try {
-            const isCompleted = await checkTaskCompleted(task.id);
-            if (isCompleted) {
-              completed.add(task.id);
-            }
-          } catch (error) {
-            console.error(`Error checking task ${task.id}:`, error);
-          }
+  // Parse task status from contract response
+  const completedTasks = useMemo(() => {
+    const completed = new Set<string>();
+    if (taskStatusData && Array.isArray(taskStatusData)) {
+      (taskStatusData as boolean[]).forEach((isCompleted, index) => {
+        if (isCompleted && TASK_IDS[index]) {
+          completed.add(TASK_IDS[index]);
         }
-        setCompletedTasks(completed);
-      };
-      fetchTaskStatus();
-    }
-  }, [progressData, address]);
-
-  const checkTaskCompleted = async (taskId: string): Promise<boolean> => {
-    if (!address) return false;
-    try {
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/read-contract`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contractAddress: CONTRACT_ADDRESS,
-          abi: BIT_AIRDROP_ABI,
-          functionName: 'isTaskCompleted',
-          args: [address, taskId]
-        })
       });
-      const data = await response.json();
-      return data.result || false;
-    } catch {
-      return false;
     }
-  };
+    return completed;
+  }, [taskStatusData]);
+
+  // Parse progress data with correct 9 decimals
+  const { totalRewards, remainingUnclaimed, tasksCompleted, canClaim, alreadyClaimed } = useMemo(() => {
+    if (!progressData) {
+      return {
+        totalRewards: 0,
+        remainingUnclaimed: 2000,
+        tasksCompleted: 0,
+        canClaim: false,
+        alreadyClaimed: false
+      };
+    }
+    
+    const [completed, rewards, unclaimed, claimed, canClaimFlag] = progressData as [bigint, bigint, bigint, boolean, boolean];
+    
+    return {
+      totalRewards: Number(formatUnits(rewards, BIT_DECIMALS)),
+      remainingUnclaimed: Number(formatUnits(unclaimed, BIT_DECIMALS)),
+      tasksCompleted: Number(completed),
+      canClaim: canClaimFlag,
+      alreadyClaimed: claimed
+    };
+  }, [progressData]);
+
+  // Parse reward constants
+  const rewardPerTask = useMemo(() => {
+    if (!rewardConstants) return 250;
+    const [perTask] = rewardConstants as [bigint, bigint, bigint];
+    return Number(formatUnits(perTask, BIT_DECIMALS));
+  }, [rewardConstants]);
 
   const handleTaskClick = async (task: Task) => {
     if (!address) {
@@ -158,10 +197,10 @@ export function AirdropTab() {
     // Open link in new tab
     window.open(task.link, '_blank');
 
-    // Mark task as completed (no gas fee)
+    // Mark task as completed on blockchain
     try {
       writeContract({
-        address: CONTRACT_ADDRESS as `0x${string}`,
+        address: CONTRACT_ADDRESSES.BIT_AIRDROP,
         abi: BIT_AIRDROP_ABI,
         functionName: 'completeTask',
         args: [task.id],
@@ -188,7 +227,7 @@ export function AirdropTab() {
 
     try {
       writeContract({
-        address: CONTRACT_ADDRESS as `0x${string}`,
+        address: CONTRACT_ADDRESSES.BIT_AIRDROP,
         abi: BIT_AIRDROP_ABI,
         functionName: 'claimAirdrop',
       } as any);
@@ -206,12 +245,13 @@ export function AirdropTab() {
     }
   };
 
-  // Sync with database for leaderboard when transaction completes
+  // Refetch data and sync with database when transaction completes
   useEffect(() => {
-    if (hash && address) {
+    if (isConfirmed && address) {
       refetchProgress();
+      refetchTaskStatus();
       
-      // Update leaderboard stats in database
+      // Update leaderboard stats in database for real-time sync
       const updateLeaderboard = async () => {
         try {
           const { error } = await supabase
@@ -219,7 +259,7 @@ export function AirdropTab() {
             .upsert({
               wallet_address: address.toLowerCase(),
               tasks_completed: tasksCompleted + 1,
-              total_rewards: (tasksCompleted + 1) * 250,
+              total_rewards: (tasksCompleted + 1) * rewardPerTask,
               claimed: alreadyClaimed,
               last_activity_at: new Date().toISOString(),
             }, { onConflict: 'wallet_address' });
@@ -231,14 +271,13 @@ export function AirdropTab() {
       };
       
       updateLeaderboard();
-    }
-  }, [hash, address]);
 
-  const totalRewards = progressData ? Number(formatEther(progressData[1] as bigint)) : 0;
-  const remainingUnclaimed = progressData ? Number(formatEther(progressData[2] as bigint)) : 2000;
-  const tasksCompleted = progressData ? Number(progressData[0]) : 0;
-  const canClaim = progressData ? Boolean(progressData[4]) : false;
-  const alreadyClaimed = progressData ? Boolean(progressData[3]) : false;
+      toast({
+        title: "Success",
+        description: "Transaction confirmed successfully!",
+      });
+    }
+  }, [isConfirmed, address, refetchProgress, refetchTaskStatus, tasksCompleted, rewardPerTask, alreadyClaimed, toast]);
 
   return (
     <div className="space-y-6">
@@ -247,14 +286,14 @@ export function AirdropTab() {
         <Card>
           <CardHeader className="pb-3">
             <CardDescription>Total BIT Rewards</CardDescription>
-            <CardTitle className="text-3xl text-primary">{totalRewards.toFixed(0)} BIT</CardTitle>
+            <CardTitle className="text-3xl text-primary">{totalRewards.toLocaleString()} BIT</CardTitle>
           </CardHeader>
         </Card>
         
         <Card>
           <CardHeader className="pb-3">
             <CardDescription>Remaining Unclaimed</CardDescription>
-            <CardTitle className="text-3xl text-muted-foreground">{remainingUnclaimed.toFixed(0)} BIT</CardTitle>
+            <CardTitle className="text-3xl text-muted-foreground">{remainingUnclaimed.toLocaleString()} BIT</CardTitle>
           </CardHeader>
         </Card>
         
@@ -274,7 +313,7 @@ export function AirdropTab() {
             <CardTitle>Complete Tasks to Earn BIT Tokens</CardTitle>
           </div>
           <CardDescription>
-            Complete all tasks to unlock your 2,000 BIT airdrop reward (250 BIT per task)
+            Complete all tasks to unlock your {(rewardPerTask * 8).toLocaleString()} BIT airdrop reward ({rewardPerTask.toLocaleString()} BIT per task)
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -293,7 +332,7 @@ export function AirdropTab() {
                           <h3 className="font-semibold mb-1">{task.title}</h3>
                           <p className="text-sm text-muted-foreground mb-3">{task.description}</p>
                           <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium text-primary">+250 BIT</span>
+                            <span className="text-sm font-medium text-primary">+{rewardPerTask.toLocaleString()} BIT</span>
                             {isCompleted ? (
                               <div className="flex items-center gap-1 text-green-600">
                                 <Check className="h-4 w-4" />
