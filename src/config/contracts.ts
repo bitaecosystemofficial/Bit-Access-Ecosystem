@@ -2,6 +2,7 @@
 import BITTokenPurchaseABI from "@/contracts/abis/BITTokenPurchase.json";
 import BITStakingABI from "@/contracts/abis/BITStaking.json";
 import BITAirdropABI from "@/contracts/abis/BITAirdrop.json";
+import BITDailyCheckinABI from "@/contracts/abis/BITDailyCheckin.json";
 import ExchangeShopABI from "@/contracts/abis/ExchangeShop.json";
 import ERC20ABI from "@/contracts/abis/ERC20.json";
 
@@ -15,6 +16,9 @@ export const CONTRACT_ADDRESSES = {
 
   // BIT Airdrop Contract
   BIT_AIRDROP: "0x0000000000000000000000000000000000000000" as `0x${string}`, // DEPLOY THIS CONTRACT AND UPDATE ADDRESS
+
+  // BIT Daily Check-in Contract
+  BIT_DAILY_CHECKIN: "0x0000000000000000000000000000000000000000" as `0x${string}`, // DEPLOY THIS CONTRACT AND UPDATE ADDRESS
 
   // Exchange Shop Contract
   EXCHANGE_SHOP: "0x7E8F9C3d2e4A1b5F6D8C9A0B3E4F5A6B7C8D9E0F" as `0x${string}`, // DEPLOY THIS CONTRACT AND UPDATE ADDRESS
@@ -32,6 +36,7 @@ export const CONTRACT_ABIS = {
   BIT_PURCHASE: BITTokenPurchaseABI,
   BIT_STAKING: BITStakingABI,
   BIT_AIRDROP: BITAirdropABI,
+  BIT_DAILY_CHECKIN: BITDailyCheckinABI,
   EXCHANGE_SHOP: ExchangeShopABI,
   ERC20: ERC20ABI,
 };
