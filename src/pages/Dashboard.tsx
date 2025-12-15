@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { useAccount, useDisconnect } from 'wagmi';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { ShoppingBag, TrendingUp, Users, LogOut, Store, Wallet } from 'lucide-react';
+import { ShoppingBag, TrendingUp, Users, LogOut, Store, Wallet, CalendarCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import BuyBitTab from '@/components/dashboard/BuyBitTab';
 import StakingTab from '@/components/dashboard/StakingTab';
 import { AirdropTab } from '@/components/dashboard/AirdropTab';
+import { DailyCheckTab } from '@/components/dashboard/DailyCheckTab';
 import { ExchangeShopTab } from '@/components/dashboard/ExchangeShopTab';
 import PWAInstallPrompt from '@/components/dashboard/PWAInstallPrompt';
 import { BalanceModal } from '@/components/dashboard/BalanceModal';
@@ -33,6 +34,7 @@ const Dashboard = () => {
   const menuItems = [
     { value: 'buy', label: 'Buy BIT Token', icon: ShoppingBag },
     { value: 'staking', label: 'Staking', icon: TrendingUp },
+    { value: 'dailycheck', label: 'Daily Check', icon: CalendarCheck },
     { value: 'airdrop', label: 'Airdrop', icon: Users },
     { value: 'exchange', label: 'Exchange Shop', icon: Store },
   ];
@@ -47,7 +49,7 @@ const Dashboard = () => {
         
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           {/* Desktop Tabs */}
-          <TabsList className="hidden md:grid w-full grid-cols-4 mb-8 bg-card/50 backdrop-blur-sm border border-border/50 p-1 h-auto">
+          <TabsList className="hidden md:grid w-full grid-cols-5 mb-8 bg-card/50 backdrop-blur-sm border border-border/50 p-1 h-auto">
             {menuItems.map((item) => (
               <TabsTrigger 
                 key={item.value} 
@@ -68,6 +70,10 @@ const Dashboard = () => {
             <StakingTab />
           </TabsContent>
 
+          <TabsContent value="dailycheck" className="mt-0">
+            <DailyCheckTab />
+          </TabsContent>
+
           <TabsContent value="airdrop" className="mt-0">
             <AirdropTab />
           </TabsContent>
@@ -84,7 +90,7 @@ const Dashboard = () => {
           transition={{ duration: 0.5 }}
           className="md:hidden fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-lg border-t border-border/50 shadow-2xl z-50"
         >
-          <div className="grid grid-cols-5 gap-1 p-2">
+          <div className="grid grid-cols-6 gap-1 p-2">
             <Button
               variant={activeTab === 'buy' ? 'default' : 'ghost'}
               onClick={() => setActiveTab('buy')}
@@ -95,7 +101,7 @@ const Dashboard = () => {
               }`}
             >
               <ShoppingBag className="w-5 h-5" />
-              <span className="text-[10px] font-medium">Buy BIT</span>
+              <span className="text-[10px] font-medium">Buy</span>
             </Button>
             
             <Button
@@ -108,7 +114,20 @@ const Dashboard = () => {
               }`}
             >
               <TrendingUp className="w-5 h-5" />
-              <span className="text-[10px] font-medium">Staking</span>
+              <span className="text-[10px] font-medium">Stake</span>
+            </Button>
+
+            <Button
+              variant={activeTab === 'dailycheck' ? 'default' : 'ghost'}
+              onClick={() => setActiveTab('dailycheck')}
+              className={`flex flex-col items-center justify-center h-16 gap-1 transition-all ${
+                activeTab === 'dailycheck' 
+                  ? 'bg-primary text-primary-foreground shadow-lg' 
+                  : 'hover:bg-secondary/50'
+              }`}
+            >
+              <CalendarCheck className="w-5 h-5" />
+              <span className="text-[10px] font-medium">Daily</span>
             </Button>
             
             <Button
@@ -134,7 +153,7 @@ const Dashboard = () => {
               }`}
             >
               <Store className="w-5 h-5" />
-              <span className="text-[10px] font-medium">Exchange</span>
+              <span className="text-[10px] font-medium">Shop</span>
             </Button>
 
             {/* Mobile Wallet Menu */}
